@@ -1,0 +1,28 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "expo": "^41.0.0",
+    "expo-location": "~12.0.4",
+    "expo-permissions": "~12.0.1",
+    "expo-status-bar": "~1.0.4",
+    "express": "4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "persist": "^0.2.7",
+    "pg": "^8.6.0",
+    "stripe": "^8.154.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.5"
+  },
+  "private": true
+}
