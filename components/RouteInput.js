@@ -58,6 +58,7 @@ const RouteInput = (props) => {
                         value={props.valueName}
                         onChangeText={text => getAutocompleteResults(text)}
                         style={{ height: '100%' }}
+                        autoFocus={true}
                     />
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center' }}>

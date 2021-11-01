@@ -28,9 +28,10 @@ const RouteDropDown = (props) => {
                 props.setValueName(item.name)
                 setIsVisible(false)
                 setResults([])
+                props.modalClose(false)
             }}>
-                <View style={{ justifyContent: 'center', padding: '4%' }}>
-                    <Text>{item.name}</Text>
+                <View style={{ justifyContent: 'center', padding: '5%' }}>
+                    <Text style={{ fontSize: 15 }}>{item.name}</Text>
                 </View>
                 <View style={styles.line}></View>
             </TouchableOpacity>
@@ -66,7 +67,7 @@ export default RouteDropDown;
 
 const styles = StyleSheet.create({
     conatiner: {
-        padding: 5,
+        // padding: 5,
         minWidth: Dimensions.get('window').width * 0.85,
         //height: Dimensions.get('window').height * 0.18,
         width: '90%',

@@ -59,7 +59,7 @@ const DriverRouteTwo = ({ route, navigation }) => {
                     "Lift Posted!",
                     "",
                     [
-                        { text: "OK", onPress: () => navigation.navigate('My Lifts', { refresh: true }) }
+                        { text: "OK", onPress: () => liftPostedHandler() }
                     ]
                 )
             } else {
@@ -70,6 +70,11 @@ const DriverRouteTwo = ({ route, navigation }) => {
             console.log(error.message)
         }
 
+    }
+
+    const liftPostedHandler = async() => {
+        await navigation.navigate('My Lifts', { refresh: true }) 
+        navigation.popToTop()
     }
 
 

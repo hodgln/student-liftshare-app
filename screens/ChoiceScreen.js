@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { Ionicons, Foundation, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'
 import * as Linking from 'expo-linking';
 import { BlurView } from 'expo-blur'
+import { LinearGradient } from 'expo-linear-gradient'
 
 
 
@@ -60,50 +61,49 @@ const HomeScreen = props => {
 
 
     return (
-        
-
-            <View style={styles.HomeScreen}>
-
-                
 
 
-                    
-                            <View style={styles.loginElements}>
-                                <View style={styles.header}></View>
-                                <View style={styles.loginButtons}>
-                                    <View style={styles.columnButtons}>
-                                        <TouchableOpacity style={{ alignItems: 'center' }} onPress={passengerClickHandle} >
-                                            <MaterialCommunityIcons name="seat-passenger" size={100} color={passengerClick ? 'green' : 'black'} />
-                                            {/* <Button title="Passenger" onPress={} disabled={isLoggedIn ? true : false} /> */}
-                                            <Text>Passenger</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.verticalLine}>
-                                    </View>
-                                    <View style={styles.columnButtons}>
-                                        <TouchableOpacity style={{ alignItems: 'center' }} onPress={driverClickHandle} >
-                                            <MaterialCommunityIcons name="steering" size={100} color={driverClick ? 'green' : 'black'} />
+        <View style={styles.HomeScreen}>
 
-                                            {/* <Button title="Passenger" onPress={} disabled={isLoggedIn ? true : false} /> */}
-                                            <Text>Driver</Text>
-                                        </TouchableOpacity>
+            <View style={styles.loginElements}>
+                <View style={styles.header}></View>
+                <View style={styles.loginButtons}>
+                    <View style={styles.columnButtons}>
+                        <TouchableOpacity style={{ alignItems: 'center' }} onPress={passengerClickHandle} >
 
-                                    </View>
+                            <MaterialCommunityIcons name="seat-passenger" size={100} color={passengerClick ? "green" : "black"} />
 
-                                </View>
-                                <View style={styles.goButton} >
-                                    {isVisible ?
-                                        <TouchableOpacity onPress={goToLogin}>
-                                            <Ionicons name="chevron-forward-circle-outline" style={{ fontSize: 28 }} color="green"></Ionicons>
-                                        </TouchableOpacity>
-                                        : null}
-                                    {/* <Button title="+" onPress={goToLogin} disabled={isLoggedIn ? true : false} /> */}
-                                </View>
-                            </View>
+                            {/* <Button title="Passenger" onPress={} disabled={isLoggedIn ? true : false} /> */}
+                            <Text>Passenger</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.verticalLine}>
+                    </View>
+                    <View style={styles.columnButtons}>
+                        <TouchableOpacity style={{ alignItems: 'center' }} onPress={driverClickHandle} >
+                            <MaterialCommunityIcons name="steering" size={100} color={driverClick ? 'green' : 'black'} />
+
+                            {/* <Button title="Passenger" onPress={} disabled={isLoggedIn ? true : false} /> */}
+                            <Text>Driver</Text>
+                        </TouchableOpacity>
+
+                    </View>
 
                 </View>
-                    
-    )}
+                <View style={styles.goButton} >
+                    {isVisible ?
+                        <TouchableOpacity onPress={goToLogin}>
+                            <Ionicons name="chevron-forward-circle-outline" style={{ fontSize: 28 }} color="green"></Ionicons>
+                        </TouchableOpacity>
+                        : null}
+                    {/* <Button title="+" onPress={goToLogin} disabled={isLoggedIn ? true : false} /> */}
+                </View>
+            </View>
+
+        </View>
+
+    )
+}
 
 
 const styles = StyleSheet.create({
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     loginButtons: {
         flexDirection: 'row',
         height: '33%',
-        
+
     },
     columnButtons: {
         width: '50%',
