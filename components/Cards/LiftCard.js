@@ -236,7 +236,7 @@ const LiftCard = (props) => {
 
                         {/* <Text style={{ fontSize: 20, fontWeight: '500', marginBottom: Dimensions.get('window').height * 0.01 }}>{JSON.parse(to)}</Text> */}
                     </View>
-                    <Text style={{ fontSize: 20, fontWeight: '500', padding: '2%' }}>{moment(dateFormat).format('DD / MM / YYYY')}</Text>
+                    <Text style={{ fontSize: 20, fontWeight: '500', padding: '2%' }}>{moment(dateFormat).format('dddd Do MMM')}</Text>
                     <Text style={{ fontSize: 20, fontWeight: '500', padding: '2%' }}>{moment(dateFormat).format('HH:mm')}</Text>
                     <Text style={{ fontSize: 25, fontWeight: '700', padding: '2%' }}>{priceHandler(price)}</Text>
                 </View>
