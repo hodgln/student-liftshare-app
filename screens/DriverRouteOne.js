@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { Dimensions, Text, ScrollView, StyleSheet, View, Button } from 'react-native'
-import Geocoder from 'react-native-geocoding'
-import MapViewDirections from 'react-native-maps-directions';
+import { Dimensions, Text, ScrollView, Modal, StyleSheet, View, Button, TouchableWithoutFeedback, Pressable, TextInput } from 'react-native'
 import NextButton from '../components/Buttons/NextButton';
 import RouteInput from '../components/RouteInput';
 import RouteDropDown from '../components/RouteDropDown';
 import { useSelector } from 'react-redux';
+import DummyRouteInput from '../components/DummyRouteInput';
 
 
 const DriverRouteOne = (props) => {
@@ -25,6 +23,9 @@ const DriverRouteOne = (props) => {
 
     const [placeholderFrom, setPlaceholderFrom] = useState(null)
     const [placeholderTo, setPlaceholderTo] = useState(null)
+
+    const [fromIsVisible, setFromIsVisible] = useState(false)
+    const [toIsVisible, setToIsVisible] = useState(false)
 
 
     const token = useSelector(state => state.authorisation.userToken)
@@ -88,7 +89,7 @@ const DriverRouteOne = (props) => {
     }
 
 
-    const onNextPress = async() => {
+    const onNextPress = async () => {
         try {
 
             const myHeaders = new Headers();
@@ -106,14 +107,21 @@ const DriverRouteOne = (props) => {
 
             const parseRes = await response.json()
 
-            props.navigation.navigate('DRouteTwo', {
+            await props.navigation.navigate('DRouteTwo', {
                 distance: parseRes / 1000,
                 originname: JSON.stringify(originName),
                 destinationname: JSON.stringify(destinationName),
                 origin: origin,
                 destination: destination,
             });
-            
+
+            setOriginID(null)
+            setDestinationID(null)
+            setOriginName()
+            setDestinationName()
+            setPlaceholderFrom()
+            setPlaceholderTo()
+
         } catch (error) {
             console.log(error.message)
         }
@@ -122,33 +130,115 @@ const DriverRouteOne = (props) => {
 
 
     return (
+        <View style={styles.container}>
+            <View style={styles.componentContainer}>
+                <View style={{ padding: '4%' }}>
+                    <Text style={{ fontSize: 20 }}>Where are you driving?</Text>
+                </View>
+                <View style={styles.line}></View>
+                <View style={styles.routeContainer}>
+                    <View style={{ marginTop: Dimensions.get('screen').height * 0.03 }}>
 
-        <View style={{ justifyContent: 'center', flex: 1 }} >
-            <View>
-                <Text style={{ fontSize: 26, alignSelf: 'center' }}>Where are you driving from?</Text>
+                        {/* pass down onfocus isvisible setter AND placeholder through routeinput component and when isvisible, open modal of routedropdown */}
+                        <View style={{ width: '90%' }}>
+                            <DummyRouteInput
+                                placeholder="from"
+                                setValueName={setPlaceholderFrom}
+                                setID={setOriginID}
+                                valueName={placeholderFrom}
+                                setIsVisible={() => setFromIsVisible(true)}
+                            />
+                        </View>
+                        {/* <RouteDropDown placeholder="from" setID={setOriginID} setValueName={setPlaceholderFrom} valueName={placeholderFrom} /> */}
+                    </View>
+
+
+                    <View style={{ marginBottom: Dimensions.get('screen').height * 0.05 }}>
+                        {/* <Text style={{ fontSize: 20 }}>Where are you driving to?</Text> */}
+
+                        {/* <RouteDropDown placeholder="to" setID={setDestinationID} setValueName={setPlaceholderTo} valueName={placeholderTo} onFocus={() => console.log('hi')} /> */}
+
+                        <View style={{ width: '90%' }}>
+                            <DummyRouteInput
+                                placeholder="to"
+                                setValueName={setPlaceholderTo}
+                                setID={setDestinationID}
+                                valueName={placeholderTo}
+                                setIsVisible={() => setToIsVisible(true)}
+                            />
+                        </View>
+
+                    </View>
+                </View>
+
+
+                <View style={styles.line}></View>
+                <View style={{ alignSelf: 'center' }}>
+
+                    <NextButton disabled={origin.longitude !== null && destination.longitude !== null ? false : true} text="next" onPress={onNextPress} />
+                </View>
             </View>
 
-            <View style={{ alignItems: 'center' }}>
-                <RouteDropDown placeholder="from" setID={setOriginID} setValueName={setPlaceholderFrom} valueName={placeholderFrom} />
-            </View>
-
-            {/* <View style={styles.line}></View> */}
-            <View style={{ height: Dimensions.get('window').height * 0.1, justifyContent: 'flex-end' }}>
-                <Text style={{ fontSize: 26, alignSelf: 'center' }}>Where are you driving to?</Text>
-            </View>
-
-            <View style={{ alignItems: 'center', marginBottom: Dimensions.get('screen').height * 0.05 }}>
-                <RouteDropDown placeholder="to" setID={setDestinationID} setValueName={setPlaceholderTo} valueName={placeholderTo} />
-            </View>
 
 
-            <View style={styles.line}></View>
-            <View style={{ alignSelf: 'center' }}>
+            {fromIsVisible ?
+                (
+                    // <View style={styles.flatListView}>
+                    /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
+                    <Modal animationType="fade"
+                        transparent={true}
+                        visible={true}
+                    >
+                        <View style={styles.centredView}>
 
-                <NextButton disabled={origin.longitude !== null && destination.longitude !== null ? false : true} text="next" onPress={onNextPress} />
-            </View>
+                            <View style={styles.inputModal}>
+                                <View>
+                                    <RouteDropDown
+                                        placeholder="from"
+                                        setID={setOriginID}
+                                        setValueName={setPlaceholderFrom}
+                                        valueName={placeholderFrom}
+                                        modalClose={setFromIsVisible}
+                                    />
+                                    <Button title="close" onPress={() => setFromIsVisible(false)} />
+                                </View>
+                            </View>
+
+                        </View>
+                    </Modal>
+                    /* </View> */
+                ) : null}
+
+            {toIsVisible ?
+                (
+                    // <View style={styles.flatListView}>
+                    /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
+                    <Modal animationType="fade"
+                        transparent={true}
+                        visible={true}
+                    >
+                        <View style={styles.centredView}>
+
+                            <View style={styles.inputModal}>
+                                <View>
+                                    <RouteDropDown
+                                        placeholder="to"
+                                        setID={setDestinationID}
+                                        setValueName={setPlaceholderTo}
+                                        valueName={placeholderTo}
+                                        modalClose={setToIsVisible}
+                                    />
+                                    <Button title="close" onPress={() => setToIsVisible(false)} />
+                                </View>
+                            </View>
+
+                        </View>
+                    </Modal>
+                    /* </View> */
+                ) : null}
+
         </View>
-
+        // {/* </View> */}
     );
 };
 
@@ -169,6 +259,59 @@ const styles = StyleSheet.create({
         borderColor: 'grey',
         alignSelf: 'center',
         // marginBottom: Dimensions.get('screen').height * 0.01
+    },
+    routeContainer: {
+        height: Dimensions.get('window').height * 0.25,
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    componentContainer: {
+        height: Dimensions.get('window').height * 0.5,
+        width: Dimensions.get('screen').width * 0.9,
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        borderWidth: 0.3,
+        borderColor: 'darkgrey',
+        borderRadius: 20
+
+    },
+    container: {
+        justifyContent: 'center',
+        flex: 1,
+        alignItems: 'center',
+        shadowOffset: {
+            height: 3,
+            width: -3
+        },
+        shadowRadius: 5,
+        //shadowColor: 'black',
+        shadowOpacity: 0.2,
+    },
+    centredView: {
+        flex: 1,
+        justifyContent: "center",
+        //alignItems: "center",
+        //marginTop: 22,
+        //height: Dimensions.get('window').height * 0.4
+    },
+    inputModal: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        flex: 1,
+        //height: Dimensions.get('window').height * 0.4,
+        //width: Dimensions.get('window').width * 0.8,
+        //justifyContent: 'center'
     }
 })
 

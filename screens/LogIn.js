@@ -1,15 +1,19 @@
-import React, { useReducer, useCallback } from 'react'
-import { View, Text, StyleSheet, TextInput, Button, ScrollView, Alert, Dimensions } from 'react-native'
+import React, { useReducer, useCallback, useState } from 'react'
+import { View, Text, StyleSheet, TextInput, Button, ScrollView, Alert, Dimensions, ActivityIndicator } from 'react-native'
 import { useDispatch } from 'react-redux';
 import Input from '../components/Input';
 import { LOGGED_IN } from '../store/actions/authentication'
 import LogInButton from '../components/Buttons/LoginButton';
 import BackButton from '../components/Buttons/BackButton';
+import { LinearGradient } from 'expo-linear-gradient'
+
 
 
 const LogIn = ({ route, navigation }) => {
 
     const FORM_UPDATED = 'FORM_UPDATED';
+
+    const [isLoading, setIsLoading] = useState(false)
 
     const dispatch = useDispatch()
 
@@ -137,19 +141,21 @@ const LogIn = ({ route, navigation }) => {
             } else if (parseResponse.confirmed === true) {
                 dispatch({ type: LOGGED_IN, token: parseResponse.token, category: parseResponse.category });
 
-                //pass down category
-
             } else {
                 Alert.alert(parseResponse);
             }
-
-            // dispatch({ type: LOGGED_IN, token: parseResponse.token, category: 'driver'});
 
         } catch (error) {
             console.log(error.message)
         }
         //props.navigation.navigate('DPNav')
     };
+
+    const loginPress = async() => {
+        await setIsLoading(true)
+        await onGoPress()
+        setIsLoading(false)
+    }
 
     const logInText = `${category} log in`
 
@@ -197,7 +203,7 @@ const LogIn = ({ route, navigation }) => {
                 />
                 <Button title="forgot password" onPress={() => navigation.navigate('PReset')} />
 
-                <LogInButton onPress={onGoPress} text="LOG IN" disabled={false} />
+                <LogInButton onPress={loginPress} text="LOG IN" disabled={isLoading} />
                 <Button title="sign up" onPress={() => navigation.navigate('SignUpOne', { category: category })} />
             </View>
         </View>
@@ -215,7 +221,7 @@ const styles = StyleSheet.create({
     },
     backButton: {
         alignSelf: 'flex-start',
-        // width: '100%',,
+        // width: '100%',
         
     },
     dropShadow: {
