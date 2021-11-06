@@ -10,7 +10,7 @@ const SeatButton = (props) => {
     return (
      <TouchableOpacity onPress={onPress} >
          <View>
-         <MaterialCommunityIcons name="seatbelt" size={70} color={Styles ? "green" : "black"} />
+         <MaterialCommunityIcons name="seatbelt" size={70} color={Styles ? "green" : "grey"} />
          </View>
      </TouchableOpacity>
     )
