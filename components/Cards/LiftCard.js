@@ -8,6 +8,8 @@ import MyLiftsPassengerCard from './MyLiftsPassengerCard';
 import moment from 'moment';
 import QRCode from 'react-native-qrcode-svg';
 import DriverQR from '../DriverQR';
+import RouteDisplay from '../RouteDisplay';
+import { AntDesign } from '@expo/vector-icons';
 
 
 
@@ -231,18 +233,21 @@ const LiftCard = (props) => {
 
             <View style={isActive ? [styles.container, styles.isActive] : styles.container}>
                 <View style={styles.halfContainer}>
-                    <View style={{ width: '100%', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 20, fontWeight: '500' }}>{JSON.parse(from)}  to  {JSON.parse(to)}</Text>
 
-                        {/* <Text style={{ fontSize: 20, fontWeight: '500', marginBottom: Dimensions.get('window').height * 0.01 }}>{JSON.parse(to)}</Text> */}
-                    </View>
-                    <Text style={{ fontSize: 20, fontWeight: '500', padding: '2%' }}>{moment(dateFormat).format('dddd Do MMM')}</Text>
-                    <Text style={{ fontSize: 20, fontWeight: '500', padding: '2%' }}>{moment(dateFormat).format('HH:mm')}</Text>
-                    <Text style={{ fontSize: 25, fontWeight: '700', padding: '2%' }}>{priceHandler(price)}</Text>
+                    <RouteDisplay 
+                    from={from} 
+                    to={to} 
+                    time={moment(dateFormat).format('HH:mm')} 
+                    date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
+                    price={priceHandler(price)}
+                     />
+
                 </View>
+                <View style={styles.line}></View>
                 {seats === 0 ?
                     (isActive ? (
                         <View>
+                            <View style={styles.line}></View>
                             <Button title="check passengers in" onPress={checkInHandler} disabled={!isActive} />
                             {/* <Text>This lift is full</Text> */}
                             {/* use another ternary operator to show 'this lift is full' if not active */}
@@ -263,11 +268,15 @@ const LiftCard = (props) => {
                         {/* <Text>This lift is full</Text> */}
                         {/* use another ternary operator to show 'this lift is full' if not active */}
                     </View>) :
-                        (<View style={styles.buttons}>
-                            <Button title="requests" onPress={getRequests} disabled={isVisiblePassengers} />
-                            <Button title="passengers" onPress={getPassengers} disabled={isVisibleRequests} />
-                            <Button title="delete" onPress={deleteLift} disabled={isVisibleRequests || isVisiblePassengers} />
-                        </View>))}
+                        (
+                            <View style={styles.buttons}>
+
+                                <Button title="requests" onPress={getRequests} disabled={isVisiblePassengers} />
+                                <Button title="passengers" onPress={getPassengers} disabled={isVisibleRequests} />
+                                <Button color="#FF1654" title="delete" onPress={deleteLift} disabled={isVisibleRequests || isVisiblePassengers} />
+
+                            </View>
+                        ))}
             </View>
             {isVisibleRequests ?
 
@@ -349,7 +358,7 @@ const LiftCard = (props) => {
 const styles = StyleSheet.create({
     container: {
         width: Dimensions.get('screen').width * 0.9,
-        height: Dimensions.get('window').height * 0.25,
+        height: Dimensions.get('window').height * 0.3,
         // flex: 1,
         borderRadius: 30,
         // borderWidth: 0.5,
@@ -369,6 +378,7 @@ const styles = StyleSheet.create({
         width: "100%",
         // height: "100%",
         justifyContent: 'center',
+        // padding: '2%'
         // alignItems: 'center'
     },
     columns: {
@@ -429,9 +439,25 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     halfContainer: {
-        alignItems: 'center',
-        width: '60%'
+        //alignItems: 'center',
+        flexDirection: 'row',
+        width: '90%'
+    },
+    line: {
+        borderBottomWidth: 0.5,
+        width: '80%',
+        borderColor: 'grey',
+        alignSelf: 'center',
+        padding: '1%'
+    },
+    verticalLine: {
+        height: '90%',
+        width: 1,
+        backgroundColor: '#909090',
+        justifyContent: 'center',
+        marginRight: Dimensions.get('screen').width * 0.08
     }
+
 })
 
 export default LiftCard;

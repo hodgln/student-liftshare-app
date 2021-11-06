@@ -63,8 +63,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 20,
 
-        height: Dimensions.get('window').height * 0.83,
+        height: Dimensions.get('window').height * 0.88,
         width: Dimensions.get('window').width * 1
+        // flex: 1
     },
     myLifts: {
         //borderWidth: 4,
@@ -78,5 +79,6 @@ const styles = StyleSheet.create({
         //shadowColor: 'black',
         shadowOpacity: 0.6,
     },
+    
     
 });
