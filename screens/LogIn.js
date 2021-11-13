@@ -5,7 +5,7 @@ import Input from '../components/Input';
 import { LOGGED_IN } from '../store/actions/authentication'
 import LogInButton from '../components/Buttons/LoginButton';
 import BackButton from '../components/Buttons/BackButton';
-import { LinearGradient } from 'expo-linear-gradient'
+
 
 
 

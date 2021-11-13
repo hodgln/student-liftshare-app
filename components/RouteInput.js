@@ -44,7 +44,7 @@ const RouteInput = (props) => {
 
     return (
 
-        <BlurView style={props.styleType ? [styles.Input, styles.valid] : styles.Input} tint='dark' intensity={40}>
+        <View style={props.styleType ? [styles.Input, styles.valid] : styles.Input} tint='dark' intensity={40}>
 
             <View style={{ flexDirection: 'row', width: '100%' }}>
                 <View style={{width: '80%', height: '100%' }}>
@@ -57,7 +57,7 @@ const RouteInput = (props) => {
                         autoCorrect={false}
                         value={props.valueName}
                         onChangeText={text => getAutocompleteResults(text)}
-                        style={{ height: '100%' }}
+                        style={{ height: '100%', fontFamily: 'Inter_400Regular' }}
                         autoFocus={true}
                     />
                 </View>
@@ -71,7 +71,7 @@ const RouteInput = (props) => {
                 </View>
             </View>
 
-        </BlurView>
+        </View>
 
     )
 };
@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        width: '100%'
+        width: '100%',
+        backgroundColor: 'lightgrey'
     },
     valid: {
         borderColor: 'green',

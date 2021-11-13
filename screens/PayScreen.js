@@ -105,7 +105,7 @@ const PayScreen = ({ route, navigation }) => {
         [
           {
             text: "OK",
-            onPress: () => navigation.navigate('My Lifts', { refresh: true })
+            onPress: () => navigation.navigate('My Lifts')
             //once directed to homescreen, add notification in myLifts
           }
         ]

@@ -74,39 +74,75 @@ const RootStack = () => {
 
   const DriverNavBar = () => {
     return (
-      <Tab.Navigator>
-        <Tab.Screen name="Post Route" component={DriverStackOne} options={{
-          tabBarIcon:
-            () => <FontAwesome5 name="route" size={30} color="black" />
-        }} />
-        <Tab.Screen name="My Lifts" component={DriverMyLifts} options={{
-          tabBarIcon:
-            () => <FontAwesome5 name="car-side" size={30} color="black" />
-        }} />
-        <Tab.Screen name="Profile" component={ProfileScreen} options={{
-          tabBarIcon:
-            () => <Ionicons name="person-circle" size={34} color="black" />
-        }} />
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color }) => {
+            let iconName;
+            let size = 34
+
+            if (route.name === 'Post Route') {
+              iconName = focused
+                ? 'ios-location'
+                : 'ios-location-outline';
+            } else if (route.name === 'My Lifts') {
+              iconName = focused ? 'ios-car' : 'ios-car-outline';
+            } else if (route.name === 'Profile') {
+              iconName = focused
+                ? 'ios-person-circle'
+                : 'ios-person-circle-outline'
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: '#0466c8',
+          // tabBarInactiveTintColor: 'white',
+          // tabBarInactiveBackgroundColor: '#0466c8',
+          // tabBarActiveBackgroundColor: '#0466c8'
+        })}
+      >
+        <Tab.Screen name="Post Route" component={DriverStackOne} />
+        <Tab.Screen name="My Lifts" component={DriverMyLifts} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     )
   }
 
   const PassengerNavBar = () => {
     return (
-      <Tab.Navigator>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color }) => {
+            let iconName;
+            let size = 34
+
+            if (route.name === 'Post Route') {
+              iconName = focused
+                ? 'ios-location'
+                : 'ios-location-outline';
+            } else if (route.name === 'My Lifts') {
+              iconName = focused ? 'ios-car' : 'ios-car-outline';
+            } else if (route.name === 'Profile') {
+              iconName = focused
+                ? 'ios-person-circle'
+                : 'ios-person-circle-outline'
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: '#0466c8',
+          // tabBarInactiveTintColor: 'white',
+          // tabBarInactiveBackgroundColor: '#0466c8',
+          // tabBarActiveBackgroundColor: '#0466c8'
+        })}
+      >
         <Tab.Screen name="Post Route" component={PassengerStackOne} options={{
-          headerShown: false, tabBarIcon:
-            () => <FontAwesome5 name="route" size={30} color="black" />
-        }} />
+          headerShown: false }}/>
         <Tab.Screen name="My Lifts" component={PassengerStackTwo} options={{
-          headerShown: false,
-          tabBarIcon:
-            () => <FontAwesome5 name="car-side" size={30} color="black" />
+          headerShown: false
         }} />
-        <Tab.Screen name="Profile" component={ProfileScreen} options={{
-          tabBarIcon:
-            () => <Ionicons name="person-circle" size={34} color="black" />
-        }} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     )
   }
@@ -114,7 +150,7 @@ const RootStack = () => {
 
   const PassengerStackOne = () => {
     return (
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{ headerTitleStyle: {fontFamily: 'Inter_600SemiBold' }}} >
         <Stack.Screen name="Lift Search" component={PassengerRoute} />
         <Stack.Screen name="Choose Driver" component={PassengerLiftFinder} />
         <Stack.Screen name="Payment" component={PayScreen} />
@@ -134,8 +170,8 @@ const RootStack = () => {
   const DriverStackOne = () => {
     return (
       <Stack.Navigator>
-        <Stack.Screen name="DRouteOne" component={DriverRouteOne} options={{ headerShown: false }}/>
-        <Stack.Screen name="DRouteTwo" component={DriverRouteTwo} options={{ headerShown: false }}/>
+        <Stack.Screen name="DRouteOne" component={DriverRouteOne} options={{ headerShown: false }} />
+        <Stack.Screen name="DRouteTwo" component={DriverRouteTwo} options={{ headerShown: false }} />
       </Stack.Navigator>
     )
   }

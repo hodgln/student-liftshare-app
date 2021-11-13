@@ -38,14 +38,6 @@ app.use("/confirmation", require("./routes/confirmation"));
 app.use("/locations", require("./routes/locations"));
 
 
-// const transporter = nodemailer.createTransport({
-//   service: "Gmail",
-//   auth: {
-//     user: process.env.GMAIL_USER,
-//     pass: process.env.GMAIL_PASS
-//   }
-// });
-
 //get messages
 //app.get("/getmessage", messaging.getSocketMessages)
 

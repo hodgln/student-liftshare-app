@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Dimensions, StyleSheet, Button, Alert } from 'react-native';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { Avatar } from 'react-native-elements';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import RouteDisplay from '../RouteDisplay';
+import ProfileDisplay from '../ProfileDisplay';
+import SeatsDisplay from '../SeatsDisplay';
 
 
 
@@ -19,7 +20,7 @@ const DriverCard = (props) => {
     const [confirmedRequests, setConfirmedRequests] = useState();
 
     // use this request in the 'requests' section of profileScreen for drivers to decrement the seats on confirmation of the requests
-   
+
 
 
     const passengerPrice = async () => {
@@ -67,46 +68,23 @@ const DriverCard = (props) => {
 
         // only render date if const currentDate = new Date() --> if(currentDate > dateFormat) {return null} else {...}
 
-        <View>
-            {seats === 0 ? null : (
+        
+            
                 <View style={styles.container}>
-                    <View>
-                        {/* <Text>{name}</Text> */}
-                        <Text style={{ fontSize: 20, fontWeight: '500', padding: '3%' }}>{JSON.parse(originName)} to {JSON.parse(destinationName)}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.column}>
-                            <Text style={{ fontSize:18, fontWeight: '500', padding: '1%' }}>{moment(dateFormat).format('DD / MM / YYYY')}</Text>
-                            <Text style={{ fontSize: 18, fontWeight: '500', padding: '1%' }}>{moment(dateFormat).format('HH:mm')}</Text>
-                            <View style={{ flexDirection: 'row', padding: '1%' }}>
-                            {Array.from({ length: seats }, (_, index) => <MaterialCommunityIcons name="car-seat" size={25} color={"black"} key={index} />)}
-                            </View>
-                            {/* three seat icons here */}
-                            <Text style={{ fontSize: 22, fontWeight: '700', padding: '2%' }}>{confirmedRequests === undefined ? price : priceHandler(price)}</Text>
-                        </View>
-                        <View style={styles.verticalLine}></View>
-                        <View style={styles.column}>
-                            <View >
-                                <Avatar
-                                    rounded
-                                    size='large'
-                                    source={{
-                                        uri:
-                                            picture,
-                                    }}
-                                />
-                            </View>
-                            <Text style={{ fontSize: 22, fontWeight: '600', padding: '2%' }}>{driver_firstname}</Text>
-                        </View>
-                    </View>
-                    {/* <Button title="book lift" onPress={} /> */}
-                    {/* custom button here  */}
-                    <View>
-                    <Button title="book lift" onPress={() => navigation.navigate('Payment', { liftid: liftshare_id })} />
-                    </View>
+                    
+                    <RouteDisplay
+                        from={originName}
+                        to={destinationName}
+                        time={moment(dateFormat).format('HH:mm')}
+                        date={moment(dateFormat).format('ddd Do MMM')}
+                        price={confirmedRequests === undefined ? price : priceHandler(price)}
+                    />
+                    <View style={styles.line}></View>
+                    <ProfileDisplay picture={picture} firstname={driver_firstname} />
+                    <View style={styles.line}></View>
+                        <SeatsDisplay seats={seats}/>
                 </View>
-            )}
-        </View>
+        
 
     )
 }
@@ -116,17 +94,13 @@ const DriverCard = (props) => {
 const styles = StyleSheet.create({
     container: {
         width: Dimensions.get('screen').width * 0.9,
-        height: Dimensions.get('window').height * 0.225,
-        // flex: 1,
+        height: Dimensions.get('window').height * 0.5,
         borderRadius: 30,
-        // borderWidth: 0.5,
         alignItems: 'center',
-        //justifyContent: 'center',
-        marginBottom: 15,
+        marginBottom: Dimensions.get('window').height * 0.02,
         alignSelf: 'center',
         backgroundColor: 'white',
-        //flexDirection: 'row',
-        flex: 1
+        padding: '3%'
     },
     column: {
         width: '50%',
@@ -137,7 +111,15 @@ const styles = StyleSheet.create({
         width: 1,
         backgroundColor: '#909090',
         alignSelf: 'center'
-    }
+    },
+    line: {
+        borderBottomWidth: 0.5,
+        width: Dimensions.get('screen').width * 0.75,
+        borderColor: 'grey',
+        padding: '1%',
+        marginVertical: '1.5%',
+
+    },
 })
 
 export default DriverCard;

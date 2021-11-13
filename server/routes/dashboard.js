@@ -161,6 +161,8 @@ router.get("/passengerlifts", authorisation, async (req, res) => {
         l.originname,
         l.destinationname,
         l.driverprice,
+        l.originlocation,
+        l.destinationlocation,
         u.user_firstname,
         u.user_surname,
         u.phone_number,
@@ -331,21 +333,25 @@ router.post("/Requests/post", authorisation, async (req, res) => {
 
 //delete a request
 
-router.delete("/cancelrequest/:id", authorisation, async (req, res) => {
+router.delete("/cancelrequest/:requestid", authorisation, async (req, res) => {
     try {
-        const { id } = req.params;
-        await pool.query("DELETE FROM Requests WHERE request_id = $1 AND user_id = $2", [
-            id, req.user.id
+        const { requestid } = req.params;
+        const cancelRequest = await pool.query("DELETE FROM Requests WHERE request_id = $1 AND user_id = $2", [
+            requestid, req.user.id
         ]);
 
-        console.log(req.params)
+        console.log(requestid)
         console.log(req.user.id)
 
         //check if this works properly
 
         //this route needs checking!!!
-
-        res.json("request was deleted");
+        if(Array.isArray(cancelRequest.rows)) {
+            res.json("request was cancelled");
+        } else {
+            res.json("something went wrong")
+        }
+        
     } catch (error) {
         console.log(error)
     }
@@ -357,8 +363,6 @@ router.post("/Liftshares/distance", authorisation, async (req, res) => {
     try {
 
         const { originlocation, destinationlocation } = req.body
-
-        console.log(req.body)
 
         // const removeLiftshares = await pool.query(
         //     `SELECT r.liftshare_id from Requests AS r where r.user_id = $1`, [
@@ -396,7 +400,7 @@ router.post("/Liftshares/distance", authorisation, async (req, res) => {
 
         res.json(getAll.rows);
 
-        console.log(getAll.rows)
+        
         
     } catch (error) {
         console.log(error.message);
@@ -426,38 +430,7 @@ router.delete("/Liftshares/:id", authorisation, async (req, res) => {
 
 
 
-router.put("/resetpassword", async (req, res) => {
-    try {
 
-        
-        const { email, password } = req.body
-
-
-        const saltRounds = 10;
-        const salt = await bcrypt.genSalt(saltRounds);
-
-        const bcryptPassword = await bcrypt.hash(password, salt);
-
-
-        const updatePassword = await pool.query(
-            "UPDATE Users SET password = $1 WHERE user_email = $2 RETURNING *", [
-            bcryptPassword, email
-        ]);
-
-        //split into two separate queries
-
-        if (updatePassword.rows.length === 0) {
-            return res.json('could not update password')
-        };
-
-        res.json(updatePassword.rows);
-
-        //console.log(decrementSeats.rows)
-
-    } catch (error) {
-        console.log(error.message);
-    }
-})
 
 
 

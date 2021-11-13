@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 import DriverCard from '../components/Cards/DriverCard';
 
@@ -9,10 +9,6 @@ const PassengerLiftFinder = ({ route }) => {
 
     const { origin, destination } = route.params
 
-    // const passengerOriginLatitude = useSelector(state => state.locations.origin.lat)
-    // const passengerOriginLongitude = useSelector(state => state.locations.origin.lng)
-    // const passengerDestinationLatitude = useSelector(state => state.locations.destination.lat);
-    // const passengerDestinationLongitude = useSelector(state => state.locations.destination.lng)
     const token = useSelector(state => state.authorisation.userToken);
 
     const originlocation = (`${origin.longitude}, ${origin.latitude}`);
@@ -44,7 +40,6 @@ const PassengerLiftFinder = ({ route }) => {
                 body: JSON.stringify(body)
             });
 
-
             const jsonData = await response.json()
 
 
@@ -67,7 +62,7 @@ const PassengerLiftFinder = ({ route }) => {
         if(item.seats <= 0) {
             return null
         } else {
-        return (<View>
+        return (<View style={styles.container}>
             <DriverCard
                 name={item.category}
                 date={item.datepicked}
@@ -86,14 +81,13 @@ const PassengerLiftFinder = ({ route }) => {
         }
     }
 
-    return (
-        <View style={styles.container}>
+    return (     
             <FlatList
                 data={lifts}
                 renderItem={renderItem}
                 keyExtractor={item => JSON.stringify(item.liftshare_id)}
+                horizontal={true}
             />
-        </View>
     )
 }
 
@@ -103,14 +97,15 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 20,
+        //flex: 1, 
+        width: Dimensions.get('screen').width * 1,
         shadowOffset: {
             height: 3,
             width: -3
         },
-        shadowRadius: 5,
+        shadowRadius: 2,
         //shadowColor: 'black',
-        shadowOpacity: 0.6,
-        flex: 1
+        shadowOpacity: 0.15,
+        padding: '2%'
     }
 });

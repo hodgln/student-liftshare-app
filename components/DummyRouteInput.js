@@ -2,7 +2,7 @@ import React, { useEffect, useReducer } from 'react';
 import { View, Text, StyleSheet, TextInput, Dimensions, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useSelector } from 'react-redux';
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 const DummyRouteInput = (props) => {
@@ -14,31 +14,36 @@ const DummyRouteInput = (props) => {
 
     return (
 
-        <BlurView style={props.valueName ? [styles.Input, styles.valid] : styles.Input} tint='dark' intensity={40}>
+        <View style={styles.Input} tint='dark' intensity={40}>
 
-            <View style={{ flexDirection: 'row', width: '100%' }}>
-                <View style={{width: '80%', height: '100%' }}>
-                    {/* <TextInput
-                        {...props}
-                        placeholder="from"
-                        value={props.valueName}
-                        style={{ height: '100%' }}
-                    /> */}
-                    <TouchableWithoutFeedback onPress={props.setIsVisible}>
-                    <Text style={props.valueName ? null : styles.placeholder}>{props.valueName || props.placeholder}</Text>
+            <View style={{ flexDirection: 'row', width: '100%', height: '100%' }}>
+                <View style={{ justifyContent: 'center'}}>
+                    {props.placeholder === "to" ?
+                    
+                    (<Ionicons name="ios-location-outline" size={24} color={props.valueName ? "#0466c8" : "grey"} style={{ marginRight: '2%'}}/>)
+                    :
+                    null}
+                    {props.placeholder === "from" ?
+                    (<MaterialCommunityIcons name="record-circle-outline" size={20} color={props.valueName ? "#0466c8" : "grey"} style={{ marginRight: '2%'}}/>)
+                    :
+                    null}
+                </View>
+                <View style={{ width: '80%', height: '100%', justifyContent: 'center' }}>
+                    <TouchableWithoutFeedback onPress={props.setIsVisible} style={{ justifyContent: 'center'}}>
+                        <Text style={props.valueName ? null : styles.placeholder}>{props.valueName || props.placeholder}</Text>
                     </TouchableWithoutFeedback>
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center' }}>
                     {props.valueName ? (
-                    <TouchableOpacity onPress={onCrossPress} style={{ alignSelf: "flex-end" }}>
-                    <Ionicons name="close-circle-outline" size={24} color="black" />
-                    </TouchableOpacity>
+                        <TouchableOpacity onPress={onCrossPress} style={{ alignSelf: "flex-end" }}>
+                            <Ionicons name="close-circle-outline" size={24} color="black" />
+                        </TouchableOpacity>
                     ) : null}
-                    
+
                 </View>
             </View>
 
-        </BlurView>
+        </View>
 
     )
 };
@@ -57,13 +62,14 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        width: '100%'
+        width: '100%',
+        backgroundColor: 'lightgrey'
     },
     valid: {
-        borderColor: 'aqua',
         borderWidth: 1
     },
     placeholder: {
-        color: 'grey'
+        color: 'grey',
+        fontFamily: 'Inter_400Regular'
     }
 });

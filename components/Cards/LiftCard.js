@@ -288,7 +288,6 @@ const LiftCard = (props) => {
                     }}>
                     <View style={styles.centredView}>
                         <View style={styles.modalView}>
-                            <View>
                                 <FlatList
                                     style={styles.modal}
                                     data={requests}
@@ -298,7 +297,7 @@ const LiftCard = (props) => {
                                 <Button title="close" onPress={() => setIsVisibleRequests(false)} />
                             </View>
                         </View>
-                    </View>
+                    
                 </Modal>) : null}
             {isVisiblePassengers ?
                 (
@@ -315,7 +314,7 @@ const LiftCard = (props) => {
                             <View style={styles.modalView}>
                                 <View>
                                     <FlatList
-                                        style={styles.modal}
+                                        //style={styles.modal}
                                         data={passengers}
                                         renderItem={renderPassengers}
                                         keyExtractor={item => JSON.stringify(item.user_id)}
@@ -407,7 +406,7 @@ const styles = StyleSheet.create({
         margin: 20,
         backgroundColor: "white",
         borderRadius: 20,
-        padding: 35,
+        paddingTop: '3%',
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
@@ -417,8 +416,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        height: Dimensions.get('window').height * 0.7,
-        width: Dimensions.get('window').width * 0.8,
+        height: Dimensions.get('window').height * 0.9,
+        width: Dimensions.get('window').width * 0.9,
     },
     QRmodal: {
         margin: 20,

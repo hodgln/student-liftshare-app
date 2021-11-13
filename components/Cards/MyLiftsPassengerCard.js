@@ -3,6 +3,7 @@ import { View, Text, Dimensions, StyleSheet, Button, Alert } from 'react-native'
 import { useSelector } from 'react-redux';
 import { Avatar } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons'; 
+import ContactDisplay from '../ContactDisplay';
 
 const MyLiftsPassengerCard = (props) => {
 
@@ -23,25 +24,7 @@ const MyLiftsPassengerCard = (props) => {
      //(liftStatus === 'pending') ?
      <View style={styles.shadow}>
         <View style={styles.container}>
-            <View style={styles.column}>
-        <Text style={{ fontWeight: '500', fontSize: 17 }}>{firstname} {surname}</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
-        <Ionicons name="call-outline" size={20} color="black" />
-        <Text style={{ fontSize: 16 }}> {phone_number}</Text>
-        </View>
-        {/* <Text>passenger rating: 91%</Text> */}
-        </View>
-        
-        <View style={styles.column}>
-        <Avatar
-          rounded
-          size='large'
-          source={{
-            uri:
-              picture,
-          }}
-        />
-        </View>
+            <ContactDisplay firstname={firstname} surname={surname} phone={phone_number} picture={picture}/>
         </View>
         </View>
         // ) : null
@@ -54,14 +37,14 @@ const MyLiftsPassengerCard = (props) => {
 const styles = StyleSheet.create({
     container: {
         // width: Dimensions.get('screen').width * 0.8,
-        height: Dimensions.get('window').height * 0.125,
+        height: Dimensions.get('window').height * 0.17,
         // flex: 1,
         borderRadius: 20,
         borderWidth: 0.1,
         marginBottom: 15,
-        flexDirection: 'row',
         backgroundColor: 'white',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        justifyContent: 'center',
         // justifyContent: 'center'
     },
     column: {
@@ -75,10 +58,11 @@ const styles = StyleSheet.create({
             width: 0,
             height: 2
         },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
         elevation: 5,
-        padding: '1%'
+        padding: '1%',
+        
     },
     buttons: {
         flexDirection: 'row'

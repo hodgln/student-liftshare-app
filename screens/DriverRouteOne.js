@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Dimensions, Text, ScrollView, Modal, StyleSheet, View, Button, TouchableWithoutFeedback, Pressable, TextInput } from 'react-native'
 import NextButton from '../components/Buttons/NextButton';
-import RouteInput from '../components/RouteInput';
 import RouteDropDown from '../components/RouteDropDown';
 import { useSelector } from 'react-redux';
 import DummyRouteInput from '../components/DummyRouteInput';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const DriverRouteOne = (props) => {
@@ -107,8 +107,10 @@ const DriverRouteOne = (props) => {
 
             const parseRes = await response.json()
 
+            console.log(parseRes)
+
             await props.navigation.navigate('DRouteTwo', {
-                distance: parseRes / 1000,
+                distance: parseRes.distance / 1000,
                 originname: JSON.stringify(originName),
                 destinationname: JSON.stringify(destinationName),
                 origin: origin,
@@ -131,9 +133,16 @@ const DriverRouteOne = (props) => {
 
     return (
         <View style={styles.container}>
+            
+            <View style={styles.circle}>
+            <LinearGradient colors={['#0352A0', '#0466c8', '#238ffb']} start={{x: 0.2, y: 0}} end={{x: 1, y: 0}} style={styles.linearGradient}>
+            </LinearGradient>
+            </View>
+            
+            {/* <View style={styles.circlePosition}></View> */}
             <View style={styles.componentContainer}>
                 <View style={{ padding: '4%' }}>
-                    <Text style={{ fontSize: 20 }}>Where are you driving?</Text>
+                    <Text style={{ fontSize: 20, color: '#535454', fontFamily: 'Inter_400Regular' }}>Where are you driving?</Text>
                 </View>
                 <View style={styles.line}></View>
                 <View style={styles.routeContainer}>
@@ -152,6 +161,7 @@ const DriverRouteOne = (props) => {
                         {/* <RouteDropDown placeholder="from" setID={setOriginID} setValueName={setPlaceholderFrom} valueName={placeholderFrom} /> */}
                     </View>
 
+                    
 
                     <View style={{ marginBottom: Dimensions.get('screen').height * 0.05 }}>
                         {/* <Text style={{ fontSize: 20 }}>Where are you driving to?</Text> */}
@@ -248,32 +258,30 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width * 1,
     },
     searchBarOne: {
-        flex: 1
+        flex: 1,
     },
     searchBarTwo: {
-        flex: 1
+        flex: 1,
     },
     line: {
         borderBottomWidth: 0.5,
         width: '85%',
-        borderColor: 'grey',
+        borderColor: '#0352A0',
         alignSelf: 'center',
         // marginBottom: Dimensions.get('screen').height * 0.01
     },
     routeContainer: {
         height: Dimensions.get('window').height * 0.25,
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     componentContainer: {
         height: Dimensions.get('window').height * 0.5,
         width: Dimensions.get('screen').width * 0.9,
         justifyContent: 'center',
         backgroundColor: 'white',
-        borderWidth: 0.3,
-        borderColor: 'darkgrey',
-        borderRadius: 20
-
+        borderRadius: 20,
+        backgroundColor: 'white',
     },
     container: {
         justifyContent: 'center',
@@ -284,8 +292,8 @@ const styles = StyleSheet.create({
             width: -3
         },
         shadowRadius: 5,
-        //shadowColor: 'black',
-        shadowOpacity: 0.2,
+        shadowColor: '#0352A0',
+        shadowOpacity: 0.3,
     },
     centredView: {
         flex: 1,
@@ -305,14 +313,24 @@ const styles = StyleSheet.create({
             width: 0,
             height: 2
         },
-        shadowOpacity: 0.25,
+        shadowOpacity: 0.5,
         shadowRadius: 4,
         elevation: 5,
-        flex: 1,
-        //height: Dimensions.get('window').height * 0.4,
-        //width: Dimensions.get('window').width * 0.8,
-        //justifyContent: 'center'
-    }
+        flex: 1
+    },
+    circle: {
+        width: 800,
+        height: 800,
+        borderRadius: 800 / 2,
+        backgroundColor: "#0470DC",
+        marginBottom: Dimensions.get("window").height * 1,
+        position: 'absolute',
+        top: -500,
+        overflow: 'hidden'
+      },
+      linearGradient: {
+          flex: 1
+      }
 })
 
 export default DriverRouteOne;
