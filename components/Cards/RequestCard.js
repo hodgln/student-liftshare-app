@@ -26,7 +26,7 @@ const RequestCard = (props) => {
             // myHeaders.append("Content-Type", "application/json");
             // myHeaders.append("token", token);
 
-            const response = await fetch(`http://localhost:8081/dashboard/seats/${id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/seats/${id}`, {
                 method: "PUT",
                 headers: { token: token }
             });
@@ -56,7 +56,7 @@ const RequestCard = (props) => {
             myHeaders.append("token", token);
             const body = { status, request_id }
 
-            const response = await fetch("http://localhost:8081/dashboard/handlestatus", {
+            const response = await fetch("http://192.168.1.142:8081/dashboard/handlestatus", {
                 method: "PUT",
                 headers: myHeaders,
                 body: JSON.stringify(body)

@@ -14,7 +14,7 @@ const DriverMyLifts = ({ route }) => {
 
     const getLiftData = async () => {
         try {
-            const response = await fetch(`http://localhost:8081/dashboard/profilelifts`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/profilelifts`, {
                 method: "GET",
                 headers: { token: token }
             });

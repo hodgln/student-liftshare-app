@@ -23,7 +23,7 @@ const ValidateCode = (props) => {
 
             //email needs sending to the api in the body!
 
-            const response = await fetch(`http://localhost:8081/confirmation/reset/${value}/${email}`)
+            const response = await fetch(`http://192.168.1.142:8081/confirmation/reset/${value}/${email}`)
 
             const parseRes = await response.json()
 
@@ -54,7 +54,7 @@ const ValidateCode = (props) => {
     const resendCode = async (email) => {
         try {
 
-            const response = await fetch(`http://localhost:8081/confirmation/email/reset/${email}`, {
+            const response = await fetch(`http://192.168.1.142:8081/confirmation/email/reset/${email}`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"

@@ -18,7 +18,7 @@ const StatusDisplay = (props) => {
     const cancelRequest = async () => {
 
         try {
-            const response = await fetch(`http://localhost:8081/dashboard/cancelrequest/${requestid}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/cancelrequest/${requestid}`, {
                 method: "DELETE",
                 headers: { token: token }
             });
@@ -44,7 +44,7 @@ const StatusDisplay = (props) => {
 
     const passengerPrice = async () => {
         try {
-            const response = await fetch(`http://localhost:8081/dashboard/passengerprice/${liftid}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/passengerprice/${liftid}`, {
                 method: "GET",
                 headers: { token: token }
             });

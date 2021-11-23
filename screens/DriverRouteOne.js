@@ -72,7 +72,7 @@ const DriverRouteOne = (props) => {
     const getCoords = async (place_id) => {
         try {
 
-            const response = await fetch(`http://localhost:8081/locations/coords/${place_id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/locations/coords/${place_id}`, {
                 method: 'GET',
                 headers: {
                     token: token
@@ -99,7 +99,7 @@ const DriverRouteOne = (props) => {
 
             const body = { origin, destination }
 
-            const response = await fetch(`http://localhost:8081/locations/distance`, {
+            const response = await fetch(`http://192.168.1.142:8081/locations/distance`, {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -107,7 +107,7 @@ const DriverRouteOne = (props) => {
 
             const parseRes = await response.json()
 
-            console.log(parseRes)
+            
 
             await props.navigation.navigate('DRouteTwo', {
                 distance: parseRes.distance / 1000,

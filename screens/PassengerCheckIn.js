@@ -48,7 +48,7 @@ const PassengerCheckIn = ({ route }) => {
 
             const body = { idsArray }
 
-            const response = await fetch(`http://localhost:8081/payment/checkout/capture/${id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/payment/checkout/capture/${id}`, {
                 method: "POST",
                 headers: myHeaders,
                 body: JSON.stringify(body)

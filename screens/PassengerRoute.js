@@ -71,7 +71,7 @@ const PassengerRoute = props => {
     const getCoords = async (place_id) => {
         try {
 
-            const response = await fetch(`http://localhost:8081/locations/coords/${place_id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/locations/coords/${place_id}`, {
                 method: 'GET',
                 headers: {
                     token: token
@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         //marginBottom: '5%',
         height: Dimensions.get('window').height * 0.1,
+        width: '40%'
     },
     list: {
         height: 300

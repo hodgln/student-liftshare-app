@@ -20,7 +20,7 @@ const ProfileScreen = (props) => {
     const getUserData = async () => {
         try {
             //only render the myLifts section if User category (fetch from backend) is driver
-            const response = await fetch("http://localhost:8081/dashboard/", {
+            const response = await fetch("http://192.168.1.142:8081/dashboard/", {
                 method: "GET",
                 headers: { token: token }
             });

@@ -15,7 +15,7 @@ const PassengerMyLifts = () => {
 
 const getLiftData = async () => {
     try {
-        const response = await fetch(`http://localhost:8081/dashboard/passengerlifts`, {
+        const response = await fetch(`http://192.168.1.142:8081/dashboard/passengerlifts`, {
             method: "GET",
             headers: {token: token}
         });
@@ -61,7 +61,6 @@ const renderPassenger = ({ item }) => {
             />
             </View>
         )
-    
 }
 
 //liftshare ids are being used as keys in somewhere they shouldnt be 
@@ -84,13 +83,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         //flex: 1, 
         width: Dimensions.get('screen').width * 1,
-        shadowOffset: {
-            height: 3,
-            width: -3
-        },
-        shadowRadius: 2,
-        //shadowColor: 'black',
-        shadowOpacity: 0.15,
+        // shadowOffset: {
+        //     height: 3,
+        //     width: -3
+        // },
+        // shadowRadius: 2,
+        // //shadowColor: 'black',
+        // shadowOpacity: 0.15,
         padding: '2%'
     }
 })

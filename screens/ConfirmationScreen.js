@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Button, SafeAreaView, Alert, TouchableOpacity, 
 import { useDispatch } from 'react-redux';
 import { CodeField, useBlurOnFulfill, useClearByFocusCell, Cursor } from 'react-native-confirmation-code-field';
 import { LOGGED_IN } from '../store/actions/authentication';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 const CELL_COUNT = 6;
 
@@ -23,7 +25,7 @@ const ConfirmationScreen = ({ route }) => {
 
             //console.log(value)
 
-            const response = await fetch(`http://localhost:8081/confirmation/${value}`, {
+            const response = await fetch(`http://192.168.1.142:8081/confirmation/${value}`, {
                 method: 'GET',
                 headers: { token: token }
             });
@@ -40,8 +42,7 @@ const ConfirmationScreen = ({ route }) => {
                     ]
                 )
             } else if (parseRes === true) {
-                console.log("confirmed")
-                dispatch({ type: LOGGED_IN, token: token, category: category });
+                logInConfirmed()
             } else {
                 return
             }
@@ -51,6 +52,39 @@ const ConfirmationScreen = ({ route }) => {
         }
     }
 
+    const registerForPushNotificationsAsync = async () => {
+        if (Constants.isDevice) {
+          const { status: existingStatus } = await Notifications.getPermissionsAsync();
+          let finalStatus = existingStatus;
+          if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+          }
+          if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+          }
+          const token = (await Notifications.getExpoPushTokenAsync()).data;
+          console.log(token);
+        //   this.setState({ expoPushToken: token });
+        } else {
+          alert('Must use physical device for Push Notifications');
+        }
+      
+        if (Platform.OS === 'android') {
+          Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+          });
+        }
+        };
+
+    const logInConfirmed = async() => {
+        dispatch({ type: LOGGED_IN, token: token, category: category });
+        registerForPushNotificationsAsync()
+    };
 
     const confirmationHandler = async (email, token) => {
         try {
@@ -58,7 +92,7 @@ const ConfirmationScreen = ({ route }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://localhost:8081/confirmation/email/${email}`, {
+            const response = await fetch(`http://192.168.1.142:8081/confirmation/email/${email}`, {
                 method: 'POST',
                 headers: myHeaders,
             });

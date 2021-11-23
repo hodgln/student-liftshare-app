@@ -75,7 +75,7 @@ router.post("/distance", authorisation, async (req, res) => {
                 route: r.data.routes[0].overview_polyline.points
             })
 
-            // console.log(` ROute ${r.data.routes[0].overview_polyline.points}`)
+            // console.log(r.data.routes[0])
 
 
         }).catch((e) => {

@@ -59,7 +59,7 @@ const ChangePassword = (props) => {
 
             const body = { email, password }
             
-            const response = await fetch(`http://localhost:8081/auth/resetpassword`, {
+            const response = await fetch(`http://192.168.1.142:8081/auth/resetpassword`, {
                 method: 'PUT',
                 headers: {
                     "Content-Type": "application/json"
