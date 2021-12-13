@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import DriverCard from '../components/Cards/DriverCard';
 
 
-const PassengerLiftFinder = ({ route }) => {
+const PassengerLiftFinder = ({ route, navigation }) => {
 
     const { origin, destination } = route.params
 
@@ -76,6 +76,7 @@ const PassengerLiftFinder = ({ route }) => {
                 driver_firstname={item.user_firstname}
                 driver_surname={item.user_surname}
                 picture={item.profile_picture}
+                navigation={navigation}
             />
         </View>)
         }

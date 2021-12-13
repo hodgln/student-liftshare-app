@@ -3,6 +3,8 @@ import { View, Text, Dimensions, StyleSheet, Button, Alert } from 'react-native'
 import { useSelector } from 'react-redux';
 import ProfileDisplay from '../ProfileDisplay';
 import RequestButton from '../Buttons/RequestButton';
+import * as Notifications from 'expo-notifications';
+import moment from 'moment';
 
 const RequestCard = (props) => {
 
@@ -12,41 +14,38 @@ const RequestCard = (props) => {
 
     const {
         firstname,
-        surname,
         id,
         request_id,
-        picture
+        picture,
+        to
     } = props
 
-    const bookLift = async () => {
-        try {
+    // const bookLift = async () => {
+    //     try {
 
+    //         const response = await fetch(`http://192.168.1.142:8081/dashboard/seats/${id}`, {
+    //             method: "PUT",
+    //             headers: { token: token }
+    //         });
 
-            // const myHeaders = new Headers();
-            // myHeaders.append("Content-Type", "application/json");
-            // myHeaders.append("token", token);
+    //         const reqParseRes = await response.json()
 
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/seats/${id}`, {
-                method: "PUT",
-                headers: { token: token }
-            });
+    //         setDisabled(true)
 
-            const reqParseRes = await response.json()
+    //         console.log(reqParseRes)
+    //         //     '',
+    //         //     [
+    //         //       {text: 'OK', onPress: () => navigation.navigate('Home')},
+    //         //     ],
+    //         //     {cancelable: false},
+    //         //   );
+    //     } catch (error) {
+    //         console.log(error.message)
+    //     }
 
-            setDisabled(true)
+    //     //combine both queries and make into one 
 
-            console.log(reqParseRes)
-            //     '',
-            //     [
-            //       {text: 'OK', onPress: () => navigation.navigate('Home')},
-            //     ],
-            //     {cancelable: false},
-            //   );
-        } catch (error) {
-            console.log(error.message)
-        }
-
-    }
+    // }
 
     const statusHandler = async (status) => {
         try {
@@ -54,7 +53,7 @@ const RequestCard = (props) => {
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
-            const body = { status, request_id }
+            const body = { status, request_id, id, to }
 
             const response = await fetch("http://192.168.1.142:8081/dashboard/handlestatus", {
                 method: "PUT",
@@ -64,7 +63,37 @@ const RequestCard = (props) => {
 
             const statusParseRes = await response.json()
 
-            console.log(statusParseRes);
+            
+
+            if(statusParseRes === "declined") {
+                return
+            } else {
+                
+
+                // const triggerDate = moment(statusParseRes).subtract(1, 'days').unix()
+
+                const date = new Date(statusParseRes);
+
+                const triggerDate = date.setDate(date.getDate() - 1)
+
+                //setHours to 10am if want to show notification then!! 
+
+                const displayTime = moment(date).format('HH:mm');
+
+                
+
+                Notifications.scheduleNotificationAsync({
+                    content: {
+                        title: `You are driving at ${displayTime} tomorrow!`,
+                        body: "Please contact your passengers to arrange picking them up"
+                    },
+                    trigger: {
+                        date: triggerDate,
+                        repeats: false
+                    }
+                });
+            
+            };
 
             setDisabled(true)
 
@@ -74,11 +103,6 @@ const RequestCard = (props) => {
     }
 
 
-
-    const acceptOnPress = () => {
-        bookLift()
-        statusHandler('confirmed')
-    }
 
     return (
         //(liftStatus === 'pending') ?
@@ -91,7 +115,7 @@ const RequestCard = (props) => {
                     <View style={styles.buttons}>
                         {/* <Button title="accept" onPress={acceptOnPress} disabled={disabled} />
                 <Button title="decline" onPress={() => statusHandler('declined')} disabled={disabled} /> */}
-                        <RequestButton text="accept" style="accept" onPress={acceptOnPress} disabled={disabled} />
+                        <RequestButton text="accept" style="accept" onPress={() => statusHandler('confirmed')} disabled={disabled} />
                         <RequestButton text="decline" style="decline" onPress={() => statusHandler('declined')} disabled={disabled} />
                     </View>
                 </View>

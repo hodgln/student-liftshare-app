@@ -59,6 +59,12 @@ CREATE TABLE Messages(
         FOREIGN KEY (conversation_id) REFERENCES Conversations(conversation_id)
 );
 
+CREATE TABLE Ratings(
+    user_id UUID,
+    rating SMALLINT,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
 CREATE TABLE Confirmations(
         confirmation_id SERIAL PRIMARY KEY,
         user_id UUID,
@@ -206,7 +212,7 @@ SELECT
         r.user_id
         FROM Requests as r
         RIGHT JOIN Liftshares AS l ON l.liftshare_id = r.liftshare_id
-        WHERE l.liftshare_id NOT IN (SELECT r.liftshare_id FROM Requests as r WHERE r.user_id = '03095bde-5de2-4211-a01f-e9bc391e7075');
+        WHERE l.liftshare_id NOT IN (SELECT r.liftshare_id FROM Requests as r WHERE r.user_id = '"; ');
 
         `/* this works for only allowing one request per user */
 
@@ -232,7 +238,6 @@ FROM Requests AS r
 INNER JOIN Liftshares as l ON r.liftshare_id = l.liftshare_id 
 WHERE l.liftshare_id = $1`
 
-
 `SELECT count(*) WHERE r.status = 'confirmed',
 l.driverprice
 FROM Requests AS r
@@ -249,3 +254,45 @@ another with messages, conversation id and sender columns
 trial this and see if it works */
 
 
+
+
+/*
+
+
+*****
+schedule a local notification on the accepted request for the driver onPress of the accepted request
+
+schedule a local notification if the push notification is clicked by the passenger
+
+
+*****
+alternatively, use a cron job that checks every day at 8am? for dates of liftshares and requests that are confirmed, then send out push notifcations to all of those users. 
+
+*/
+
+
+
+/*
+
+requests
+
+add status of completed lift and then link to rating table with headers of:
+rating id, driver, passenger, rating - reference user id from the liftshare
+
+select requests where liftshare_id = this and r.status = completed
+
+will need to get the time of the journey for this to happen.
+
+//put component over mylifts!!!! can always put a little badge reminder thing in there and a notification
+
+status changes to completed once the journey has been scanned. 
+
+use request user_ids to rate passengers, use liftshare user_ids to rate drivers. 
+
+make rating page/pop up component that can only be closed once the stars have been done
+
+think about how it is triggered
+
+if liftshare status != completed then show popupcomponent, else rest of app. 
+
+*/

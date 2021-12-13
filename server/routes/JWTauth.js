@@ -161,4 +161,28 @@ router.put("/resetpassword", async (req, res) => {
     }
 });
 
+router.put("/pushToken", authorisation, async (req, res) => {
+    try {
+
+        // destructure req.body
+
+        const { pushToken } = req.body
+
+        // check if user exists and if already exists then throw error
+
+        console.log("hello")
+
+        const putToken = await pool.query("UPDATE Users SET push_token = $1 WHERE user_id = $2", [
+            pushToken, req.user.id
+        ]);
+
+        
+        res.json(putToken)
+       
+
+    } catch (err) {
+        console.log(err.message);
+    }
+});
+
 module.exports = router;

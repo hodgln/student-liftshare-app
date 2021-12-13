@@ -17,11 +17,17 @@ import {
   Inter_900Black,
 } from '@expo-google-fonts/inter';
 import AppLoading from 'expo-app-loading';
+import * as Notifications from 'expo-notifications';
 
 
 
 export default function App() {
 
+  Notifications.setNotificationHandler({
+    handleNotification: async() => {
+      return { shouldShowAlert: true }
+    }
+  })
 
   let [fontsLoaded] = useFonts({
     Inter_100Thin,

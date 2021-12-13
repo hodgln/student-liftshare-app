@@ -5,8 +5,8 @@ import Input from '../components/Input';
 import { LOGGED_IN } from '../store/actions/authentication'
 import LogInButton from '../components/Buttons/LoginButton';
 import BackButton from '../components/Buttons/BackButton';
-
-
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 
 const LogIn = ({ route, navigation }) => {
@@ -102,6 +102,60 @@ const LogIn = ({ route, navigation }) => {
         }
     }
 
+    const registerForPushNotificationsAsync = async (jwtToken) => {
+        if (Constants.isDevice) {
+          const { status: existingStatus } = await Notifications.getPermissionsAsync();
+          let finalStatus = existingStatus;
+          if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+          }
+          if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+          }
+          const token = (await Notifications.getExpoPushTokenAsync()).data;
+          saveToken(token, jwtToken, existingStatus)
+        //   this.setState({ expoPushToken: token });
+        } else {
+          alert('Must use physical device for Push Notifications');
+        }
+      
+        if (Platform.OS === 'android') {
+          Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+          });
+        }
+        };
+
+        const saveToken = async(pushToken, jwtToken, existingStatus) => {
+            if(existingStatus !== "granted") {
+            
+            try {
+                const body = { pushToken }
+    
+                //console.log(jwtToken)
+    
+                const myHeaders = new Headers();
+    
+                myHeaders.append("Content-Type", "application/json");
+                myHeaders.append("token", jwtToken);
+    
+                await fetch("http://192.168.1.142:8081/auth/pushToken", {
+                    method: 'PUT',
+                    headers: myHeaders,
+                    body: JSON.stringify(body)
+                });
+                
+            } catch (error) {
+                console.log(error.message)
+            }
+        } 
+    }
+
     const onGoPress = async () => {
         try {
 
@@ -139,8 +193,8 @@ const LogIn = ({ route, navigation }) => {
                     ]
                 )
             } else if (parseResponse.confirmed === true) {
-                dispatch({ type: LOGGED_IN, token: parseResponse.token, category: parseResponse.category });
-
+                dispatch({ type: LOGGED_IN, token: parseResponse.token, category: parseResponse.category })
+                registerForPushNotificationsAsync(parseResponse.token)
             } else {
                 Alert.alert(parseResponse);
             }

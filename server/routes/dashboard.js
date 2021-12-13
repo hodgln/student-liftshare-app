@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const pool = require("../db");
 const authorisation = require("../middleware/authorisation");
+const notificationSender = require("../utilities/notificationSender");
 
 router.get("/", authorisation, async (req, res) => {
     try {
@@ -51,7 +52,7 @@ router.get("/profilelifts", authorisation, async (req, res) => {
             l.liftshare_id,
             l.driverprice
             FROM Liftshares as l
-            WHERE l.user_id = $1`, [
+            WHERE l.user_id = $1 AND l.completed = false`, [
             userID
         ]
         );
@@ -74,7 +75,8 @@ router.get("/getrequests/:id", authorisation, async (req, res) => {
             u.profile_picture,
             r.status,
             r.request_id,
-            r.user_id
+            r.user_id,
+            l.driverprice
             FROM Requests AS r
             INNER JOIN Liftshares AS l ON l.liftshare_id = r.liftshare_id
             INNER JOIN Users AS u ON u.user_id = r.user_id
@@ -190,22 +192,43 @@ router.put("/handlestatus", authorisation, async (req, res) => {
     try {
 
 
-        const { status, request_id } = req.body
+        const { status, request_id, id, to } = req.body
 
-        const confirmStatus = await pool.query(
-            "UPDATE Requests SET status = $1 WHERE request_id = $2 RETURNING *", [
+        console.log(to)
+
+        await pool.query(
+            "UPDATE Requests SET status = $1 WHERE request_id = $2", [
             status, request_id
         ]);
 
-        //split into two separate queries
+        const getPushToken = await pool.query("SELECT u.push_token FROM Requests as r INNER JOIN Users as u ON r.user_id = u.user_id WHERE r.request_id = $1",[
+            request_id
+        ]);
 
-        if (confirmStatus.rows.length === 0) {
-            return res.json(false)
-        };
+        if(status === "confirmed") {
 
-        res.json(confirmStatus.rows);
+            const getDate = await pool.query(
+                "UPDATE Liftshares SET seats = seats - 1 WHERE liftshare_id = $1 RETURNING *", [
+                id
+            ]);
 
-        //console.log(decrementSeats.rows)
+            res.json(getDate.rows[0].datepicked)
+
+            notificationSender({
+                somePushTokens: Array(getPushToken.rows[0].push_token), 
+                someData: { liftshare_id: id },
+                body: `Your lift request to ${JSON.parse(to)} has been accepted!`
+            })
+
+        } else if(status === "declined") {
+            notificationSender({
+                somePushTokens: Array(getPushToken.rows[0].push_token), 
+                someData: { liftshare_id: id },
+                body: `Your lift request to ${JSON.parse(to)} has been declined`
+            })
+
+            res.json("declined")
+        }
 
     } catch (error) {
         console.log(error.message);
@@ -320,8 +343,20 @@ router.post("/Requests/post", authorisation, async (req, res) => {
             liftid, req.user.id, status, intentID
         ]);
 
+        console.log(enterRequest.rows[0])
 
-        console.log(enterRequest.rows);
+        const getPushToken = await pool.query("SELECT u.push_token from Users as u INNER JOIN Liftshares as l ON u.user_id = l.user_id INNER JOIN Requests as r ON l.liftshare_id = r.liftshare_id WHERE r.request_id = $1",[
+            enterRequest.rows[0].request_id
+        ]);
+
+        console.log(Array(getPushToken.rows[0].push_token))
+
+
+        notificationSender({
+            somePushTokens: Array(getPushToken.rows[0].push_token), 
+            someData: { request_id: enterRequest.rows[0].request_id },
+            body: "You have received a request!"
+        })
 
 
         res.json({ title: "Lift Booked!", body: "Please await confirmation from the driver" });
@@ -406,6 +441,78 @@ router.post("/Liftshares/distance", authorisation, async (req, res) => {
         console.log(error.message);
     }
 });
+
+//rate user
+
+router.post("/ratings", authorisation, async (req, res) => {
+    try {
+        const { user_id, rating } = req.body
+
+        const passengerRating = await pool.query("INSERT INTO Ratings (user_id, rating) VALUES ($1, $2) RETURNING *",[
+            user_id, rating
+        ]);
+
+        res.json(passengerRating)
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+})
+
+// ratings pop up for driver
+
+router.get("/ratings/popup/:category", authorisation, async (req, res) => {
+    try {
+
+        const { category } = req.params
+
+        if(category === 'driver') {
+            const findCompletedLifts = await pool.query(
+                `SELECT
+                l.liftshare_id,
+                r.user_id 
+                FROM Requests as r
+                INNER JOIN Liftshares as l ON l.liftshare_id = r.liftshare_id
+                WHERE l.completed = false AND l.user_id = $1`
+            )
+        }
+
+        // if category === 'passenger'
+        /*
+        SELECT 
+        l.liftshare_id,
+        l.user_id
+        FROM Requests as r
+        INNER JOIN Liftshares as l on l.liftshare_id = r.liftshare_id
+        WHERE l.status = 'completed' AND l.user_id = $1
+        */
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+})
+
+// update completed lift
+
+router.put("/completelift/:liftshare_id", authorisation, async (req, res) => {
+    try {
+
+        const { liftshare_id } = req.params
+
+        console.log(` liftshare id is ${liftshare_id}`)
+
+        const completeLift = await pool.query(
+            "UPDATE Liftshares SET completed = true WHERE liftshare_id = $1 RETURNING *", [
+                liftshare_id
+            ]
+        )
+
+        res.json(completeLift)
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+})
 
 // delete category
 

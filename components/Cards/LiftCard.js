@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/core';
 import MyLiftsPassengerCard from './MyLiftsPassengerCard';
 import moment from 'moment';
 import QRCode from 'react-native-qrcode-svg';
-import DriverQR from '../DriverQR';
 import RouteDisplay from '../RouteDisplay';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -43,6 +42,8 @@ const LiftCard = (props) => {
         style: 'currency',
         currency: 'GBP',
     })
+
+
 
 
     const deleteLift = async () => {
@@ -150,6 +151,7 @@ const LiftCard = (props) => {
                     request_id={item.request_id}
                     liftStatus={item.status}
                     picture={item.profile_picture}
+                    to={to}
                 />
             </View>)
         /* {console.log(item.user_firstname)} */
@@ -209,15 +211,22 @@ const LiftCard = (props) => {
 
             const parseRes = await response.json()
 
-            setQRids(parseRes.map(index => index.user_id))
+            // const QRids = parseRes.map(index => index.user_id)
 
-            setIsVisibleQR(true);
+            const filterConfirmed = parseRes.filter(x => x.status === 'confirmed').map(x => ({ ...x, scanned: false }))
+
+            navigation.navigate('Check In', { passengers: filterConfirmed, liftshare_id: id })
+
+            //setIsVisibleQR(true); add this to the passenger side
 
         } catch (error) {
             console.log(error.message)
         }
 
     }
+
+
+
 
     //async problem for above function
 
@@ -234,13 +243,13 @@ const LiftCard = (props) => {
             <View style={isActive ? [styles.container, styles.isActive] : styles.container}>
                 <View style={styles.halfContainer}>
 
-                    <RouteDisplay 
-                    from={from} 
-                    to={to} 
-                    time={moment(dateFormat).format('HH:mm')} 
-                    date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
-                    price={priceHandler(price)}
-                     />
+                    <RouteDisplay
+                        from={from}
+                        to={to}
+                        time={moment(dateFormat).format('HH:mm')}
+                        date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
+                        price={priceHandler(price)}
+                    />
 
                 </View>
                 <View style={styles.line}></View>
@@ -288,16 +297,16 @@ const LiftCard = (props) => {
                     }}>
                     <View style={styles.centredView}>
                         <View style={styles.modalView}>
-                                <FlatList
-                                    style={styles.modal}
-                                    data={requests}
-                                    renderItem={renderRequests}
-                                    keyExtractor={item => JSON.stringify(item.request_id)}
-                                />
-                                <Button title="close" onPress={() => setIsVisibleRequests(false)} />
-                            </View>
+                            <FlatList
+                                style={styles.modal}
+                                data={requests}
+                                renderItem={renderRequests}
+                                keyExtractor={item => JSON.stringify(item.request_id)}
+                            />
+                            <Button title="close" onPress={() => setIsVisibleRequests(false)} />
                         </View>
-                    
+                    </View>
+
                 </Modal>) : null}
             {isVisiblePassengers ?
                 (
@@ -322,7 +331,6 @@ const LiftCard = (props) => {
                                     <Button title="close" onPress={() => setIsVisiblePassengers(false)} />
                                 </View>
                             </View>
-
                         </View>
                     </Modal>
                     /* </View> */

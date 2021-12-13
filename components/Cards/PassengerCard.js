@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, Dimensions, StyleSheet, Button, Alert, Linking, Image, ImageBackground } from 'react-native';
+import { View, Text, Dimensions, StyleSheet, Button, Alert, Modal, Linking, Image, ImageBackground } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
-
+import PassengerQR from '../PassengerQR';
 import moment from 'moment';
 import RouteDisplay from '../RouteDisplay';
 import ContactDisplay from '../ContactDisplay';
@@ -20,8 +20,9 @@ const PassengerCard = (props) => {
 
     const [confirmedRequests, setConfirmedRequests] = useState();
 
-    const [isActive, setIsActive] = useState(true)
+    const [isActive, setIsActive] = useState()
     const [map, setMap] = useState()
+    const [isVisibleQR, setIsVisibleQR] = useState(false)
 
 
     // const isFocused = useIsFocused()
@@ -124,6 +125,7 @@ const PassengerCard = (props) => {
         liftid,
         phone,
         isFocused,
+        userID,
         setCancelled,
     } = props
 
@@ -216,12 +218,37 @@ const PassengerCard = (props) => {
                         requestid={requestid}
                         isFocused={isFocused}
                         isActive={isActive}
+                        setIsVisibleQR={setIsVisibleQR}
                         navigation={navigation}
                         setCancelled={setCancelled}
                     />
                 </View>
             </View>
+            {isVisibleQR ?
+            (
+                // <View style={styles.flatListView}>
+                /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
+                <Modal animationType="slide"
+                    transparent={true}
+                    visible={true}
+                    onRequestClose={() => {
+                        Alert.alert("Modal has been closed.")
+                    }}>
+                    <View style={styles.centredView}>
+
+                        <View style={styles.QRmodal}>
+                            <View>
+                                <PassengerQR id={userID} />
+                                <Button title="close" onPress={() => setIsVisibleQR(false)} />
+                            </View>
+                        </View>
+
+                    </View>
+                </Modal>
+                /* </View> */
+            ) : null}
         </View>
+        
     )
 }
 
@@ -280,6 +307,31 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     //shadowColor: 'black',
     shadowOpacity: 0.15
+},
+QRmodal: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+        width: 0,
+        height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    height: Dimensions.get('window').height * 0.4,
+    width: Dimensions.get('window').width * 0.8,
+    justifyContent: 'center'
+},
+centredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    //marginTop: 22,
+    height: Dimensions.get('window').height * 0.4
 }
 })
 

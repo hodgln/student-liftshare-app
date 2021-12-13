@@ -10,8 +10,6 @@ const DriverMyLifts = ({ route }) => {
     const refresh = route.params
     const token = useSelector(state => state.authorisation.userToken);
 
-
-
     const getLiftData = async () => {
         try {
             const response = await fetch(`http://192.168.1.142:8081/dashboard/profilelifts`, {
@@ -27,6 +25,10 @@ const DriverMyLifts = ({ route }) => {
             console.log(error.message)
         }
     }
+
+    //function that asks db for completed lifts, returns liftshare_id and user_ids
+
+    //unfinishedratings = true then launch ratings modal, 
 
     useEffect(() => { getLiftData() }, [refresh]);
 

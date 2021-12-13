@@ -13,7 +13,7 @@ import PassengerLiftFinder from '../screens/PassengerLiftFinder';
 import DriverMyLifts from '../screens/DriverMyLifts';
 import PassengerMyLifts from '../screens/PassengerMyLifts';
 import { LOGGED_OUT } from '../store/actions/authentication';
-import PassengerCheckIn from '../screens/PassengerCheckIn';
+import DriverCheckIn from '../screens/DriverCheckIn';
 import PayScreen from '../screens/PayScreen';
 import ConfirmationScreen from '../screens/ConfirmationScreen';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
@@ -57,7 +57,7 @@ const RootStack = () => {
 
       parseRes === true ? setSignedIn(true) : setSignedIn(false) && dispatch({ type: LOGGED_OUT })
 
-      console.log(`parse ${parseRes}`)
+      // console.log(`parse ${parseRes}`)
 
     } catch (error) {
       console.log(error.message)
@@ -102,7 +102,8 @@ const RootStack = () => {
         })}
       >
         <Tab.Screen name="Post Route" component={DriverStackOne} />
-        <Tab.Screen name="My Lifts" component={DriverMyLifts} />
+        <Tab.Screen name="My Lifts" component={DriverStackTwo} options={{
+          headerShown: false }}/>
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     )
@@ -139,9 +140,7 @@ const RootStack = () => {
       >
         <Tab.Screen name="Post Route" component={PassengerStackOne} options={{
           headerShown: false }}/>
-        <Tab.Screen name="My Lifts" component={PassengerStackTwo} options={{
-          headerShown: false
-        }} />
+        <Tab.Screen name="My Lifts" component={PassengerMyLifts}/>
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     )
@@ -158,11 +157,11 @@ const RootStack = () => {
     )
   }
 
-  const PassengerStackTwo = () => {
+  const DriverStackTwo = () => {
     return (
       <Stack.Navigator>
-        <Stack.Screen name="My Lifts" component={PassengerMyLifts} />
-        <Stack.Screen name="Check In" component={PassengerCheckIn} />
+        <Stack.Screen name="My Lifts" component={DriverMyLifts} />
+        <Stack.Screen name="Check In" component={DriverCheckIn} />
       </Stack.Navigator>
     )
   }

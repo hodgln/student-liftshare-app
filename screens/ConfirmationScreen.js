@@ -65,7 +65,7 @@ const ConfirmationScreen = ({ route }) => {
             return;
           }
           const token = (await Notifications.getExpoPushTokenAsync()).data;
-          console.log(token);
+          saveToken(token, existingStatus)
         //   this.setState({ expoPushToken: token });
         } else {
           alert('Must use physical device for Push Notifications');
@@ -81,10 +81,39 @@ const ConfirmationScreen = ({ route }) => {
         }
         };
 
-    const logInConfirmed = async() => {
+    const logInConfirmed = () => {
         dispatch({ type: LOGGED_IN, token: token, category: category });
         registerForPushNotificationsAsync()
     };
+
+    const saveToken = async(pushToken, existingStatus) => {
+        if(existingStatus !== "granted") {
+        
+        try {
+            const body = { pushToken }
+
+            
+
+            const myHeaders = new Headers();
+
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("token", token);
+
+            await fetch("http://192.168.1.142:8081/auth/pushToken", {
+                method: 'PUT',
+                headers: myHeaders,
+                body: JSON.stringify(body)
+            });
+            
+        } catch (error) {
+            console.log(error.message)
+        }
+
+    } else {
+        return
+    }
+    }
+    
 
     const confirmationHandler = async (email, token) => {
         try {

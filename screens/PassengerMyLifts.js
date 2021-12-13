@@ -56,6 +56,7 @@ const renderPassenger = ({ item }) => {
             phone={item.phone_number}
             isFocused={isFocused}
             setCancelled={setCancelled}
+            userID={item.user_id}
             origin={item.originlocation}
             destination={item.destinationlocation}
             />

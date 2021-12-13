@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const SeatsDisplay = (props) => {
 
-    const { seats } = props
+    const { seats, liftshare_id } = props
 
     return (
         <View style={styles.container}>
@@ -23,7 +23,7 @@ const SeatsDisplay = (props) => {
             </View>
             <View style={styles.verticalLine}></View>
             <View style={{ width: '50%', alignItems: 'center', justifyContent: 'center' }}>
-                <BookButton text="Book Lift" />
+                <BookButton text="Book Lift" liftshare_id={liftshare_id}/>
             </View>
         </View>
     )

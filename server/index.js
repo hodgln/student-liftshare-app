@@ -37,6 +37,9 @@ app.use("/confirmation", require("./routes/confirmation"));
 //locations route
 app.use("/locations", require("./routes/locations"));
 
+//notifications route
+
+
 
 //get messages
 //app.get("/getmessage", messaging.getSocketMessages)

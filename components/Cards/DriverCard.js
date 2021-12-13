@@ -21,8 +21,6 @@ const DriverCard = (props) => {
 
     // use this request in the 'requests' section of profileScreen for drivers to decrement the seats on confirmation of the requests
 
-
-
     const passengerPrice = async () => {
         try {
             const response = await fetch(`http://192.168.1.142:8081/dashboard/passengerprice/${liftshare_id}`, {
@@ -56,7 +54,7 @@ const DriverCard = (props) => {
 
 
 
-    //console.log(profile_picture)
+    // console.log(liftshare_id)
 
     const priceHandler = (price) => {
         //console.log(confirmedRequests[0].count);
@@ -82,7 +80,7 @@ const DriverCard = (props) => {
                     <View style={styles.line}></View>
                     <ProfileDisplay picture={picture} firstname={driver_firstname} />
                     <View style={styles.line}></View>
-                        <SeatsDisplay seats={seats}/>
+                        <SeatsDisplay seats={seats} liftshare_id={liftshare_id} />
                 </View>
         
 

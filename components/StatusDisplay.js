@@ -9,7 +9,7 @@ const StatusDisplay = (props) => {
 
     const token = useSelector(state => state.authorisation.userToken);
 
-    const { liftid, status, setConfirmedRequests, requestid, navigation, isFocused, isActive, setCancelled } = props
+    const { liftid, status, setConfirmedRequests, setIsVisibleQR, requestid, navigation, isFocused, isActive, setCancelled } = props
 
     
 
@@ -82,7 +82,7 @@ const StatusDisplay = (props) => {
             <View style={styles.verticalLine}></View>
             <View style={{ width: '50%', alignItems: 'center', justifyContent: 'center', padding: '6%' }}>
                 {status === "pending" ? <StatusButton style={"pending"} onPress={cancelRequest} text="cancel request"/> : null}
-                {status === "confirmed" ? <StatusButton style={"confirmed"} disabled={!isActive} onPress={() => navigation.navigate('Check In', { id: liftid })} text="Check In"/> : null}
+                {status === "confirmed" ? <StatusButton style={"confirmed"} disabled={false} onPress={() => setIsVisibleQR(true)} text="Check In"/> : null}
             </View>
         </View>
     )
