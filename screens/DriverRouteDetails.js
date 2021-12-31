@@ -1,49 +1,117 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Dimensions, StyleSheet, Button, Alert, Modal } from 'react-native';
+import { View, Text, Dimensions, StyleSheet, Button, Alert, Modal, TouchableOpacity, ImageBackground } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
-import RequestCard from './RequestCard';
+import RequestCard from '../components/Cards/RequestCard';
 import { useNavigation } from '@react-navigation/core';
-import MyLiftsPassengerCard from './MyLiftsPassengerCard';
+import MyLiftsPassengerCard from '../components/Cards/MyLiftsPassengerCard';
 import moment from 'moment';
 import QRCode from 'react-native-qrcode-svg';
-import RouteDisplay from '../RouteDisplay';
-import { AntDesign } from '@expo/vector-icons';
+import RouteDisplay from '../components/RouteDisplay';
+import RequestButton from '../components/Buttons/RequestButton';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/core';
+import StatusButton from '../components/Buttons/StatusButton';
 
 
 
-const LiftCard = (props) => {
+
+const DriverRouteDetails = ({ route, navigation }) => {
 
     const [requests, setRequests] = useState()
     const [isVisibleRequests, setIsVisibleRequests] = useState(false)
     const [isVisiblePassengers, setIsVisiblePassengers] = useState(false)
-    const [isActive, setIsActive] = useState(false)
+    // const [isActive, setIsActive] = useState(false)
     const [isVisibleQR, setIsVisibleQR] = useState(false)
     const [passengers, setPassengers] = useState();
+    const [passengerNumber, setPassengerNumber] = useState()
+    const [seatNumber, setSeatNumber] = useState()
     const [QRids, setQRids] = useState()
+    const isFocused = useIsFocused()
+    const [map, setMap] = useState()
 
-    const navigation = useNavigation()
+    // display the seats as the number of confirmed requests + the number of seats.
 
-    const dateFormat = new Date(props.date)
+    const {
+        from,
+        to,
+        origin,
+        destination,
+        date,
+        id,
+        price,
+        isActive
+    } = route.params
 
-    const momentFormat = (date) => {
-        return (
-            moment(date).format("DD-MM-YYYY")
-        )
-    }
+    const dateFormat = new Date(date)
 
-    const todayDate = new Date()
+
 
     const token = useSelector(state => state.authorisation.userToken);
 
-    const { from, to, seats, id, price } = props
+
 
     const formatter = new Intl.NumberFormat('en-GB', {
         style: 'currency',
         currency: 'GBP',
     })
 
+    const getMapImg = async (urlpath) => {
+        try {
+            const body = { urlpath }
 
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("token", token);
+
+
+            const response = await fetch("http://192.168.86.99:8081/locations/signurl", {
+                method: 'POST',
+                headers: myHeaders,
+                body: JSON.stringify(body)
+            });
+
+            const parseRes = await response.json()
+
+            setMap(parseRes)
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    const getPolyline = async (origin, destination) => {
+        try {
+
+            const body = { origin, destination }
+
+            console.log(origin, destination)
+
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("token", token);
+
+
+            const response = await fetch("http://192.168.86.99:8081/locations/distance", {
+                method: 'POST',
+                headers: myHeaders,
+                body: JSON.stringify(body)
+            });
+
+            const parseRes = await response.json()
+
+            const encodeParseRes = encodeURIComponent(parseRes.route)
+
+            return (
+                `https://maps.googleapis.com/maps/api/staticmap?&size=500x500&path=weight:6%7Ccolor:0x0352A0CC%7Cenc:${encodeParseRes}&key=AIzaSyAABf0pH3xmQE_riwJXkrazEQADU0fqEss&map_id=76404385f094ea10`
+            )
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    // get passengers count
 
 
     const deleteLift = async () => {
@@ -55,8 +123,9 @@ const LiftCard = (props) => {
 
             const parseRes = await response.json()
 
-            // console.log(parseRes);
-            //Alert.alert(parseRes);
+            // alert first and then fire request "are you sure you want to delete this lift"
+
+
 
 
             Alert.alert(
@@ -70,6 +139,30 @@ const LiftCard = (props) => {
 
             //navigation.navigate('My Lifts', {refresh: true})
             //find a way to refresh the my lifts section so that the lift disappears straight away
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    const initialCountPassengers = async () => {
+        try {
+
+            const myHeaders = new Headers();
+
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("token", token);
+
+            const response = await fetch(`http://192.168.86.99:8081/dashboard/countpassengers/${id}`, {
+                method: "GET",
+                headers: myHeaders
+            });
+
+            const parseRes = await response.json()
+
+            return (
+                parseRes
+            )
+
         } catch (error) {
             console.log(error.message)
         }
@@ -151,6 +244,7 @@ const LiftCard = (props) => {
                     request_id={item.request_id}
                     liftStatus={item.status}
                     picture={item.profile_picture}
+                    passenger_id={item.user_id}
                     to={to}
                 />
             </View>)
@@ -184,15 +278,31 @@ const LiftCard = (props) => {
         }
     }
 
-    //this may need a diff trigger
+    
 
-    //think about how this will refresh
+        const mapHandler = async() => {
+            const polyline = await getPolyline(
+                { latitude: origin.y, longitude: origin.x },
+                { latitude: destination.y, longitude: destination.x }
+            );
+            getMapImg(polyline)
+            }
+        
 
-    useEffect(() => {
-        if (momentFormat(dateFormat) === momentFormat(todayDate)) {
-            setIsActive(true)
-        }
-    }, []);
+    useEffect(async () => {
+        // if (momentFormat(dateFormat) === momentFormat(todayDate)) {
+        //     setIsActive(true)
+        // }
+
+        
+        mapHandler()
+
+        const result = await initialCountPassengers()
+
+        setPassengerNumber(result.passengers)
+        setSeatNumber(result.seats)
+
+    }, [isFocused, isVisibleRequests]);
 
 
 
@@ -238,39 +348,63 @@ const LiftCard = (props) => {
 
         // display date using moment.js
 
-        <View>
-
+        <View style={{ flex: 1 }}>
+            {map === undefined ? null : (<ImageBackground style={styles.Image} source={{ uri: map }} />)}
+            <View style={styles.backgroundContainer}>
             <View style={isActive ? [styles.container, styles.isActive] : styles.container}>
                 <View style={styles.halfContainer}>
-
-                    <RouteDisplay
-                        from={from}
-                        to={to}
-                        time={moment(dateFormat).format('HH:mm')}
-                        date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
-                        price={priceHandler(price)}
-                    />
+                    <View style={{ width: '88%' }}>
+                        <RouteDisplay
+                            from={from}
+                            to={to}
+                            time={moment(dateFormat).format('HH:mm')}
+                            date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
+                            price={priceHandler(price)}
+                        />
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <TouchableOpacity onPress={deleteLift} disabled={isVisibleRequests || isVisiblePassengers}>
+                            <Ionicons name="ios-close-circle-outline" size={30} color="#FF1654" />
+                        </TouchableOpacity>
+                    </View>
 
                 </View>
                 <View style={styles.line}></View>
-                
-                
-                    
-                    
-                    
-                            <View>
-                             <View style={styles.buttons}>
 
-                                 <Button title="requests" onPress={getRequests} disabled={isVisiblePassengers} />
-                                 <Button title="passengers" onPress={getPassengers} disabled={isVisibleRequests} />
-                                 <Button color="#FF1654" title="delete" onPress={deleteLift} disabled={isVisibleRequests || isVisiblePassengers} />
+                <View style={{ paddingVertical: '3%', alignItems: 'center', justifyContent: 'center', width: '90%', flexDirection: 'row' }}>
+                    {/* <View style={styles.buttons}> */}
+                        <View style={styles.singleButton}>
+                            <RequestButton text="requests" style="filled" onPress={getRequests} disabled={isVisiblePassengers} />
+                        </View>
+                        <View style={styles.singleButton}>
+                            <RequestButton text="passengers" style="outline" onPress={getPassengers} disabled={isVisibleRequests} />
+                        </View>
 
-                             </View>
 
-                             <Button title="check passengers in" onPress={checkInHandler} />
-                             </View>
-                        
-                    
+                    {/* </View> */}
+
+
+                </View>
+
+                <View style={styles.line}></View>
+
+
+                <View style={{ flexDirection: 'row', paddingVertical: '5%', alignItems: 'center',  width: '90%' }}>
+
+                    <View style={{ width: '50%', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            {passengerNumber === undefined ? null : [...Array(JSON.parse(passengerNumber)).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={32} color="#0466c8" />)}
+                            {[...Array(seatNumber).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={32} color="grey" />)}
+                        </View>
+                    </View>
+
+                    <View style={{ width: '50%', alignItems: 'center' }}>
+                        <StatusButton text="check in" onPress={checkInHandler} style="confirmed" />
+                    </View>
+
+                </View>
+
+                </View>
             </View>
             {isVisibleRequests ?
 
@@ -350,7 +484,7 @@ const LiftCard = (props) => {
 const styles = StyleSheet.create({
     container: {
         width: Dimensions.get('screen').width * 0.9,
-        height: Dimensions.get('window').height * 0.3,
+        height: Dimensions.get('window').height * 0.4,
         // flex: 1,
         borderRadius: 30,
         // borderWidth: 0.5,
@@ -361,15 +495,25 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         //flexDirection: 'row'
     },
+    backgroundContainer: {
+        flex: 1, 
+        justifyContent: 'flex-end', 
+        shadowOffset: {
+            height: 3,
+            width: -3
+        },
+        shadowRadius: 2,
+        //shadowColor: 'black',
+        shadowOpacity: 0.15
+    },
+    singleButton: {
+        width: '50%', 
+        alignItems: 'center', 
+        justifyContent: 'center'
+    },
     isActive: {
         borderColor: 'lightgreen',
         borderWidth: 3
-    },
-    buttons: {
-        flexDirection: 'row',
-        // height: "100%",
-        justifyContent: 'center',
-        // padding: '2%'
     },
     columns: {
         flexDirection: 'row'
@@ -433,6 +577,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '90%'
     },
+    Image: {
+        position: 'absolute',
+        alignSelf: 'center',
+        zIndex: -1,
+        height: Dimensions.get('window').height * 0.4,
+        width: Dimensions.get('screen').width * 1
+    },
     line: {
         borderBottomWidth: 0.5,
         width: '80%',
@@ -450,4 +601,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default LiftCard;
+export default DriverRouteDetails;

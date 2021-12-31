@@ -22,13 +22,13 @@ const BookButton = (props) => {
 const styles = StyleSheet.create({
 
     confirmed: {
-        width: Dimensions.get('screen').width * 0.35,
+        width: Dimensions.get('screen').width * 0.3,
         borderRadius: 9,
         alignItems: 'center',
         height: Dimensions.get('window').height * 0.04,
         justifyContent: 'center',
-        // marginTop: '10%',
-        backgroundColor: '#11AC38'
+        backgroundColor: '#0466c8'
+        // backgroundColor: '#11AC38'
     }
 })
 

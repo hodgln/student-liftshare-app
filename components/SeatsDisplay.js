@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, Dimensions, Button, Alert } from 'react-native'
-import { useSelector } from "react-redux";
-import { Ionicons } from '@expo/vector-icons';
 import BookButton from './Buttons/BookButton';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -21,7 +19,7 @@ const SeatsDisplay = (props) => {
                     <MaterialCommunityIcons name="seatbelt" size={32} color={seats > 3 ? "#0466c8" : "lightgrey"} />
                 </View>
             </View>
-            <View style={styles.verticalLine}></View>
+            {/* <View style={styles.verticalLine}></View> */}
             <View style={{ width: '50%', alignItems: 'center', justifyContent: 'center' }}>
                 <BookButton text="Book Lift" liftshare_id={liftshare_id}/>
             </View>

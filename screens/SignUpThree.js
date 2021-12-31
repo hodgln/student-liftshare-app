@@ -64,7 +64,7 @@ const SignUpThree = ({ route, navigation }) => {
 
             const body = { firstname, surname, email, password, category, phoneNumber, picture, category }
 
-            const sendUser = await fetch("http://192.168.1.142:8081/auth/register", {
+            const sendUser = await fetch("http://192.168.86.99:8081/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

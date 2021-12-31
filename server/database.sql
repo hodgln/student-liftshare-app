@@ -244,6 +244,20 @@ FROM Requests AS r
 INNER JOIN Liftshares as l ON r.liftshare_id = l.liftshare_id 
 WHERE l.liftshare_id = $1`
 
+
+`SELECT
+            u.user_email, 
+            u.user_firstname, 
+            u.user_surname,
+            u.user_account,
+            u.phone_number,
+            u.profile_picture,
+            AVG(r.rating)
+            FROM Users AS u
+            INNER JOIN Ratings as r ON r.user_id = u.user_id
+            GROUP BY u.user_firstname
+            WHERE u.user_id = $1`
+
 works
 
 
@@ -296,3 +310,20 @@ think about how it is triggered
 if liftshare status != completed then show popupcomponent, else rest of app. 
 
 */
+
+
+
+
+
+
+
+
+
+
+
+/* select the ratings where liftshare_id = $1 and where user_id is not req.user.id
+ if this count does not 
+
+ add submitted by and liftshare_id 
+
+ passenger side check for just one, driver side check for as many as there are seats, return count in the same db query

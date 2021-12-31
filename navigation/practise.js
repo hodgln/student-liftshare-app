@@ -23,7 +23,9 @@ import SignUpThree from '../screens/SignUpThree';
 import DriverRouteOne from '../screens/DriverRouteOne';
 import DriverRouteTwo from '../screens/DriverRouteTwo';
 import PasswordResetScreen from '../screens/ResetPassword';
-
+import PassengerRouteDetails from '../screens/PassengerRouteDetails';
+import DriverRouteDetails from '../screens/DriverRouteDetails';
+import LiftSearchDetails from '../screens/LiftSearchDetails';
 
 
 
@@ -48,7 +50,7 @@ const RootStack = () => {
   const isAuth = async () => {
     try {
 
-      const verify = await fetch("http://192.168.1.142:8081/auth/verified", {
+      const verify = await fetch("http://192.168.86.99:8081/auth/verified", {
         method: "GET",
         headers: { token: token }
       });
@@ -140,7 +142,8 @@ const RootStack = () => {
       >
         <Tab.Screen name="Post Route" component={PassengerStackOne} options={{
           headerShown: false }}/>
-        <Tab.Screen name="My Lifts" component={PassengerMyLifts}/>
+        <Tab.Screen name="My Lifts" component={PassengerStackTwo} options={{
+          headerShown: false }}/>
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     )
@@ -152,7 +155,17 @@ const RootStack = () => {
       <Stack.Navigator screenOptions={{ headerTitleStyle: {fontFamily: 'Inter_600SemiBold' }}} >
         <Stack.Screen name="Lift Search" component={PassengerRoute} />
         <Stack.Screen name="Choose Driver" component={PassengerLiftFinder} />
+        <Stack.Screen name="Lift Details" component={LiftSearchDetails} />
         <Stack.Screen name="Payment" component={PayScreen} />
+      </Stack.Navigator>
+    )
+  }
+
+  const PassengerStackTwo = () => {
+    return (
+      <Stack.Navigator screenOptions={{ headerTitleStyle: {fontFamily: 'Inter_600SemiBold' }}} >
+        <Stack.Screen name="My Lifts" component={PassengerMyLifts} />
+        <Stack.Screen name="Route Details" component={PassengerRouteDetails} />
       </Stack.Navigator>
     )
   }
@@ -161,6 +174,7 @@ const RootStack = () => {
     return (
       <Stack.Navigator>
         <Stack.Screen name="My Lifts" component={DriverMyLifts} />
+        <Stack.Screen name="Route Details" component={DriverRouteDetails} />
         <Stack.Screen name="Check In" component={DriverCheckIn} />
       </Stack.Navigator>
     )

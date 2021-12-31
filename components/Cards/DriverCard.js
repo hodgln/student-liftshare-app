@@ -18,12 +18,14 @@ const DriverCard = (props) => {
     const dateFormat = new Date(props.date)
 
     const [confirmedRequests, setConfirmedRequests] = useState();
+    const [rating, setRating] = useState();
+    const [completedLifts, setCompletedLifts] = useState();
 
     // use this request in the 'requests' section of profileScreen for drivers to decrement the seats on confirmation of the requests
 
     const passengerPrice = async () => {
         try {
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/passengerprice/${liftshare_id}`, {
+            const response = await fetch(`http://192.168.86.99:8081/dashboard/passengerprice/${liftshare_id}`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -38,7 +40,30 @@ const DriverCard = (props) => {
         }
     }
 
-    useEffect(() => { passengerPrice() }, [])
+    const profileInfo = async () => {
+        try {
+            const response = await fetch(`http://192.168.86.99:8081/dashboard/driverprofile/${driver_id}`, {
+                method: "GET",
+                headers: { token: token }
+            });
+
+
+            const parseRes = await response.json();
+
+            console.log(parseRes)
+
+            setRating(parseRes.rating)
+            setCompletedLifts(parseRes.completed)
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    useEffect(() => { 
+        passengerPrice()
+        profileInfo()
+    }, [])
 
     const {
         name,
@@ -49,7 +74,8 @@ const DriverCard = (props) => {
         liftshare_id,
         price,
         driver_firstname,
-        picture
+        picture,
+        driver_id
     } = props
 
 
@@ -78,7 +104,7 @@ const DriverCard = (props) => {
                         price={confirmedRequests === undefined ? price : priceHandler(price)}
                     />
                     <View style={styles.line}></View>
-                    <ProfileDisplay picture={picture} firstname={driver_firstname} />
+                    <ProfileDisplay picture={picture} firstname={driver_firstname} completed={completedLifts} rating={rating}/>
                     <View style={styles.line}></View>
                         <SeatsDisplay seats={seats} liftshare_id={liftshare_id} />
                 </View>

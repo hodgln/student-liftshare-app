@@ -27,7 +27,7 @@ const EnterEmail = (props) => {
 
         try {
 
-            const response = await fetch(`http://192.168.1.142:8081/confirmation/email/reset/${email}`, {
+            const response = await fetch(`http://192.168.86.99:8081/confirmation/email/reset/${email}`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"

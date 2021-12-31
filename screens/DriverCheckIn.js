@@ -38,7 +38,7 @@ const DriverCheckIn = ({ route }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/completelift/${liftshare_id}`, {
+            const response = await fetch(`http://192.168.86.99:8081/dashboard/completelift/${liftshare_id}`, {
                 method: 'PUT',
                 headers: myHeaders
             });
@@ -106,7 +106,7 @@ const DriverCheckIn = ({ route }) => {
 
             // const body = { ids }
 
-            // const response = await fetch(`http://192.168.1.142:8081/payment/checkout/capture/${id}`, {
+            // const response = await fetch(`http://192.168.86.99:8081/payment/checkout/capture/${id}`, {
             //     method: "POST",
             //     headers: myHeaders,
             //     body: JSON.stringify(body)
@@ -192,7 +192,7 @@ const DriverCheckIn = ({ route }) => {
                                         Alert.alert("Modal has been closed.")
                                     }}>
                                     <View style={styles.centredView}>
-                                        <DriverRatings passengers={passengers} setIsVisibleRatings={setIsVisibleRatings} />
+                                        <DriverRatings passengers={passengers} liftshare_id={liftshare_id} setIsVisibleRatings={setIsVisibleRatings} />
                                     </View>
 
                                 </Modal>) : null}

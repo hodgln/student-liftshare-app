@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 import DriverCard from '../components/Cards/DriverCard';
+import PreviewCard from '../components/Cards/PreviewCard';
 
 
 const PassengerLiftFinder = ({ route, navigation }) => {
@@ -34,14 +35,17 @@ const PassengerLiftFinder = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
             const body = { originlocation, destinationlocation }
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/Liftshares/distance`, {
+            const response = await fetch(`http://192.168.86.99:8081/dashboard/Liftshares/distance`, {
                 method: "POST",
                 headers: myHeaders,
                 body: JSON.stringify(body)
             });
 
+    
+
             const jsonData = await response.json()
 
+        
 
             setLifts(jsonData)
         } catch (error) {
@@ -63,13 +67,14 @@ const PassengerLiftFinder = ({ route, navigation }) => {
             return null
         } else {
         return (<View style={styles.container}>
-            <DriverCard
+            <PreviewCard
                 name={item.category}
                 date={item.datepicked}
                 origin={item.originlocation}
+                destination={item.destinationlocation}
                 distance={item.distance}
-                originName={item.originname}
-                destinationName={item.destinationname}
+                from={item.originname}
+                to={item.destinationname}
                 seats={item.seats}
                 price={item.driverprice}
                 liftshare_id={item.liftshare_id}
@@ -77,6 +82,8 @@ const PassengerLiftFinder = ({ route, navigation }) => {
                 driver_surname={item.user_surname}
                 picture={item.profile_picture}
                 navigation={navigation}
+                driver_id={item.user_id}
+                nextScreen={'Lift Details'}
             />
         </View>)
         }
@@ -87,7 +94,6 @@ const PassengerLiftFinder = ({ route, navigation }) => {
                 data={lifts}
                 renderItem={renderItem}
                 keyExtractor={item => JSON.stringify(item.liftshare_id)}
-                horizontal={true}
             />
     )
 }

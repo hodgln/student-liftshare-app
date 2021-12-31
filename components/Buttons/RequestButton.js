@@ -5,11 +5,11 @@ import { View, Text, Dimensions, StyleSheet, Button, Alert, TouchableOpacity } f
 const RequestButton = (props) => {
     return (
         <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
-            <View style={props.style === "accept" ? styles.accept : styles.decline}>
-                {props.style === "accept" ?
-                    (<Text style={{ color: 'white', fontFamily: 'Inter_600SemiBold', fontSize: 17 }}>{props.style}</Text>)
+            <View style={props.style === "filled" ? styles.filled : styles.outline}>
+                {props.style === "filled" ?
+                    (<Text style={{ color: 'white', fontFamily: 'Inter_600SemiBold', fontSize: 17 }}>{props.text}</Text>)
                     :
-                    (<Text style={{ color: '#0466c8', fontFamily: 'Inter_600SemiBold', fontSize: 17 }}>{props.style}</Text>)
+                    (<Text style={{ color: '#0466c8', fontFamily: 'Inter_600SemiBold', fontSize: 17 }}>{props.text}</Text>)
                 }
             </View>
         </TouchableOpacity>
@@ -21,7 +21,7 @@ const RequestButton = (props) => {
 
 const styles = StyleSheet.create({
 
-    accept: {
+    filled: {
         width: Dimensions.get('screen').width * 0.3,
         borderRadius: 9,
         alignItems: 'center',
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#0466c8',
         marginHorizontal: '3%'
     },
-    decline: {
+    outline: {
         width: Dimensions.get('screen').width * 0.3,
         borderRadius: 9,
         alignItems: 'center',

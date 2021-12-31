@@ -3,16 +3,22 @@ import { View, Text, StyleSheet, Dimensions, FlatList, Modal } from 'react-nativ
 import { useSelector } from 'react-redux';
 import LiftCard from '../components/Cards/LiftCard';
 import { useNavigation } from '@react-navigation/core';
+import { useIsFocused } from '@react-navigation/core';
+import DriverRatings from '../components/DriverRatings';
+import PreviewCard from '../components/Cards/PreviewCard';
 
-const DriverMyLifts = ({ route }) => {
+const DriverMyLifts = ({ route, navigation }) => {
 
     const [displayInfo, setDisplayInfo] = useState()
+    const [isVisibleRatings, setIsVisibleRatings] = useState(false)
+    const [notRatedPassengers, setNotRatedPassengers] = useState()
     const refresh = route.params
+    const isFocused = useIsFocused()
     const token = useSelector(state => state.authorisation.userToken);
 
     const getLiftData = async () => {
         try {
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/profilelifts`, {
+            const response = await fetch(`http://192.168.86.99:8081/dashboard/profilelifts`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -26,23 +32,72 @@ const DriverMyLifts = ({ route }) => {
         }
     }
 
+    const checkIncompleteLifts = async () => {
+        try {
+
+            const response = await fetch(`http://192.168.86.99:8081/dashboard/ratings/fromdriver`, {
+                method: 'GET',
+                headers: { token: token }
+            })
+
+            const parseRes = await response.json()
+
+            // console.log(parseRes)
+
+
+            if (parseRes.passengers.length !== 0) {
+                setNotRatedPassengers(parseRes)
+                // setNotRatedLiftshare(parseRes.liftID)
+                setIsVisibleRatings(true)
+
+                // console.log(parseRes.userIDs)
+            } else {
+                setIsVisibleRatings(false)
+            }
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    const onRefresh = async () => {
+        await getLiftData()
+        checkIncompleteLifts()
+
+    }
+
     //function that asks db for completed lifts, returns liftshare_id and user_ids
 
     //unfinishedratings = true then launch ratings modal, 
 
-    useEffect(() => { getLiftData() }, [refresh]);
+    useEffect(() => {
+        onRefresh()
+    }, [isFocused, refresh]);
 
 
     const renderDriver = ({ item }) => {
         return (<View>
-            <LiftCard
+
+            <PreviewCard
+                from={item.originname}
+                to={item.destinationname}
+                origin={item.originlocation}
+                destination={item.destinationlocation}
+                date={item.datepicked}
+                seats={item.seats}
+                price={item.driverprice}
+                id={item.liftshare_id}
+                navigation={navigation}
+                nextScreen={'Route Details'}
+            />
+            {/* <LiftCard
                 from={item.originname}
                 to={item.destinationname}
                 date={item.datepicked}
                 seats={item.seats}
                 price={item.driverprice}
                 id={item.liftshare_id}
-            />
+            /> */}
         </View>)
     };
     return (
@@ -53,6 +108,20 @@ const DriverMyLifts = ({ route }) => {
                 renderItem={renderDriver}
                 keyExtractor={item => JSON.stringify(item.liftshare_id)}
             />
+            {
+                isVisibleRatings ?
+
+                    (<Modal animationType="slide"
+                        transparent={true}
+                        visible={true}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed.")
+                        }}>
+                        <View style={styles.centredView}>
+                            <DriverRatings passengers={notRatedPassengers} setIsVisibleRatings={setIsVisibleRatings} liftshare_id={notRatedPassengers.liftshareID} />
+                        </View>
+
+                    </Modal>) : null}
         </View>
     )
 }
@@ -63,11 +132,18 @@ const styles = StyleSheet.create({
     categoriesContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 20,
+        // padding: 20,
 
         height: Dimensions.get('window').height * 0.88,
         width: Dimensions.get('window').width * 1
         // flex: 1
+    },
+    centredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        //marginTop: 22,
+        height: Dimensions.get('window').height * 0.7
     },
     myLifts: {
         //borderWidth: 4,
@@ -81,6 +157,6 @@ const styles = StyleSheet.create({
         //shadowColor: 'black',
         shadowOpacity: 0.6,
     },
-    
-    
+
+
 });

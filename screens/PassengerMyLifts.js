@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, Button, Modal, StyleSheet, Dimensions, FlatList } from 'react-native'
 import { useSelector } from 'react-redux'
-import PassengerCard from '../components/Cards/PassengerCard';
+import PassengerRatings from '../components/PassengerRatings';
 import { useIsFocused } from '@react-navigation/core';
+import PreviewCard from '../components/Cards/PreviewCard';
 
 
-const PassengerMyLifts = () => {
+const PassengerMyLifts = (props) => {
 
     const token = useSelector(state => state.authorisation.userToken);
     const [displayInfo, setDisplayInfo] = useState()
     const [cancelled, setCancelled] = useState(false);
+    const [notRatedDriver, setNotRatedDriver] = useState();
+    const [isVisibleRatings, setIsVisibleRatings] = useState()
 
     const isFocused = useIsFocused()
 
 const getLiftData = async () => {
     try {
-        const response = await fetch(`http://192.168.1.142:8081/dashboard/passengerlifts`, {
+        const response = await fetch(`http://192.168.86.99:8081/dashboard/passengerlifts`, {
             method: "GET",
             headers: {token: token}
         });
@@ -33,16 +36,45 @@ const getLiftData = async () => {
     }
 }
 
-useEffect(() => { getLiftData() }, [isFocused, cancelled]);
+
+const checkUnratedDrivers = async() => {
+    try {
+
+        const response = await fetch(`http://192.168.86.99:8081/dashboard/ratings/frompassenger`,{
+                method: 'GET',
+                headers: { token: token }
+            })
+
+            const parseRes = await response.json()
+
+            if(parseRes.length !== 0) {
+                setNotRatedDriver(parseRes)
+                // setNotRatedLiftshare(parseRes.liftID)
+                setIsVisibleRatings(true)
+            }
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+const onRefresh = async() => {
+    await getLiftData()
+    checkUnratedDrivers()
+}
+
+useEffect(() => { onRefresh() }, [isFocused]);
 
 
 //console.log(isFocused)
 
 
+
+
 const renderPassenger = ({ item }) => {
         return(
             <View style={styles.categoriesContainer}>
-            <PassengerCard 
+            {/* <PassengerCard 
             from={item.originname}
             to={item.destinationname}
             date={item.datepicked}
@@ -59,6 +91,23 @@ const renderPassenger = ({ item }) => {
             userID={item.user_id}
             origin={item.originlocation}
             destination={item.destinationlocation}
+            /> */}
+            <PreviewCard 
+            from={item.originname}
+            to={item.destinationname}
+            date={item.datepicked}
+            firstname={item.user_firstname}
+            surname={item.user_surname}
+            picture={item.profile_picture}
+            status={item.status}
+            requestid={item.request_id}
+            liftid={item.liftshare_id}
+            price={item.driverprice}
+            phone={item.phone_number}
+            userID={item.user_id}
+            origin={item.originlocation}
+            destination={item.destinationlocation}
+            nextScreen={'Route Details'}
             />
             </View>
         )
@@ -68,13 +117,31 @@ const renderPassenger = ({ item }) => {
 
 return(
                 // <View style={styles.categoriesContainer}>
+                <View>
                     <FlatList
                         data={displayInfo}
                         renderItem={renderPassenger}
                         keyExtractor={item => JSON.stringify(item.request_id)}
-                        horizontal={true}
                     />
-                // </View>
+
+                
+
+
+                    {
+                        isVisibleRatings ?
+
+                            (<Modal animationType="slide"
+                                transparent={true}
+                                visible={true}
+                                onRequestClose={() => {
+                                    Alert.alert("Modal has been closed.")
+                                }}>
+                                <View style={styles.centredView}>
+                                    <PassengerRatings driver={notRatedDriver} setIsVisibleRatings={setIsVisibleRatings} />
+                                </View>
+
+                            </Modal>) : null}
+                </View> 
                 )
 };
 
@@ -92,6 +159,13 @@ const styles = StyleSheet.create({
         // //shadowColor: 'black',
         // shadowOpacity: 0.15,
         padding: '2%'
+    },
+    centredView: {      
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            //marginTop: 22,
+            height: Dimensions.get('window').height * 0.4
     }
 })
 

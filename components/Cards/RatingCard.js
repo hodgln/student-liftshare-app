@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, Dimensions, Alert } from 'react-native';
 import { Avatar } from 'react-native-elements';
-import { Ionicons } from '@expo/vector-icons';
 import RatingButton from '../Buttons/RatingButton';
 import { useSelector } from 'react-redux';
 
 
 const RatingCard = (props) => {
 
-    const { firstname, user_id, picture, setIsVisibleRatings } = props;
+    const { firstname, user_id, picture, setRated, liftshare_id } = props;
 
     const [rating, setRating] = useState()
 
@@ -19,13 +18,13 @@ const RatingCard = (props) => {
     const postRating = async() => {
         try {
 
-            const body = { user_id, rating }
+            const body = { user_id, rating, liftshare_id }
 
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch("http://192.168.1.142:8081/dashboard/ratings", {
+            const response = await fetch("http://192.168.86.99:8081/dashboard/ratings", {
                 method: "POST",
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -34,7 +33,7 @@ const RatingCard = (props) => {
             const parseRes = await response.json()
 
             if(parseRes.rows !== 0) {
-                setIsVisibleRatings(false)
+                setRated(rated => [...rated, true])
             } else {
                 Alert.alert("Something went wrong")
             }
@@ -62,7 +61,7 @@ const RatingCard = (props) => {
                             picture,
                     }}
                 />
-                <Text>{firstname}</Text>
+                <Text style={{ fontSize: 17, fontFamily: 'Inter_600SemiBold', color: '#0352A0' }}>{firstname}</Text>
             </View>
             <View style={styles.verticalLine}></View>
             <View style={styles.rightColumn}>

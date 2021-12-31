@@ -5,7 +5,9 @@ import { LinearGradient } from 'expo-linear-gradient'
 
 const ProfileDisplay = (props) => {
 
-    const { picture, firstname, surname } = props
+    const { picture, firstname, surname, rating, completed } = props
+
+    console.log(rating)
 
     return (
 
@@ -35,12 +37,12 @@ const ProfileDisplay = (props) => {
 
                 <View style={styles.columnSection}>
                     <Text style={styles.headerText}>Previous Lifts:</Text>
-                    <Text style={styles.boldText}>3</Text>
+                    <Text style={styles.boldText}>{completed === undefined ? '0' : completed}</Text>
                 </View>
 
                 <View style={styles.columnSection}>
                     <Text style={styles.headerText}>Rating:</Text>
-                    <Text style={styles.boldText}>89%</Text>
+                    <Text style={styles.boldText}>{rating ? JSON.parse(rating).toFixed(1) : '---'}</Text>
                 </View>
             </View>
             {/* </LinearGradient> */}

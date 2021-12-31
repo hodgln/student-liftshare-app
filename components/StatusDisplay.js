@@ -9,16 +9,12 @@ const StatusDisplay = (props) => {
 
     const token = useSelector(state => state.authorisation.userToken);
 
-    const { liftid, status, setConfirmedRequests, setIsVisibleQR, requestid, navigation, isFocused, isActive, setCancelled } = props
-
-    
-
-    
+    const { liftid, status, setConfirmedRequests, setIsVisibleQR, requestid, navigation, isFocused } = props
 
     const cancelRequest = async () => {
 
         try {
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/cancelrequest/${requestid}`, {
+            const response = await fetch(`http://192.168.86.99:8081/dashboard/cancelrequest/${requestid}`, {
                 method: "DELETE",
                 headers: { token: token }
             });
@@ -33,7 +29,8 @@ const StatusDisplay = (props) => {
                 [
                     {
                         text: 'OK',
-                        onPress: () => setCancelled(true)
+                        onPress: () => navigation.navigate('My Lifts')
+                        //navigate back to MyLifts instead of cancelled
                     }
                 ]
             )
@@ -44,12 +41,16 @@ const StatusDisplay = (props) => {
 
     const passengerPrice = async () => {
         try {
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/passengerprice/${liftid}`, {
+            console.log(liftid)
+
+            const response = await fetch(`http://192.168.86.99:8081/dashboard/passengerprice/${liftid}`, {
                 method: "GET",
                 headers: { token: token }
             });
 
             const parseRes = await response.json();
+
+            console.log(`parse ${parseRes}`)
 
             setConfirmedRequests(parseRes);
 
@@ -58,7 +59,7 @@ const StatusDisplay = (props) => {
         }
     }
 
-    useEffect(() => { passengerPrice() }, [isFocused]);
+    useEffect(() => { passengerPrice() }, []);
 
 
     
@@ -79,7 +80,7 @@ const StatusDisplay = (props) => {
                     : null}
                 {/* {status === "confirmed" && isActive ? <Button title="check in" onPress={() => navigation.navigate('Check In', { id: liftid })} /> : null} */}
             </View>
-            <View style={styles.verticalLine}></View>
+            {/* <View style={styles.verticalLine}></View> */}
             <View style={{ width: '50%', alignItems: 'center', justifyContent: 'center', padding: '6%' }}>
                 {status === "pending" ? <StatusButton style={"pending"} onPress={cancelRequest} text="cancel request"/> : null}
                 {status === "confirmed" ? <StatusButton style={"confirmed"} disabled={false} onPress={() => setIsVisibleQR(true)} text="Check In"/> : null}

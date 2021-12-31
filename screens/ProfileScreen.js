@@ -8,9 +8,14 @@ import { Ionicons } from '@expo/vector-icons';
 
 const ProfileScreen = (props) => {
 
-    const [isShowing, setIsShowing] = useState(false);
-    const [userInfo, setUserInfo] = useState('')
-    const [urlEnding, setUrlEnding] = useState()
+    // const [userInfo, setUserInfo] = useState('')
+    const [firstname, setFirstname] = useState('')
+    const [surname, setSurname] = useState('')
+    const [email, setEmail] = useState('')
+    const [phoneNumber, setPhoneNumber] = useState('')
+    const [profilePicture, setProfilePicture] = useState('empty')
+    const [rating, setRating] = useState('')
+    const [completed, setCompleted] = useState('')
 
 
     const token = useSelector(state => state.authorisation.userToken);
@@ -20,7 +25,7 @@ const ProfileScreen = (props) => {
     const getUserData = async () => {
         try {
             //only render the myLifts section if User category (fetch from backend) is driver
-            const response = await fetch("http://192.168.1.142:8081/dashboard/", {
+            const response = await fetch("http://192.168.86.99:8081/dashboard/", {
                 method: "GET",
                 headers: { token: token }
             });
@@ -29,7 +34,15 @@ const ProfileScreen = (props) => {
 
 
 
-            setUserInfo(parseRes[0]);
+            setFirstname(parseRes.userData.user_firstname);
+            setSurname(parseRes.userData.user_surname);
+            setEmail(parseRes.userData.user_email)
+            setPhoneNumber(parseRes.userData.phone_number)
+            setProfilePicture(parseRes.userData.profile_picture)
+            setRating(parseRes.rating)
+            setCompleted(parseRes.completed)
+
+            
 
             //handle this in an 'action/case'
 
@@ -42,8 +55,11 @@ const ProfileScreen = (props) => {
         }
     };
 
-    const goPressHandler = () => {
-        //props.navigation.navigate("Choice")
+    
+
+    
+
+    const goPressHandler = async() => {
         dispatch({ type: LOGGED_OUT })
     };
 
@@ -60,20 +76,20 @@ const ProfileScreen = (props) => {
                         size='xlarge'
                         source={{
                             uri:
-                                userInfo.profile_picture,
+                                profilePicture !== undefined ? profilePicture : 'empty',
                         }}
                     />
                 </View>
 
-                <Text style={styles.name}>{userInfo.user_firstname} {userInfo.user_surname}</Text>
+                <Text style={styles.name}>{firstname} {surname}</Text>
                 <View style={styles.topMidContainer}>
                     <View style={styles.statsContainer}>
                         <Text>Completed lifts:</Text>
-                        <Text style={styles.numberSize}>3</Text>
+                        <Text style={styles.numberSize}>{completed}</Text>
                     </View>
                     <View style={styles.statsContainer}>
                         <Text>Driver rating:</Text>
-                        <Text style={styles.numberSize}>89%</Text>
+                        <Text style={styles.numberSize}>{rating ? JSON.parse(rating).toFixed(1) : '---'}</Text>
                     </View>
                 </View>
 
@@ -82,11 +98,11 @@ const ProfileScreen = (props) => {
                 <View>
                     <View style={{ flexDirection: "row", padding: '2%' }}>
                         <Ionicons name="mail-outline" size={24} color="black" />
-                        <Text style={styles.emailFont}>: {userInfo.user_email} </Text>
+                        <Text style={styles.emailFont}>: {email} </Text>
                     </View>
                     <View style={{ flexDirection: "row", padding: '2%' }}>
                         <Ionicons name="call-outline" size={24} color="black" />
-                        <Text style={styles.emailFont}>: {userInfo.phone_number}</Text>
+                        <Text style={styles.emailFont}>: {phoneNumber}</Text>
                     </View>
                     <Button title="log out" onPress={goPressHandler} />
                 </View>

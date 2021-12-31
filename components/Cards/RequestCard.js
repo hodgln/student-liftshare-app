@@ -11,42 +11,51 @@ const RequestCard = (props) => {
     const token = useSelector(state => state.authorisation.userToken);
     const [disabled, setDisabled] = useState(false);
 
+    const [rating, setRating] = useState();
+    const [completedLifts, setCompletedLifts] = useState()
+
+    
 
     const {
         firstname,
         id,
         request_id,
         picture,
-        to
+        to,
+        passenger_id
     } = props
 
-    // const bookLift = async () => {
-    //     try {
+    //route to get rating and completed
 
-    //         const response = await fetch(`http://192.168.1.142:8081/dashboard/seats/${id}`, {
-    //             method: "PUT",
-    //             headers: { token: token }
-    //         });
+    useEffect(() => {
+        profileInfo()
+    }, [])
 
-    //         const reqParseRes = await response.json()
 
-    //         setDisabled(true)
+    const profileInfo = async () => {
+        try {
+            const response = await fetch(`http://192.168.86.99:8081/dashboard/passengerprofile/${passenger_id}`, {
+                method: "GET",
+                headers: { token: token }
+            });
 
-    //         console.log(reqParseRes)
-    //         //     '',
-    //         //     [
-    //         //       {text: 'OK', onPress: () => navigation.navigate('Home')},
-    //         //     ],
-    //         //     {cancelable: false},
-    //         //   );
-    //     } catch (error) {
-    //         console.log(error.message)
-    //     }
 
-    //     //combine both queries and make into one 
+            const parseRes = await response.json();
 
-    // }
+            console.log(parseRes)
+            if(parseRes.rating) {
+                setRating(parseRes.rating)
+            } else {
+                setRating(null)
+            }
+            
+            setCompletedLifts(parseRes.completed)
 
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+   
     const statusHandler = async (status) => {
         try {
 
@@ -55,7 +64,7 @@ const RequestCard = (props) => {
             myHeaders.append("token", token);
             const body = { status, request_id, id, to }
 
-            const response = await fetch("http://192.168.1.142:8081/dashboard/handlestatus", {
+            const response = await fetch("http://192.168.86.99:8081/dashboard/handlestatus", {
                 method: "PUT",
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -108,15 +117,15 @@ const RequestCard = (props) => {
         //(liftStatus === 'pending') ?
         <View style={styles.shadow}>
             <View style={styles.container}>
-                <ProfileDisplay picture={picture} firstname={firstname} />
+                <ProfileDisplay picture={picture} firstname={firstname} rating={rating} completed={completedLifts}/>
                 <View style={styles.line}></View>
                 <View>
 
                     <View style={styles.buttons}>
                         {/* <Button title="accept" onPress={acceptOnPress} disabled={disabled} />
                 <Button title="decline" onPress={() => statusHandler('declined')} disabled={disabled} /> */}
-                        <RequestButton text="accept" style="accept" onPress={() => statusHandler('confirmed')} disabled={disabled} />
-                        <RequestButton text="decline" style="decline" onPress={() => statusHandler('declined')} disabled={disabled} />
+                        <RequestButton text="accept" style="filled" onPress={() => statusHandler('confirmed')} disabled={disabled} />
+                        <RequestButton text="decline" style="outline" onPress={() => statusHandler('declined')} disabled={disabled} />
                     </View>
                 </View>
             </View>
