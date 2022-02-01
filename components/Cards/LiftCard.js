@@ -48,7 +48,7 @@ const LiftCard = (props) => {
 
     const deleteLift = async () => {
         try {
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/Liftshares/${id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/Liftshares/${id}`, {
                 method: "DELETE",
                 headers: { token: token }
             });
@@ -82,7 +82,7 @@ const LiftCard = (props) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/getrequests/${id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });
@@ -113,7 +113,7 @@ const LiftCard = (props) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/getrequests/${id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });
@@ -151,6 +151,7 @@ const LiftCard = (props) => {
                     request_id={item.request_id}
                     liftStatus={item.status}
                     picture={item.profile_picture}
+                    passengerprice={item.passengerprice}
                     to={to}
                 />
             </View>)
@@ -204,7 +205,7 @@ const LiftCard = (props) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/getrequests/${id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });

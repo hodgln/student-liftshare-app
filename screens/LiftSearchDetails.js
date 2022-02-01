@@ -22,26 +22,9 @@ const LiftSearchDetails = ({ route, navigation }) => {
 
     // use this request in the 'requests' section of profileScreen for drivers to decrement the seats on confirmation of the requests
 
-    const passengerPrice = async () => {
-        try {
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/passengerprice/${liftshare_id}`, {
-                method: "GET",
-                headers: { token: token }
-            });
-
-
-            const parseRes = await response.json();
-
-            setConfirmedRequests(parseRes);
-
-        } catch (error) {
-            console.log(error.message)
-        }
-    }
-
     const profileInfo = async () => {
         try {
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/driverprofile/${driver_id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/driverprofile/${driver_id}`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -67,7 +50,7 @@ const LiftSearchDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("http://192.168.86.99:8081/locations/signurl", {
+            const response = await fetch("http://192.168.1.142:8081/locations/signurl", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -94,7 +77,7 @@ const LiftSearchDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("http://192.168.86.99:8081/locations/distance", {
+            const response = await fetch("http://192.168.1.142:8081/locations/distance", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -132,7 +115,6 @@ const LiftSearchDetails = ({ route, navigation }) => {
             getMapImg(polyline)
         }
         mapHandler()
-        passengerPrice()
         profileInfo()
     }, [])
 
@@ -152,15 +134,7 @@ const LiftSearchDetails = ({ route, navigation }) => {
     } = route.params
 
 
-    console.log(origin, destination)
-
-
     // console.log(liftshare_id)
-
-    const priceHandler = (price) => {
-        //console.log(confirmedRequests[0].count);
-        return `£${((price / (JSON.parse(confirmedRequests) + 1)) + 0.5).toFixed(2)}`
-    }
 
     return (
         // if seats >= 0 ... use ternary operator
@@ -178,7 +152,7 @@ const LiftSearchDetails = ({ route, navigation }) => {
                         to={to}
                         time={moment(dateFormat).format('HH:mm')}
                         date={moment(dateFormat).format('ddd Do MMM')}
-                        price={confirmedRequests === undefined ? price : priceHandler(price)}
+                        price={price}
                     />
                     <View style={styles.line}></View>
                     <ProfileDisplay picture={picture} firstname={driver_firstname} completed={completedLifts} rating={rating} />

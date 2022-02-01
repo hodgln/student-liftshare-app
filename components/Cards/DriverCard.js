@@ -25,7 +25,7 @@ const DriverCard = (props) => {
 
     const passengerPrice = async () => {
         try {
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/passengerprice/${liftshare_id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/passengerprice/${liftshare_id}`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -42,7 +42,7 @@ const DriverCard = (props) => {
 
     const profileInfo = async () => {
         try {
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/driverprofile/${driver_id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/driverprofile/${driver_id}`, {
                 method: "GET",
                 headers: { token: token }
             });

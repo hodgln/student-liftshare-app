@@ -26,6 +26,7 @@ const Input = (props) => {
                 //value={text}
                 secureTextEntry={(props.inputID === 'password' || props.inputID === 'confirm') ? true : false}
                 onChangeText={props.onChangeText}
+                style={{ flex: 1 }}
             />
             </View>
             
@@ -38,7 +39,7 @@ export default Input;
 const styles = StyleSheet.create({
     Input: {
         padding: 5,
-        borderRadius: 40,
+        borderRadius: 6,
         overflow: 'hidden',
         marginTop: Dimensions.get('window').height * 0.02,
         minWidth: Dimensions.get('window').width * 0.85,

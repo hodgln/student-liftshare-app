@@ -12,13 +12,14 @@ const DriverMyLifts = ({ route, navigation }) => {
     const [displayInfo, setDisplayInfo] = useState()
     const [isVisibleRatings, setIsVisibleRatings] = useState(false)
     const [notRatedPassengers, setNotRatedPassengers] = useState()
+    const [notRatedID, setNotRatedID] = useState()
     const refresh = route.params
     const isFocused = useIsFocused()
     const token = useSelector(state => state.authorisation.userToken);
 
     const getLiftData = async () => {
         try {
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/profilelifts`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/profilelifts`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -35,7 +36,7 @@ const DriverMyLifts = ({ route, navigation }) => {
     const checkIncompleteLifts = async () => {
         try {
 
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/ratings/fromdriver`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/ratings/fromdriver`, {
                 method: 'GET',
                 headers: { token: token }
             })
@@ -46,7 +47,8 @@ const DriverMyLifts = ({ route, navigation }) => {
 
 
             if (parseRes.passengers.length !== 0) {
-                setNotRatedPassengers(parseRes)
+                setNotRatedPassengers(parseRes.passengers)
+                setNotRatedID(parseRes.liftshareID)
                 // setNotRatedLiftshare(parseRes.liftID)
                 setIsVisibleRatings(true)
 
@@ -76,8 +78,9 @@ const DriverMyLifts = ({ route, navigation }) => {
 
 
     const renderDriver = ({ item }) => {
-        return (<View>
 
+        return (<View>
+            
             <PreviewCard
                 from={item.originname}
                 to={item.destinationname}
@@ -118,7 +121,7 @@ const DriverMyLifts = ({ route, navigation }) => {
                             Alert.alert("Modal has been closed.")
                         }}>
                         <View style={styles.centredView}>
-                            <DriverRatings passengers={notRatedPassengers} setIsVisibleRatings={setIsVisibleRatings} liftshare_id={notRatedPassengers.liftshareID} />
+                            <DriverRatings passengers={notRatedPassengers} setIsVisibleRatings={setIsVisibleRatings} liftshare_id={notRatedID} />
                         </View>
 
                     </Modal>) : null}
@@ -133,7 +136,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         // padding: 20,
-
         height: Dimensions.get('window').height * 0.88,
         width: Dimensions.get('window').width * 1
         // flex: 1

@@ -86,7 +86,7 @@ const LogIn = ({ route, navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.86.99:8081/confirmation/email/${email}`, {
+            const response = await fetch(`http://192.168.1.142:8081/confirmation/email/${email}`, {
                 method: 'POST',
                 headers: myHeaders,
             });
@@ -144,7 +144,7 @@ const LogIn = ({ route, navigation }) => {
                 myHeaders.append("Content-Type", "application/json");
                 myHeaders.append("token", jwtToken);
     
-                await fetch("http://192.168.86.99:8081/auth/pushToken", {
+                await fetch("http://192.168.1.142:8081/auth/pushToken", {
                     method: 'PUT',
                     headers: myHeaders,
                     body: JSON.stringify(body)
@@ -163,7 +163,7 @@ const LogIn = ({ route, navigation }) => {
 
             const body = { email, password, category }
 
-            const loginUser = await fetch("http://192.168.86.99:8081/auth/login", {
+            const loginUser = await fetch("http://192.168.1.142:8081/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

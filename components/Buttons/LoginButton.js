@@ -17,7 +17,7 @@ const LogInButton = (props) => {
              end={{ x: 0.9, y: 0.9 }}
              >
              {props.disabled ? (
-                 <ActivityIndicator size="small" />
+                <ActivityIndicator size="small" />
              ) :
              (<Text style={{ color: "white", fontSize: 16, fontFamily: 'Inter_400Regular' }}>{props.text}</Text>)
             }
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
 
     button: {
         width: Dimensions.get('window').width * 0.85,
-        borderRadius: 32,
+        borderRadius: 6,
         alignItems: 'center',
         height: Dimensions.get('window').height * 0.07,
         justifyContent: 'center',
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     },
     disabledButton: {
         width: Dimensions.get('window').width * 0.85,
-        borderRadius: 32,
+        borderRadius: 6,
         alignItems: 'center',
         height: Dimensions.get('window').height * 0.07,
         justifyContent: 'center',

@@ -13,6 +13,7 @@ const RequestCard = (props) => {
 
     const [rating, setRating] = useState();
     const [completedLifts, setCompletedLifts] = useState()
+    const [accepted, setAccepted] = useState(false)
 
     
 
@@ -22,8 +23,11 @@ const RequestCard = (props) => {
         request_id,
         picture,
         to,
-        passenger_id
+        passenger_id,
+        passengerprice
     } = props
+
+    console.log(passengerprice, request_id)
 
     //route to get rating and completed
 
@@ -34,7 +38,7 @@ const RequestCard = (props) => {
 
     const profileInfo = async () => {
         try {
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/passengerprofile/${passenger_id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/passengerprofile/${passenger_id}`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -64,7 +68,7 @@ const RequestCard = (props) => {
             myHeaders.append("token", token);
             const body = { status, request_id, id, to }
 
-            const response = await fetch("http://192.168.86.99:8081/dashboard/handlestatus", {
+            const response = await fetch("http://192.168.1.142:8081/dashboard/handlestatus", {
                 method: "PUT",
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -75,21 +79,33 @@ const RequestCard = (props) => {
             
 
             if(statusParseRes === "declined") {
-                return
-            } else {
-                
 
-                // const triggerDate = moment(statusParseRes).subtract(1, 'days').unix()
+                const cancelBody = { request_id } 
+                
+                const cancelPayment = await fetch("http://192.168.1.142:8081/payment/cancel", {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: JSON.stringify(cancelBody)
+                });
+
+                const parseCancel = await cancelPayment.json()
+
+                console.log(parseCancel)
+
+            } else {
+
+                // trigger animation and set disabled to true
+                
+                setAccepted(true)
+                setDisabled(true)
+
+                //does this notification make any sense?
 
                 const date = new Date(statusParseRes);
 
                 const triggerDate = date.setDate(date.getDate() - 1)
 
-                //setHours to 10am if want to show notification then!! 
-
                 const displayTime = moment(date).format('HH:mm');
-
-                
 
                 Notifications.scheduleNotificationAsync({
                     content: {
@@ -101,6 +117,22 @@ const RequestCard = (props) => {
                         repeats: false
                     }
                 });
+
+                // capture the payment
+
+                const captureBody = { request_id } 
+
+                const capturePayment = await fetch("http://192.168.1.142:8081/payment/capture", {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: JSON.stringify(captureBody)
+                });
+
+                const parseResult = await capturePayment.json()
+
+                console.log(parseResult)
+
+                
             
             };
 
@@ -116,7 +148,7 @@ const RequestCard = (props) => {
     return (
         //(liftStatus === 'pending') ?
         <View style={styles.shadow}>
-            <View style={styles.container}>
+            <View style={accepted ? [styles.container, {borderColor: 'green', borderWidth: 2 }] : styles.container }>
                 <ProfileDisplay picture={picture} firstname={firstname} rating={rating} completed={completedLifts}/>
                 <View style={styles.line}></View>
                 <View>

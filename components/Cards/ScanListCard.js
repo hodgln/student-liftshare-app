@@ -12,6 +12,7 @@ const ScanListCard = (props) => {
         scanned,
         picture,
         price,
+        request_id,
         passengers
     } = props
 
@@ -28,10 +29,11 @@ const ScanListCard = (props) => {
                                 picture,
                         }}
                     />
-                    <Text style={styles.nameText}>{firstname} {surname}</Text>
+                    
                 </View>
                 <View style={styles.rightColumn}>
-                    <Text style={{ fontSize: 22, fontWeight: '600', padding: '2%', color: '#0352A0' }}>£{(price / passengers).toFixed(2)}</Text>
+                <Text style={styles.nameText}>{firstname}</Text>
+                {/* <Text style={styles.nameText}>{surname}</Text> */}
                 </View>
                 {scanned ?
                     (
@@ -79,10 +81,12 @@ const styles = StyleSheet.create({
     },
     rightColumn: {
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        width: '40%'
     },
     nameText: {
         fontFamily: 'Inter_600SemiBold',
+        fontSize: 18,
         color: '#0466c8'
     },
     line: {

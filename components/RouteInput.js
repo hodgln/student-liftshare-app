@@ -14,7 +14,7 @@ const RouteInput = (props) => {
         if (text.length > 2) {
             try {
 
-                const response = await fetch(`http://192.168.86.99:8081/locations/${text}`, {
+                const response = await fetch(`http://192.168.1.142:8081/locations/${text}`, {
                     method: 'GET',
                     headers: {
                         token: token

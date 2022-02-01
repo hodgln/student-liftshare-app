@@ -10,9 +10,7 @@ import BackButton from '../components/Buttons/BackButton';
 
 const SignUpThree = ({ route, navigation }) => {
 
-    const { phoneNumber, firstname, surname, email, password, category } = route.params
-
-    console.log(`category is ${category}`)
+    const { phoneNumber, firstname, surname, email, password, category, account } = route.params
 
     const [pictureIsValid, setPictureIsValid] = useState(false)
     const [picture, setPicture] = useState('')
@@ -62,9 +60,9 @@ const SignUpThree = ({ route, navigation }) => {
 
             //add scheme
 
-            const body = { firstname, surname, email, password, category, phoneNumber, picture, category }
+            const body = { firstname, surname, email, password, category, phoneNumber, picture }
 
-            const sendUser = await fetch("http://192.168.86.99:8081/auth/register", {
+            const sendUser = await fetch("http://192.168.1.142:8081/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Dimensions, StyleSheet, Button, Alert, Modal, Linking, Image, ImageBackground } from 'react-native';
 import { useSelector } from 'react-redux';
-import { useNavigation } from '@react-navigation/core';
 import PassengerQR from '../components/PassengerQR';
 import { useIsFocused } from '@react-navigation/core';
 import moment from 'moment';
@@ -30,13 +29,13 @@ const PassengerRouteDetails = ({ route, navigation }) => {
         isActive
     } = route.params
 
+
     const dateFormat = new Date(date)
 
     const token = useSelector(state => state.authorisation.userToken);
 
     // const navigation = useNavigation();
 
-    const [confirmedRequests, setConfirmedRequests] = useState();
     const [map, setMap] = useState()
     const [isVisibleQR, setIsVisibleQR] = useState(false)
 
@@ -52,7 +51,7 @@ const PassengerRouteDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("http://192.168.86.99:8081/locations/signurl", {
+            const response = await fetch("http://192.168.1.142:8081/locations/signurl", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -72,14 +71,14 @@ const PassengerRouteDetails = ({ route, navigation }) => {
 
             const body = { origin, destination }
 
-            
+
 
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
 
-            const response = await fetch("http://192.168.86.99:8081/locations/distance", {
+            const response = await fetch("http://192.168.1.142:8081/locations/distance", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -108,71 +107,28 @@ const PassengerRouteDetails = ({ route, navigation }) => {
     // }
     // }
 
-    const mapHandler = async() => {
-        console.log(origin.y, destination.y)
+    const mapHandler = async () => {
         const polyline = await getPolyline(
             { latitude: origin.y, longitude: origin.x },
             { latitude: destination.y, longitude: destination.x }
         );
-        getMapImg(polyline)
-        }
+        await getMapImg(polyline)
+    }
 
-    
 
-    useEffect(() => {    
+
+
+
+    useEffect(() => {
         mapHandler()
+        // set confirmed requests in this useeffect
+        // set price in here
+        //loading spinner??
     }, [])
 
-    // const mapHandler = async () => {
-    //     const polyline = await getPolyline(
-    //         { latitude: props.origin.y, longitude: props.origin.x },
-    //         { latitude: props.destination.y, longitude: props.destination.x }
-    //     );
-    //     getMapImg(polyline)
-    // }
 
 
-    const priceHandler = (price) => {
-        if (confirmedRequests != 0) {
-            return `£${((price / confirmedRequests) + 0.5).toFixed(2)}`
-        } else {
-            return `£${price.toFixed(2)}`
-        }
-    }
 
-    // console.log(map)
-
-    const messagePressHandler = async () => {
-        try {
-
-            const myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("token", token);
-
-            const response = await fetch(`http://192.168.86.99:8081/conversation/passengerconvo/${liftid}`, {
-                method: "GET",
-                headers: myHeaders
-            });
-
-            const parseRes = await response.json()
-
-            navigation.navigate('Chat', {
-                firstname: firstname,
-                surname: surname,
-                from: from,
-                to: to,
-                convo_id: parseRes[0].conversation_id,
-                user_id: parseRes[0].passenger_id
-            });
-        } catch (error) {
-            console.log(error.message)
-        };
-        //console.log(convoID)
-    }
-     
-
-
-    
     // if seats >= 0 ... use ternary operator
     //send 'price change' notification if no. confirmed requests = >2 
     return (
@@ -187,7 +143,7 @@ const PassengerRouteDetails = ({ route, navigation }) => {
                             to={to}
                             time={moment(dateFormat).format('HH:mm')}
                             date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
-                            price={priceHandler(price)}
+                            price={price}
                         />
 
                     </View>
@@ -204,22 +160,13 @@ const PassengerRouteDetails = ({ route, navigation }) => {
                             phone={phone}
                         />
 
-                        {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <PhoneButton disabled={false} onPress={() => Linking.openURL(`tel:${phone}`)} text="call" type="fill" />
-                    <PhoneButton disabled={false} onPress={() => Linking.openURL(`sms:${phone}`)} text="text" type="border" />
-                </View> */}
 
-
-                        {/* <Text style={{ fontSize: 17, fontWeight: '600', padding: '2%' }}>{firstname} {surname}</Text>
-                    {status === "confirmed" ? <Text style={{ fontSize: 18, fontWeight: '700', padding: '1%' }}>{phone}</Text> : null} */}
                     </View>
                     <View style={styles.line}></View>
                     <StatusDisplay
                         liftid={liftid}
                         status={status}
-                        setConfirmedRequests={setConfirmedRequests}
                         requestid={requestid}
-                        isFocused={isFocused}
                         isActive={isActive}
                         setIsVisibleQR={setIsVisibleQR}
                         navigation={navigation}
@@ -227,30 +174,30 @@ const PassengerRouteDetails = ({ route, navigation }) => {
                 </View>
             </View>
             {isVisibleQR ?
-            (
-                // <View style={styles.flatListView}>
-                /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
-                <Modal animationType="slide"
-                    transparent={true}
-                    visible={true}
-                    onRequestClose={() => {
-                        Alert.alert("Modal has been closed.")
-                    }}>
-                    <View style={styles.centredView}>
+                (
+                    // <View style={styles.flatListView}>
+                    /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
+                    <Modal animationType="slide"
+                        transparent={true}
+                        visible={true}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed.")
+                        }}>
+                        <View style={styles.centredView}>
 
-                        <View style={styles.QRmodal}>
-                            <View>
-                                <PassengerQR id={userID} />
-                                <Button title="close" onPress={() => setIsVisibleQR(false)} />
+                            <View style={styles.QRmodal}>
+                                <View>
+                                    <PassengerQR id={userID} />
+                                    <Button title="close" onPress={() => setIsVisibleQR(false)} />
+                                </View>
                             </View>
-                        </View>
 
-                    </View>
-                </Modal>
-                /* </View> */
-            ) : null}
+                        </View>
+                    </Modal>
+                    /* </View> */
+                ) : null}
         </View>
-        
+
     )
 }
 
@@ -300,41 +247,41 @@ const styles = StyleSheet.create({
         width: Dimensions.get('screen').width * 1
     },
     backgroundContainer: {
-    flex: 1, 
-    justifyContent: 'flex-end', 
-    shadowOffset: {
-        height: 3,
-        width: -3
+        flex: 1,
+        justifyContent: 'flex-end',
+        shadowOffset: {
+            height: 3,
+            width: -3
+        },
+        shadowRadius: 2,
+        //shadowColor: 'black',
+        shadowOpacity: 0.15
     },
-    shadowRadius: 2,
-    //shadowColor: 'black',
-    shadowOpacity: 0.15
-},
-QRmodal: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-        width: 0,
-        height: 2
+    QRmodal: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        height: Dimensions.get('window').height * 0.4,
+        width: Dimensions.get('window').width * 0.8,
+        justifyContent: 'center'
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    height: Dimensions.get('window').height * 0.4,
-    width: Dimensions.get('window').width * 0.8,
-    justifyContent: 'center'
-},
-centredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    //marginTop: 22,
-    height: Dimensions.get('window').height * 0.4
-}
+    centredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        //marginTop: 22,
+        height: Dimensions.get('window').height * 0.4
+    }
 })
 
 export default PassengerRouteDetails;

@@ -5,6 +5,8 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import { useSelector } from 'react-redux';
 import ScanListCard from '../components/Cards/ScanListCard';
 import DriverRatings from '../components/DriverRatings';
+import CompleteButton from '../components/Buttons/CompleteButton';
+
 
 
 const DriverCheckIn = ({ route }) => {
@@ -13,6 +15,8 @@ const DriverCheckIn = ({ route }) => {
     const [isVisibleRatings, setIsVisibleRatings] = useState(false)
 
     const { passengers, liftshare_id } = route.params
+
+    const scannedPassengers = passengers.filter(item => item.scanned === true)
 
     const ids = passengers.map(index => index.user_id)
 
@@ -38,23 +42,98 @@ const DriverCheckIn = ({ route }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/completelift/${liftshare_id}`, {
+            await fetch(`http://192.168.1.142:8081/dashboard/completelift/${liftshare_id}`, {
+                method: 'PUT',
+                headers: myHeaders
+            });
+
+            // const parseRes = await response.json()
+
+            // console.log(parseRes)
+
+
+        } catch (error) {
+            console.log(error.message)
+        }
+
+    }
+
+    const payDriver = async () => {
+        try {
+
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("token", token);
+
+            const body = { liftshare_id, scannedPassengers }
+
+            const response = await fetch(`http://192.168.1.142:8081/payment/paydriver/${liftshare_id}`, {
+                method: 'POST',
+                headers: myHeaders,
+                body: JSON.stringify(body)
+            });
+
+            const parseRes = await response.text()
+
+            console.log(parseRes)
+            
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    const completePress = async () => {
+
+        const notScanned = passengers.filter(item => item.scanned === false)
+
+        if(notScanned.length === 0) {
+
+            await completeLift()
+            await payDriver()
+            
+            setIsVisibleRatings(true)
+
+        } else {
+
+            for (const item of notScanned) {
+
+                await noShow(item.request_id)
+    
+            }
+
+            await completeLift()
+            await payDriver()
+
+            setIsVisibleRatings(true)
+
+        }
+
+    }
+
+    const noShow = async (request_id) => {
+
+        // write backend for this
+
+        try {
+            
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("token", token);
+
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/noshow/${request_id}`, {
                 method: 'PUT',
                 headers: myHeaders
             });
 
             const parseRes = await response.json()
 
-            if (parseRes.rows.length !== 0) {
+            console.log(parseRes)
 
-                setIsVisibleRatings(true)
-                //launch animation function, async ratings after
-            }
+
 
         } catch (error) {
             console.log(error.message)
         }
-
     }
 
     // const handleBarCodeScanned = async({ type, data }) => {
@@ -86,35 +165,11 @@ const DriverCheckIn = ({ route }) => {
                 console.log("this user is not included in the lift")
             }
 
-            if (passengers.every(item => item.scanned === true)) {
-                // set status of liftshare to confirmed = true
-                // completed lift animation
-                await completeLift()
+            // if (passengers.every(item => item.scanned === true)) {
+    
+            //     await completeLift()
 
-                // IF "LIFTSHARE CONFIRMED" then launch animation, launch ratings after
-            }
-
-            //if all passengers = confirmed, db request to set confirmed to true on this liftshare
-
-            //pass in idsArray = data above when testing
-
-            // sort payment
-
-            // const myHeaders = new Headers();
-            // myHeaders.append("Content-Type", "application/json");
-            // myHeaders.append("token", token);
-
-            // const body = { ids }
-
-            // const response = await fetch(`http://192.168.86.99:8081/payment/checkout/capture/${id}`, {
-            //     method: "POST",
-            //     headers: myHeaders,
-            //     body: JSON.stringify(body)
-            // });
-
-            // const parseRes = await response.json();
-
-            // console.log(parseRes)
+            // }
 
         } catch (error) {
             console.log(error.message)
@@ -125,15 +180,6 @@ const DriverCheckIn = ({ route }) => {
         //alert(`Bar code with type ${type} and data ${data} has been scanned!`);
     };
 
-    // if(passengers.every(item => item.scanned === true)) {
-    //     setAllChecked(true)
-    //     console.log("hi")
-    //     // set status of liftshare to confirmed = true
-    // } 
-
-    // const allScanned = () => {
-
-    // }
 
     if (hasPermission === null) {
         return <Text>Requesting for camera permission</Text>;
@@ -152,6 +198,7 @@ const DriverCheckIn = ({ route }) => {
                 scanned={item.scanned}
                 picture={item.profile_picture}
                 price={item.driverprice}
+                request_id={item.request_id}
                 passengers={passengers.length}
             />
         )
@@ -175,13 +222,19 @@ const DriverCheckIn = ({ route }) => {
                             {/* <Button title="press" onPress={handleBarCodeScanned}/> */}
                         </View>
                         <View style={styles.listContainer}>
+                            <View style={{ flex: 1 }}>
                             <FlatList
                                 style={styles.flatlist}
                                 data={passengers}
                                 renderItem={renderPassenger}
                                 keyExtractor={item => JSON.stringify(item.user_id)}
                             />
+                            </View>
+                            <View>
+                                <CompleteButton text="Complete Lift" onPress={() => completePress()}/>
+                            </View>
                         </View>
+
                         {
                             isVisibleRatings ?
 
@@ -192,7 +245,7 @@ const DriverCheckIn = ({ route }) => {
                                         Alert.alert("Modal has been closed.")
                                     }}>
                                     <View style={styles.centredView}>
-                                        <DriverRatings passengers={passengers} liftshare_id={liftshare_id} setIsVisibleRatings={setIsVisibleRatings} />
+                                        <DriverRatings passengers={scannedPassengers} liftshare_id={liftshare_id} setIsVisibleRatings={setIsVisibleRatings} />
                                     </View>
 
                                 </Modal>) : null}
@@ -223,9 +276,8 @@ const styles = StyleSheet.create({
     listContainer: {
         height: Dimensions.get('window').height * 0.42,
         width: Dimensions.get('screen').width * 0.8,
-        flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     flatlist: {
         alignSelf: 'center'

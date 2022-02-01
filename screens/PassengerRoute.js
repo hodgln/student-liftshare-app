@@ -71,7 +71,7 @@ const PassengerRoute = props => {
     const getCoords = async (place_id) => {
         try {
 
-            const response = await fetch(`http://192.168.86.99:8081/locations/coords/${place_id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/locations/coords/${place_id}`, {
                 method: 'GET',
                 headers: {
                     token: token

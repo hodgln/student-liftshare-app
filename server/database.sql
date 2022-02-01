@@ -255,8 +255,8 @@ WHERE l.liftshare_id = $1`
             AVG(r.rating)
             FROM Users AS u
             INNER JOIN Ratings as r ON r.user_id = u.user_id
-            GROUP BY u.user_firstname
-            WHERE u.user_id = $1`
+            WHERE u.user_id = $1
+            GROUP BY u.user_firstname`
 
 works
 

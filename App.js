@@ -18,13 +18,15 @@ import {
 } from '@expo-google-fonts/inter';
 import AppLoading from 'expo-app-loading';
 import * as Notifications from 'expo-notifications';
+import * as Linking from 'expo-linking';
+import Constants from 'expo-constants';
 
 
 
 export default function App() {
 
   Notifications.setNotificationHandler({
-    handleNotification: async() => {
+    handleNotification: async () => {
       return { shouldShowAlert: true }
     }
   })
@@ -45,11 +47,16 @@ export default function App() {
     return <AppLoading />;
   } else {
 
+    
 
     return (
       <Provider store={store} >
         <PersistGate loading={null} persistor={persistor} >
-          <StripeProvider publishableKey="pk_test_51IxqKxDSswVkzYl6yUdE2l58HEiScXybtxZMFdE3lHxLporfFzSJacB3hGgj79FkQrQHLez6o4BCkAdBSfU448QF00k305f0vp">
+          <StripeProvider publishableKey="pk_test_51IxqKxDSswVkzYl6yUdE2l58HEiScXybtxZMFdE3lHxLporfFzSJacB3hGgj79FkQrQHLez6o4BCkAdBSfU448QF00k305f0vp" 
+          urlScheme={Constants.appOwnership === 'expo'
+            ? Linking.createURL('/--/')
+            : Linking.createURL('')
+            }>
             <RootStack />
           </StripeProvider>
         </PersistGate>

@@ -26,6 +26,7 @@ import PasswordResetScreen from '../screens/ResetPassword';
 import PassengerRouteDetails from '../screens/PassengerRouteDetails';
 import DriverRouteDetails from '../screens/DriverRouteDetails';
 import LiftSearchDetails from '../screens/LiftSearchDetails';
+import DriverSignUp from '../screens/DriverSignUp';
 
 
 
@@ -50,7 +51,7 @@ const RootStack = () => {
   const isAuth = async () => {
     try {
 
-      const verify = await fetch("http://192.168.86.99:8081/auth/verified", {
+      const verify = await fetch("http://192.168.1.142:8081/auth/verified", {
         method: "GET",
         headers: { token: token }
       });
@@ -206,6 +207,7 @@ const RootStack = () => {
     SignUpOne: SignUpOne,
     SignUpTwo: SignUpTwo,
     SignUpThree: SignUpThree,
+    DriverSignUp: DriverSignUp,
     CScreen: ConfirmationScreen,
     PReset: PasswordResetScreen
   };

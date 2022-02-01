@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Dimensions, Alert, Button } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Alert, Button, TouchableOpacity } from 'react-native'
 import SeatButton from '../components/Buttons/SeatButton'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NextButton from '../components/Buttons/NextButton';
 import { useSelector } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 
 
 
 const DriverRouteTwo = ({ route, navigation }) => {
 
-    const [seats, setSeats] = useState()
+    const [seats, setSeats] = useState(0)
 
     const token = useSelector(state => state.authorisation.userToken);
 
@@ -25,9 +26,10 @@ const DriverRouteTwo = ({ route, navigation }) => {
 
     const minimumDate = new Date().setHours(0, 0, 0, 0)
 
-    console.log(date.toDateString())
-
     const driverprice = distance * 0.62137119 * 0.159;
+
+    const roundedprice = driverprice.toFixed(2)
+    //look at apis for the petrol value?
 
     const mode = 'datetime'
 
@@ -36,6 +38,11 @@ const DriverRouteTwo = ({ route, navigation }) => {
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
     };
+
+    //create a function that takes into account stripe fees and creates a charge for each passenger based on that, save this value into the db for easy access later.
+    // add into useEffect loop
+
+
 
     const onGoPress = async () => {
         try {
@@ -47,8 +54,8 @@ const DriverRouteTwo = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const body = { datepicked, originlocation, destinationlocation, originname, destinationname, seats, driverprice }
-            const response = await fetch("http://192.168.86.99:8081/dashboard/Liftshares", {
+            const body = { datepicked, originlocation, destinationlocation, originname, destinationname, seats, roundedprice }
+            const response = await fetch("http://192.168.1.142:8081/dashboard/Liftshares", {
                 method: "POST",
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -80,6 +87,19 @@ const DriverRouteTwo = ({ route, navigation }) => {
         navigation.popToTop()
     }
 
+    /*
+
+    get price and return a three row component (make new price component)
+
+    component contains row 1
+     price for one passenger (price /3) - 1
+
+     price for two 2/3(price)
+
+     for three (price)
+
+    */
+
 
     return (
         <View style={styles.container}>
@@ -89,23 +109,23 @@ const DriverRouteTwo = ({ route, navigation }) => {
                         <Text style={{ fontSize: 20 }}>How many seats are available?</Text>
                     </View>
                     <View style={styles.line}></View>
-                    <View style={{ padding: 10 }}>
+                    <View style={{ padding: 10, justifyContent: 'center' }}>
                         <View style={styles.twoSeats}>
-                        <SeatButton onPress={() => setSeats(1)} Styles={seats >= 1} />
-                        <SeatButton onPress={() => setSeats(2)} Styles={seats >= 2} />
-                        <SeatButton onPress={() => setSeats(3)} Styles={seats >= 3} />
-                        <SeatButton onPress={() => setSeats(4)} Styles={seats >= 4} />
-                    </View>
-                        {/* <Picker
-                            selectedValue={seats}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setSeats(itemValue)
-                            }>
-                            <Picker.Item label="1" value={1} />
-                            <Picker.Item label="2" value={2} />
-                            <Picker.Item label="3" value={3} />
-                            <Picker.Item label="4" value={4} />
-                        </Picker> */}
+                            <View style={styles.addsubtract}>
+                                <TouchableOpacity onPress={() => setSeats(seats - 1)} disabled={seats === 0}>
+                                    <Ionicons name="remove-circle-outline" size={28} color="black" />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ width: '80%', alignItems: 'center', justifyContent: 'center' }}>
+                                <Text style={styles.boldText}>{seats}</Text>
+                            </View>
+
+                            <View style={styles.addsubtract}>
+                                <TouchableOpacity onPress={() => setSeats(seats + 1)} disabled={seats === 4}>
+                                    <Ionicons name="add-circle-outline" size={28} color="black" />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
                 </View>
 
@@ -137,7 +157,7 @@ const DriverRouteTwo = ({ route, navigation }) => {
 
                 <View style={styles.bottomline}></View>
                 <View style={{ alignSelf: 'center', marginBottom: Dimensions.get('screen').height * 0.03 }}>
-                    <NextButton text="Post Route" disabled={seats !== undefined && date >= new Date() ? false : true} onPress={onGoPress} />
+                    <NextButton text="Post Route" disabled={seats !== 0 && date >= new Date() ? false : true} onPress={onGoPress} />
                 </View>
             </View>
         </View>
@@ -146,7 +166,8 @@ const DriverRouteTwo = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
     twoSeats: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        width: '100%'
     },
     container: {
         justifyContent: 'center',
@@ -191,7 +212,17 @@ const styles = StyleSheet.create({
         borderWidth: 0.3,
         borderColor: 'darkgrey',
         borderRadius: 20
-    }
+    },
+    addsubtract: {
+        width: '10%',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    boldText: {
+        fontFamily: 'Inter_800ExtraBold',
+        fontSize: 50,
+        color: '#0466c8'
+    },
 })
 
 export default DriverRouteTwo;

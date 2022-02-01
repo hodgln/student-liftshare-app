@@ -8,9 +8,9 @@ const BookButton = (props) => {
         const navigation = useNavigation()
 
         return (
-            <TouchableOpacity onPress={() => navigation.navigate("Payment", { liftid: props.liftshare_id})} disabled={props.disabled}>
+            <TouchableOpacity onPress={() => navigation.navigate("Payment", { liftid: props.liftshare_id })} disabled={props.disabled}>
                 <View style={styles.confirmed}>
-                        <Text style={{  color: 'white', fontFamily: 'Inter_600SemiBold', fontSize: 17 }}>{props.text}</Text>
+                        <Text style={{ color: 'white', fontFamily: 'Inter_600SemiBold', fontSize: 17 }}>{props.text}</Text>
                 </View>
             </TouchableOpacity>
 

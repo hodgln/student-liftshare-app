@@ -35,7 +35,7 @@ const PassengerLiftFinder = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
             const body = { originlocation, destinationlocation }
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/Liftshares/distance`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/Liftshares/distance`, {
                 method: "POST",
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -66,6 +66,7 @@ const PassengerLiftFinder = ({ route, navigation }) => {
         if(item.seats <= 0) {
             return null
         } else {
+            console.log(item.passengerprice)
         return (<View style={styles.container}>
             <PreviewCard
                 name={item.category}
@@ -76,7 +77,7 @@ const PassengerLiftFinder = ({ route, navigation }) => {
                 from={item.originname}
                 to={item.destinationname}
                 seats={item.seats}
-                price={item.driverprice}
+                price={item.passengerprice}
                 liftshare_id={item.liftshare_id}
                 driver_firstname={item.user_firstname}
                 driver_surname={item.user_surname}

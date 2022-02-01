@@ -56,6 +56,7 @@ router.post("/register", validateInfo, async (req, res) => {
             ]);
         };
 
+        
 
         const token = JWTgen(newUser.rows[0].user_id);
 

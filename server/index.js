@@ -3,11 +3,11 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
-    cors: {
-    origin: "http://192.168.1.142:8081",
-    methods: ["GET", "POST"],
- }});
+// const io = require('socket.io')(server, {
+//     cors: {
+//     origin: "http://192.168.1.142:8081",
+//     methods: ["GET", "POST"],
+//  }});
 // const messaging = require("./routes/messaging");
 
 
@@ -38,8 +38,6 @@ app.use("/confirmation", require("./routes/confirmation"));
 app.use("/locations", require("./routes/locations"));
 
 //notifications route
-
-
 
 //get messages
 //app.get("/getmessage", messaging.getSocketMessages)

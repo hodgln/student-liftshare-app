@@ -6,6 +6,8 @@ const RouteDisplay = (props) => {
 
     const { from, to, date, time, price } = props
 
+    console.log(price)
+
     return (
         <View style={styles.container}>
             <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: '5%' }}>
@@ -40,7 +42,7 @@ const RouteDisplay = (props) => {
                         </View>
                     </View>
                     <View style={[styles.dateTime, {justifyContent: 'flex-end'}]}>
-                        <Text style={{ fontSize: 22, fontWeight: '600', padding: '2%', color: '#0352A0' }}>{price}</Text>
+                        <Text style={{ fontSize: 22, fontWeight: '600', padding: '2%', color: '#0352A0' }}>£{price}</Text>
                     </View>
                 </View>
             </View>

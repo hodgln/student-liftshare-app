@@ -8,7 +8,9 @@ const DriverRatings = (props) => {
 
     const [rated, setRated] = useState([])
 
-    console.log(passengers.passengers[0].destinationname)
+    console.log(passengers)
+
+    // sort passengers props out
 
     useEffect(() => {
         if(passengers.length === rated.length) {
@@ -39,13 +41,13 @@ const DriverRatings = (props) => {
                     <Text style={{ fontSize: 16, fontFamily: 'Inter_400Regular', }}>Please rate your passengers to </Text>
                 </View>
                 <View>
-                    <Text style={{ fontSize: 16, fontFamily: 'Inter_600SemiBold', color: '#0352A0' }}>{JSON.parse(passengers.passengers[0].destinationname)}</Text>
+                    <Text style={{ fontSize: 16, fontFamily: 'Inter_600SemiBold', color: '#0352A0' }}>{JSON.parse(passengers[0].destinationname)}</Text>
                 </View>
             </View>
             
             <FlatList
                 style={styles.modal}
-                data={passengers.passengers}
+                data={passengers}
                 renderItem={renderRatings}
                 keyExtractor={item => JSON.stringify(item.request_id)}
             />

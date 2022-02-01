@@ -3,6 +3,7 @@ const { Pool } = require("pg");
 const pool = require("../db");
 const authorisation = require("../middleware/authorisation");
 const notificationSender = require("../utilities/notificationSender");
+const passengerPriceCalc = require("../utilities/passengerPriceCalc");
 
 router.get("/", authorisation, async (req, res) => {
     try {
@@ -29,21 +30,21 @@ router.get("/", authorisation, async (req, res) => {
             AVG(rating)
             FROM Ratings
             WHERE user_id = $1`, [
-                req.user.id
-            ]
+            req.user.id
+        ]
         );
 
         console.log(getRating)
 
-        if(user.rows[0].user_account === 'passenger') {
+        if (user.rows[0].user_account === 'passenger') {
             const getCompletedLifts = await pool.query(
                 `SELECT
                 Count(*)
                 FROM Requests as r
                 INNER JOIN Liftshares as l ON l.liftshare_id = r.liftshare_id
                 WHERE l.completed = true AND r.status = 'confirmed' AND r.user_id = $1`, [
-                    req.user.id
-                ]
+                req.user.id
+            ]
             );
 
             res.json({
@@ -57,8 +58,8 @@ router.get("/", authorisation, async (req, res) => {
                 Count(*)
                 FROM Liftshares
                 WHERE completed = true AND user_id = $1`, [
-                    req.user.id
-                ]
+                req.user.id
+            ]
             );
 
             res.json({
@@ -68,7 +69,7 @@ router.get("/", authorisation, async (req, res) => {
             })
         }
 
-    
+
 
 
     } catch (err) {
@@ -82,8 +83,6 @@ router.get("/", authorisation, async (req, res) => {
 router.get("/profilelifts", authorisation, async (req, res) => {
     try {
 
-        const userID = await req.user.id;
-
         const userLifts = await pool.query(
             `SELECT 
             l.liftshare_id,
@@ -96,7 +95,7 @@ router.get("/profilelifts", authorisation, async (req, res) => {
             l.driverprice
             FROM Liftshares as l
             WHERE l.user_id = $1 AND l.completed = false`, [
-            userID
+            req.user.id
         ]
         );
 
@@ -110,6 +109,15 @@ router.get("/profilelifts", authorisation, async (req, res) => {
 router.get("/getrequests/:id", authorisation, async (req, res) => {
     try {
         const { id } = req.params
+
+        await pool.query(
+            `DELETE FROM Requests 
+            WHERE created_at < now() - interval '7 days'
+            AND status = 'pending'
+            AND liftshare_id = $1`, [
+            id
+        ]);
+
         const getrequests = await pool.query(
             `SELECT
             u.user_firstname,
@@ -120,6 +128,7 @@ router.get("/getrequests/:id", authorisation, async (req, res) => {
             r.request_id,
             r.user_id,
             l.driverprice,
+            l.passengerprice,
             l.destinationname
             FROM Requests AS r
             INNER JOIN Liftshares AS l ON l.liftshare_id = r.liftshare_id
@@ -128,16 +137,7 @@ router.get("/getrequests/:id", authorisation, async (req, res) => {
             id
         ]);
 
-        //add in AND r.status = 'pending' to
-
-        //find a way to differentate between pending and confirmed 
-
-        //AND l.user_id = $2, do this for improved security so people can't easily access other lifts requests
-
-        // if (getrequests.rows.length === 0) {
-        //     res.json("you do not have any requests for this lift")
-        //     // console.log("you do not have any requests for this lift")
-        // } else {
+        
         res.json(getrequests.rows)
         // }
 
@@ -156,8 +156,8 @@ router.get("/countpassengers/:id", authorisation, async (req, res) => {
             count(*)
             FROM Requests
             WHERE liftshare_id = $1 AND status = 'confirmed'`, [
-                id
-            ]
+            id
+        ]
         )
 
         const getSeats = await pool.query(
@@ -165,81 +165,35 @@ router.get("/countpassengers/:id", authorisation, async (req, res) => {
             seats
             FROM Liftshares
             WHERE liftshare_id = $1`, [
-                id
-            ]
+            id
+        ]
         )
 
         res.json({
             passengers: countPassengers.rows[0].count,
             seats: getSeats.rows[0].seats
         });
-        
-    } catch (error) {
-        console.log(error.message)
-    }
-})
-
-router.get("/getrequests/:id", authorisation, async (req, res) => {
-    try {
-        const { id } = req.params
-        const getrequests = await pool.query(
-            `SELECT
-            u.user_firstname,
-            u.user_surname,
-            u.phone_number,
-            r.status,
-            r.request_id,
-            r.user_id
-            FROM Requests AS r
-            INNER JOIN Liftshares AS l ON l.liftshare_id = r.liftshare_id
-            INNER JOIN Users AS u ON u.user_id = r.user_id
-            WHERE l.liftshare_id = $1`, [
-            id
-        ]);
-
-        //add in AND r.status = 'pending' to
-
-        //find a way to differentate between pending and confirmed 
-
-        //AND l.user_id = $2, do this for improved security so people can't easily access other lifts requests
-
-        // if (getrequests.rows.length === 0) {
-        //     res.json("you do not have any requests for this lift")
-        //     // console.log("you do not have any requests for this lift")
-        // } else {
-        res.json(getrequests.rows)
-        // }
 
     } catch (error) {
         console.log(error.message)
     }
-})
-
-router.get("/passengerprice/:id", authorisation, async (req, res) => {
-    try {
-        const { id } = req.params
-
-        const getCount = await pool.query(
-            "SELECT count(*) FROM Requests WHERE status = 'confirmed' AND liftshare_id = $1", [
-            id
-        ]);
-
-        res.json(getCount.rows[0].count);
-
-
-    } catch (error) {
-        console.log(error.message)
-    }
-})
+});
 
 router.get("/passengerlifts", authorisation, async (req, res) => {
     try {
+
+        // add in timestamp to requests!
+
+        await pool.query("DELETE FROM Requests WHERE created_at < now() - interval '7 days' AND status = 'pending' AND user_id = $1", [
+            req.user.id
+        ]);
+
         const passengerlifts = await pool.query(
             `SELECT 
         l.datepicked,
         l.originname,
         l.destinationname,
-        l.driverprice,
+        l.passengerprice,
         l.originlocation,
         l.destinationlocation,
         u.user_firstname,
@@ -253,7 +207,7 @@ router.get("/passengerlifts", authorisation, async (req, res) => {
         FROM Requests AS r
         INNER JOIN Liftshares AS l ON l.liftshare_id = r.liftshare_id
         INNER JOIN Users AS u ON u.user_id = l.user_id
-        WHERE r.user_id = $1`, [
+        WHERE r.user_id = $1 AND l.completed = false`, [
             req.user.id
         ]);
 
@@ -296,6 +250,8 @@ router.put("/handlestatus", authorisation, async (req, res) => {
                 someData: { liftshare_id: id },
                 body: `Your lift request to ${JSON.parse(to)} has been accepted!`
             })
+
+            // please contact the driver to arrange a meet point
 
         } else if (status === "declined") {
             notificationSender({
@@ -363,7 +319,16 @@ router.post("/Liftshares", authorisation, async (req, res) => {
         //const userID = (req.user.id).replace(/"/g, "'")
         // do this for userID here to insert into db
 
-        const { datepicked, originlocation, destinationlocation, originname, destinationname, seats, driverprice } = req.body
+        const { datepicked, originlocation, destinationlocation, originname, destinationname, seats, roundedprice } = req.body
+
+        const passengerprice = passengerPriceCalc(roundedprice)
+
+
+
+        console.log(passengerprice)
+
+        //call driverprice utility function here on driverprice from req.body
+
         const newCategory = await pool.query(
             `INSERT INTO Liftshares 
         (datepicked, 
@@ -373,11 +338,14 @@ router.post("/Liftshares", authorisation, async (req, res) => {
         destinationname, 
         seats, 
         driverprice,
+        passengerprice,
         user_id)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-            [datepicked, originlocation, destinationlocation, originname, destinationname, seats, driverprice, req.user.id]);
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+            [datepicked, originlocation, destinationlocation, originname, destinationname, seats, roundedprice, passengerprice, req.user.id]);
 
         // insert price calculation in VALUES as the 8th one
+
+
 
         res.json(newCategory)
     } catch (error) {
@@ -420,20 +388,19 @@ router.post("/Requests/post", authorisation, async (req, res) => {
             liftid, req.user.id, status, intentID
         ]);
 
-        console.log(enterRequest.rows[0])
 
         const getPushToken = await pool.query("SELECT u.push_token from Users as u INNER JOIN Liftshares as l ON u.user_id = l.user_id INNER JOIN Requests as r ON l.liftshare_id = r.liftshare_id WHERE r.request_id = $1", [
             enterRequest.rows[0].request_id
         ]);
-
-        console.log(Array(getPushToken.rows[0].push_token))
 
 
         notificationSender({
             somePushTokens: Array(getPushToken.rows[0].push_token),
             someData: { request_id: enterRequest.rows[0].request_id },
             body: "You have received a request!"
-        })
+        });
+
+        
 
 
         res.json({ title: "Lift Booked!", body: "Please await confirmation from the driver" });
@@ -495,6 +462,7 @@ router.post("/Liftshares/distance", authorisation, async (req, res) => {
         l.seats,
         l.liftshare_id,
         l.driverprice,
+        l.passengerprice,
         ((l.originlocation <@> $1) + (l.destinationlocation <@> $2)) as distance,
         l.user_id,
         u.user_firstname,
@@ -522,7 +490,7 @@ router.post("/Liftshares/distance", authorisation, async (req, res) => {
 });
 
 
-router.get("/driverprofile/:driver_id", authorisation, async(req, res) => {
+router.get("/driverprofile/:driver_id", authorisation, async (req, res) => {
     try {
 
         const { driver_id } = req.params
@@ -533,8 +501,8 @@ router.get("/driverprofile/:driver_id", authorisation, async(req, res) => {
             AVG(rating)
             FROM Ratings
             WHERE user_id = $1`, [
-                driver_id
-            ]
+            driver_id
+        ]
         );
 
         const getCompletedLifts = await pool.query(
@@ -542,26 +510,26 @@ router.get("/driverprofile/:driver_id", authorisation, async(req, res) => {
             Count(*)
             FROM Liftshares
             WHERE completed = true AND user_id = $1`, [
-                driver_id
-            ]
+            driver_id
+        ]
         );
 
         res.json({
             rating: getRating.rows[0].avg,
             completed: getCompletedLifts.rows[0].count
         })
-        
+
     } catch (error) {
         console.log(error.message)
     }
 })
 
-router.get("/passengerprofile/:passenger_id", authorisation, async(req, res) => {
+router.get("/passengerprofile/:passenger_id", authorisation, async (req, res) => {
     try {
 
         const { passenger_id } = req.params
 
-         
+
         // rewrite this from the passengers perspective
 
         const getRating = await pool.query(
@@ -569,8 +537,8 @@ router.get("/passengerprofile/:passenger_id", authorisation, async(req, res) => 
             AVG(rating)
             FROM Ratings
             WHERE user_id = $1`, [
-                passenger_id
-            ]
+            passenger_id
+        ]
         );
 
         const getCompletedLifts = await pool.query(
@@ -579,15 +547,15 @@ router.get("/passengerprofile/:passenger_id", authorisation, async(req, res) => 
             FROM Requests as r
             INNER JOIN Liftshares as l ON l.liftshare_id = r.liftshare_id
             WHERE l.completed = true AND r.status = 'confirmed' AND r.user_id = $1`, [
-                passenger_id
-            ]
+            passenger_id
+        ]
         );
 
         res.json({
             rating: getRating.rows[0].avg,
             completed: getCompletedLifts.rows[0].count
         })
-        
+
     } catch (error) {
         console.log(error.message)
     }
@@ -627,39 +595,75 @@ router.get("/ratings/frompassenger", authorisation, async (req, res) => {
 
         console.log(liftIDs.rows)
 
-        // make asynchronous
-
-        for (const element of liftIDs.rows) {
-            const getNonRatedDriver = await pool.query(
-                `SELECT 
-                    l.liftshare_id,
-                    l.destinationname,
-                    u.user_firstname,
-                    u.profile_picture,
-                    l.user_id
-                    FROM Liftshares as l
-                    INNER JOIN Requests as r ON r.liftshare_id = l.liftshare_id
-                    INNER JOIN Users as u ON u.user_id = l.user_id
-                    WHERE r.liftshare_id = $1 AND r.status = 'confirmed' AND r.user_id = $2 AND
-                    l.user_id NOT IN (SELECT user_id FROM Ratings WHERE liftshare_id = $1 AND submitted_by = $2)`, [
-                element.liftshare_id, req.user.id
-            ]);
+        // make similar to below route!!
 
 
 
-            if (getNonRatedDriver.rows.length !== 0) {
-                // ratingData.push(
-                    
-                res.json(getNonRatedDriver.rows)
-
-            }
-
-    };
 
 
-} catch (error) {
-    console.log(error.message)
-}
+        const getDriver = async () => {
+
+            let ratingData = []
+
+            for (const element of liftIDs.rows) {
+
+                const getNonRatedDriver = await pool.query(
+                    `SELECT 
+                        l.liftshare_id,
+                        l.destinationname,
+                        u.user_firstname,
+                        u.profile_picture,
+                        l.user_id
+                        FROM Liftshares as l
+                        INNER JOIN Requests as r ON r.liftshare_id = l.liftshare_id
+                        INNER JOIN Users as u ON u.user_id = l.user_id
+                        WHERE r.liftshare_id = $1 AND r.status = 'confirmed' AND r.user_id = $2 AND
+                        l.user_id NOT IN (SELECT user_id FROM Ratings WHERE liftshare_id = $1 AND submitted_by = $2)`, [
+                    element.liftshare_id, req.user.id
+                ]);
+
+
+                // res.json()
+
+                if (getNonRatedDriver.rows.length !== 0) {
+                    for (const row of getNonRatedDriver.rows) {
+                        ratingData.push(row)
+                        // this should work because the liftshareID should not vary if only one set of passengers can get rated at once. 
+                    }
+                    // res.json(getNonRatedDriver.rows)
+                }
+                // }
+
+            };
+
+            return (ratingData)
+        }
+
+        const unratedDriver = await getDriver()
+
+        res.json(unratedDriver)
+
+
+    } catch (error) {
+        console.log(error.message)
+    }
+})
+
+router.put("/noshow/:id", authorisation, async (req, res) => {
+    try {
+
+        const { id } = req.params;
+
+        const editStatus = await pool.query("UPDATE Requests SET status = $1 WHERE request_id = $2", [
+            "noshow", id
+        ]);
+
+        res.json(editStatus)
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+
 })
 
 router.get("/ratings/fromdriver", authorisation, async (req, res) => {

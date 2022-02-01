@@ -11,6 +11,7 @@ import RouteDisplay from '../components/RouteDisplay';
 import RequestButton from '../components/Buttons/RequestButton';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/core';
+import PriceDisplay from '../components/PriceDisplay';
 import StatusButton from '../components/Buttons/StatusButton';
 
 
@@ -29,6 +30,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
     const [QRids, setQRids] = useState()
     const isFocused = useIsFocused()
     const [map, setMap] = useState()
+    const [showPrice, setShowPrice] = useState()
 
     // display the seats as the number of confirmed requests + the number of seats.
 
@@ -65,7 +67,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("http://192.168.86.99:8081/locations/signurl", {
+            const response = await fetch("http://192.168.1.142:8081/locations/signurl", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -92,7 +94,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("http://192.168.86.99:8081/locations/distance", {
+            const response = await fetch("http://192.168.1.142:8081/locations/distance", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -116,7 +118,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
     const deleteLift = async () => {
         try {
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/Liftshares/${id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/Liftshares/${id}`, {
                 method: "DELETE",
                 headers: { token: token }
             });
@@ -152,7 +154,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/countpassengers/${id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/countpassengers/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });
@@ -175,7 +177,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/getrequests/${id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });
@@ -206,7 +208,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/getrequests/${id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });
@@ -246,6 +248,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
                     picture={item.profile_picture}
                     passenger_id={item.user_id}
                     to={to}
+                    passengerprice={item.passengerprice}
                 />
             </View>)
         /* {console.log(item.user_firstname)} */
@@ -270,31 +273,25 @@ const DriverRouteDetails = ({ route, navigation }) => {
     }
     // };
 
-    const priceHandler = (price) => {
-        if (price === null) { return 'price' } else {
-            const truncPrice = price.toFixed(2)
-            const formatPrice = formatter.format(truncPrice);
-            return (formatPrice)
-        }
+
+
+
+
+    const mapHandler = async () => {
+        const polyline = await getPolyline(
+            { latitude: origin.y, longitude: origin.x },
+            { latitude: destination.y, longitude: destination.x }
+        );
+        getMapImg(polyline)
     }
 
-    
-
-        const mapHandler = async() => {
-            const polyline = await getPolyline(
-                { latitude: origin.y, longitude: origin.x },
-                { latitude: destination.y, longitude: destination.x }
-            );
-            getMapImg(polyline)
-            }
-        
 
     useEffect(async () => {
         // if (momentFormat(dateFormat) === momentFormat(todayDate)) {
         //     setIsActive(true)
         // }
 
-        
+
         mapHandler()
 
         const result = await initialCountPassengers()
@@ -314,7 +311,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/getrequests/${id}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });
@@ -342,67 +339,74 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
 
 
-    return (
-        //use filter to not render when the date is past the current date - expired
-        // or include this logic in backend to change status to expired
+    // design so "price breakdown" + "delete lift" buttons are side by side
 
-        // display date using moment.js
+    return (
 
         <View style={{ flex: 1 }}>
             {map === undefined ? null : (<ImageBackground style={styles.Image} source={{ uri: map }} />)}
             <View style={styles.backgroundContainer}>
-            <View style={isActive ? [styles.container, styles.isActive] : styles.container}>
-                <View style={styles.halfContainer}>
-                    <View style={{ width: '88%' }}>
-                        <RouteDisplay
-                            from={from}
-                            to={to}
-                            time={moment(dateFormat).format('HH:mm')}
-                            date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
-                            price={priceHandler(price)}
-                        />
-                    </View>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <View style={isActive ? [styles.container, styles.isActive] : styles.container}>
+                    <View style={styles.halfContainer}>
+                        <View style={{ width: '100%' }}>
+                            <RouteDisplay
+                                from={from}
+                                to={to}
+                                time={moment(dateFormat).format('HH:mm')}
+                                date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
+                                price={price}
+                            />
+                        </View>
+                        {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <TouchableOpacity onPress={deleteLift} disabled={isVisibleRequests || isVisiblePassengers}>
                             <Ionicons name="ios-close-circle-outline" size={30} color="#FF1654" />
                         </TouchableOpacity>
+                    </View> */}
+
+                    </View>
+                    <View style={styles.line}></View>
+                    <View style={{ flexDirection: "row" }}>
+                        
+                        <View style={styles.buttonBox}>
+                            {/* <View style={styles.buttons}> */}
+                            <View style={styles.singleButton}>
+                                <RequestButton text="requests" style="filled" onPress={getRequests} disabled={isVisiblePassengers} />
+                            </View>
+                            <View style={styles.singleButton}>
+                                <RequestButton text="passengers" style="outline" onPress={getPassengers} disabled={isVisibleRequests} />
+                            </View>
+
+                        </View>
+
+                        <View style={styles.buttonBox}>
+
+                            <View style={styles.singleButton}>
+                                <Button title="price breakdown" onPress={() => setShowPrice(true)} />
+                            </View>
+                            <View style={styles.singleButton}>
+                                <Button title="delete lift" onPress={deleteLift}/>
+                            </View>
+
+                        </View>
+
                     </View>
 
-                </View>
-                <View style={styles.line}></View>
+                    <View style={styles.line}></View>
 
-                <View style={{ paddingVertical: '3%', alignItems: 'center', justifyContent: 'center', width: '90%', flexDirection: 'row' }}>
-                    {/* <View style={styles.buttons}> */}
-                        <View style={styles.singleButton}>
-                            <RequestButton text="requests" style="filled" onPress={getRequests} disabled={isVisiblePassengers} />
+                    <View style={{ flexDirection: 'row', paddingVertical: '5%', alignItems: 'center', width: '90%' }}>
+
+                        <View style={{ width: '50%', alignItems: 'center' }}>
+                            <View style={{ flexDirection: 'row' }}>
+                                {passengerNumber === undefined ? null : [...Array(JSON.parse(passengerNumber)).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={32} color="#0466c8" />)}
+                                {[...Array(seatNumber).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={32} color="grey" />)}
+                            </View>
                         </View>
-                        <View style={styles.singleButton}>
-                            <RequestButton text="passengers" style="outline" onPress={getPassengers} disabled={isVisibleRequests} />
+
+                        <View style={{ width: '50%', alignItems: 'center' }}>
+                            <StatusButton text="check in" onPress={checkInHandler} style="confirmed" />
                         </View>
 
-
-                    {/* </View> */}
-
-
-                </View>
-
-                <View style={styles.line}></View>
-
-
-                <View style={{ flexDirection: 'row', paddingVertical: '5%', alignItems: 'center',  width: '90%' }}>
-
-                    <View style={{ width: '50%', alignItems: 'center' }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            {passengerNumber === undefined ? null : [...Array(JSON.parse(passengerNumber)).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={32} color="#0466c8" />)}
-                            {[...Array(seatNumber).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={32} color="grey" />)}
-                        </View>
                     </View>
-
-                    <View style={{ width: '50%', alignItems: 'center' }}>
-                        <StatusButton text="check in" onPress={checkInHandler} style="confirmed" />
-                    </View>
-
-                </View>
 
                 </View>
             </View>
@@ -454,7 +458,8 @@ const DriverRouteDetails = ({ route, navigation }) => {
                     </Modal>
                     /* </View> */
                 ) : null}
-            {isVisibleQR ?
+                       
+                {showPrice ?
                 (
                     // <View style={styles.flatListView}>
                     /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
@@ -468,8 +473,8 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
                             <View style={styles.QRmodal}>
                                 <View>
-                                    <DriverQR ids={QRids} />
-                                    <Button title="close" onPress={() => setIsVisibleQR(false)} />
+                                    <PriceDisplay price={price}/>
+                                    <Button title="close" onPress={() => setShowPrice(false)} />
                                 </View>
                             </View>
 
@@ -484,7 +489,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         width: Dimensions.get('screen').width * 0.9,
-        height: Dimensions.get('window').height * 0.4,
+        height: Dimensions.get('window').height * 0.5,
         // flex: 1,
         borderRadius: 30,
         // borderWidth: 0.5,
@@ -496,8 +501,8 @@ const styles = StyleSheet.create({
         //flexDirection: 'row'
     },
     backgroundContainer: {
-        flex: 1, 
-        justifyContent: 'flex-end', 
+        flex: 1,
+        justifyContent: 'flex-end',
         shadowOffset: {
             height: 3,
             width: -3
@@ -507,9 +512,10 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.15
     },
     singleButton: {
-        width: '50%', 
-        alignItems: 'center', 
-        justifyContent: 'center'
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: '2%'
     },
     isActive: {
         borderColor: 'lightgreen',
@@ -568,8 +574,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        height: Dimensions.get('window').height * 0.4,
-        width: Dimensions.get('window').width * 0.8,
+        height: Dimensions.get('window').height * 0.6,
+        width: Dimensions.get('window').width * 0.9,
         justifyContent: 'center'
     },
     halfContainer: {
@@ -597,6 +603,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#909090',
         justifyContent: 'center',
         marginRight: Dimensions.get('screen').width * 0.08
+    },
+    buttonBox: {
+        paddingVertical: '3%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '45%'
+        //flexDirection: 'row'
     }
 
 })

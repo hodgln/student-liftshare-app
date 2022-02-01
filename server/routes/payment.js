@@ -2,34 +2,167 @@ const router = require("express").Router();
 require("dotenv").config({ path: "../.env" })
 const pool = require("../db");
 const authorisation = require("../middleware/authorisation");
-const stripe = require("stripe")(process.env.stripesecret)
-
+const driverPriceCalc = require("../utilities/driverPriceCalc");
+const notificationSender = require("../utilities/notificationSender");
+const stripe = require("stripe")(process.env.stripesecret);
 
 //NEEDS A SYSTEM REVIEW
+
+//USE STRIPE CONNECT - EXPRESS ACCOUNTS AND MANUAL PAYOUTS
+
+
+// - business url is the spareseat url
+// - merchant code is chosen by platform
+// provide both of these beforehand and the express account should be minimal details
+
+router.post("/expressaccount", async (req, res) => { //add in authorisation here!!
+    try {
+
+        //test standard to see if you can prefill everything apart from what is required in express
+
+        const { firstname, surname, link } = req.body
+
+        
+
+        const account = await stripe.accounts.create({
+            type: 'express',
+            capabilities: {
+                transfers: { requested: true },
+            },
+            business_type: 'individual',
+            business_profile: {
+                product_description: 'A driver who gives lifts to passengers',
+                // url: 'http://localhost:8081' 
+            },
+            individual: {
+                first_name: firstname,
+                last_name: surname,
+                // dob: {
+                //     day: day,
+                //     month: month,
+                //     year: year
+                // },
+                // address: {
+                //     line1: line1,
+                //     postal_code: postal_code,
+                //     city: city
+                // }
+            }
+        });
+
+
+
+        // Your refresh_url should trigger a method on your server to call Account Links again 
+        
+        // with the same parameters and redirect the user to the Connect Onboarding flow to create a seamless experience.
+
+
+        const accountLink = await stripe.accountLinks.create({
+            account: account.id, // account data from above!!
+            refresh_url: 'https://example.com/reauth',
+            return_url: link,
+            type: 'account_onboarding',
+        });
+
+
+
+        // res.json(accountLink)
+
+        res.json({
+           link: accountLink.url,
+           id: account.id
+        })
+
+    } catch (error) {
+        console.log(error.message)
+    }
+})
+
+//routes to handle the refresh and return urls
+
+// return: 
+
+router.get("/returnurl/:accID", async (req, res) => {
+    try {
+
+        const { accID } = req.params
+
+        const account = await stripe.accounts.retrieve(
+            accID
+        );
+
+        console.log(account.id)
+
+        if(account.tos_acceptance.date !== null) {
+            res.json(account.id)
+        } else {
+            res.json("something went wrong")
+        }
+
+    } catch (error) {
+        console.log(error.message)
+    }
+})
+// const account = await stripe.accounts.retrieve(
+//     'acct_1IxqKxDSswVkzYl6'
+//   );
+// if accounts.validated (or similar) is true, then post account number to database
+
+
+//refresh:
+// should call accountsApi again with the same parameters
+
+
+// add in an 'access stripe dashboard' from the profile
+
+
+router.post("/paydriver/:liftshare_id", authorisation, async (req, res) => {
+    try {
+        //send up liftshare_id and use that to get the stripe account of the driver and the driverprice
+
+        const { liftshare_id, scannedPassengers } = req.body
+
+        const userInfo = await pool.query(
+            `SELECT
+            l.driverprice,
+            u.stripe_id
+            FROM Liftshares as l 
+            INNER JOIN Users as u ON l.user_id = u.user_id
+            WHERE l.liftshare_id = $1`, [
+            liftshare_id
+        ]);
+
+        const price = driverPriceCalc(userInfo.rows[0].driverprice, scannedPassengers.length)                  
+
+        // Create a Transfer to the connected account (later):
+        const transfer = await stripe.transfers.create({
+            amount: price * 100,
+            currency: 'gbp',
+            destination: 'acct_1KGLnURWqrJHuYoi', //userInfo.rows[0].stripe_id,
+            transfer_group: `{LIFT${liftshare_id}}`
+        });
+
+        console.log(transfer)
+
+        res.json(transfer)
+
+    } catch (error) {
+        console.log(error.message)
+    }
+})
 
 router.post("/checkout/:id", authorisation, async (req, res) => {
 
 
-    const amountHandler = (price, count) => {
-        if (count !== '0') {
-            return (parseInt((((price / ((+count) + 1)) + 0.5) * 100)))
-        } else {
-            return (
-                parseInt(((price + 0.5) * 100))
-            )
-        }
-    }
+
 
     // register apple merchant
 
     try {
         const { id } = req.params
 
-        const price = await pool.query(`SELECT driverprice FROM Liftshares WHERE liftshare_id = $1`, [
-            id
-        ]);
 
-        const count = await pool.query(`SELECT count(*) FROM Requests WHERE status = 'confirmed' AND liftshare_id = $1`, [
+        const price = await pool.query(`SELECT passengerprice FROM Liftshares WHERE liftshare_id = $1`, [
             id
         ]);
 
@@ -38,10 +171,8 @@ router.post("/checkout/:id", authorisation, async (req, res) => {
             req.user.id
         ]);
 
-        console.log(stripeID.rows[0].stripe_id)
 
-
-        const amount = amountHandler(price.rows[0].driverprice, count.rows[0].count);
+        const amount = Math.round(price.rows[0].passengerprice * 100)
 
         // const customer = await stripe.customers.create() //stripeID ? await stripe.customer.retrieve(stripeID) : await stripe.customers.create().then(pool.query(`INSERT INTO Users (stripe_id) VALUES($1) WHERE user_id = $2`, [customer.id, req.user.id]))
 
@@ -62,6 +193,7 @@ router.post("/checkout/:id", authorisation, async (req, res) => {
                 currency: 'gbp',
                 customer: customer.id,
                 payment_method_types: ['card'],
+                transfer_group: `{LIFT${id}}`,
                 capture_method: 'manual'
             });
             res.json({
@@ -87,7 +219,9 @@ router.post("/checkout/:id", authorisation, async (req, res) => {
                 currency: 'gbp',
                 customer: customer.id,
                 payment_method_types: ['card'],
+                transfer_group: `{LIFT${id}}`,
                 capture_method: 'manual'
+                // expires after 3 days? add timestamp to requests
             });
             res.json({
                 paymentIntent: paymentIntent,
@@ -107,82 +241,53 @@ router.post("/checkout/:id", authorisation, async (req, res) => {
 
 });
 
-//add in logic for 'capture the funds step 2'
-
-router.post("/checkout/capture/:id", authorisation, async(req, res) => {
 
 
-    const amountHandler = (price, count) => {
-        if (count !== '0') {
-            return (parseInt((((price / count) + 0.5) * 100)))
-        } else {
-            return (
-                parseInt(((price + 0.5) * 100))
-            )
-        }
-    }
-
-
+router.post("/capture", authorisation, async (req, res) => {
     try {
-        const { id } = req.params
 
-        const { idsArray } = req.body
+        const { request_id } = req.body
 
-        //check if this logic works by providing the QR array from scratch - not from the QR
+        const paymentIntentID = await pool.query("SELECT payment_intent_id FROM Requests WHERE request_id = $1", [
+            request_id
+        ])
 
-        //make sure same format (parsed or stringified)
+        const capture = await stripe.paymentIntents.capture(
+            paymentIntentID.rows[0].payment_intent_id
+        )
 
-        const price = await pool.query(`SELECT driverprice FROM Liftshares WHERE liftshare_id = $1`, [
-            id
-        ]);
+        // amount to capture is not necessary
 
-        const count = await pool.query(`SELECT count(*) FROM Requests WHERE status = 'confirmed' AND liftshare_id = $1`, [
-            id
-        ]);
+        //res.json capture success code?
 
-
-        // const stripeID = await pool.query(`SELECT stripe_id FROM Users WHERE user_id = $1`, [
-        //     req.user.id
-        // ]);
-
-        const paymentID = await pool.query(`SELECT payment_intent_id FROM Requests WHERE user_id = $1 AND liftshare_id = $2`, [
-            req.user.id, id
-        ]);
-
-        //retrieve payment intent id and put into capture request
-
-        console.log(paymentID.rows[0].payment_intent_id)
-
-
-        const amount = amountHandler(price.rows[0].driverprice, count.rows[0].count);
-
-        console.log(amount)
-
-
-
-        //you need to put in the transaction id here, not the customer id, maybe save this to the request?
-        const intent = await stripe.paymentIntents.capture(
-            paymentID.rows[0].payment_intent_id, {
-            amount_to_capture: amount,
-        });
-
-        console.log(req.user.id);
-
-        console.log(idsArray);
-
-        if (idsArray.includes(req.user.id)) {
-            res.json(intent)
-        } else {
-            res.json("you are not booked onto this lift")
-        }
-
-        //this logic works - fix stripe end and response.json()
+        res.json(capture)
 
     } catch (error) {
         console.log(error.message)
-    };
+    }
+})
 
-});
+router.delete("/cancel/:requestid", authorisation, async (req, res) => {
+    try {
 
+        const { requestid } = req.params
+
+        const paymentIntentID = await pool.query("SELECT payment_intent_id FROM Requests WHERE request_id = $1", [
+            requestid
+        ]);
+
+
+        const cancel = await stripe.paymentIntents.cancel(
+            paymentIntentID.rows[0].payment_intent_id
+        );
+
+        //success code?
+
+        res.json(cancel)
+
+    } catch (error) {
+        console.log(error.message)
+    }
+})
 
 module.exports = router;

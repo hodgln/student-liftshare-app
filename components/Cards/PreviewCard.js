@@ -15,13 +15,6 @@ const PreviewCard = (props) => {
 
     const dateFormat = new Date(props.date)
 
-    const formatter = new Intl.NumberFormat('en-GB', {
-        style: 'currency',
-        currency: 'GBP',
-    })
-
-    
-
     useEffect(() => {
         if (moment(dateFormat).format('DDMMYYYY') === moment(new Date).format('DDMMYYYY')) {
             setIsActive(true)
@@ -29,13 +22,7 @@ const PreviewCard = (props) => {
             setIsActive(false)
         }}, []);
 
-        const priceHandler = (price) => {
-            if (price === null) { return 'price' } else {
-                const truncPrice = price.toFixed(2)
-                const formatPrice = formatter.format(truncPrice);
-                return (formatPrice)
-            }
-        }
+        
 
     //from, to, date, time, price
 
@@ -54,7 +41,7 @@ const PreviewCard = (props) => {
                 to={props.to}
                 date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
                 time={moment(dateFormat).format('HH:mm')}
-                price={priceHandler(props.price)}
+                price={props.price}
             />
             </View>
             <View>

@@ -24,7 +24,7 @@ const PayScreen = ({ route, navigation }) => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", token);
 
-    const response = await fetch(`http://192.168.86.99:8081/payment/checkout/${liftid}`, {
+    const response = await fetch(`http://192.168.1.142:8081/payment/checkout/${liftid}`, {
       method: "POST",
       headers: myHeaders
     });
@@ -52,13 +52,15 @@ const PayScreen = ({ route, navigation }) => {
         myHeaders.append("Content-Type", "application/json");
         myHeaders.append("token", token);
 
-        const response = await fetch("http://192.168.86.99:8081/dashboard/Requests/post", {
+        const response = await fetch("http://192.168.1.142:8081/dashboard/Requests/post", {
             method: "POST",
             headers: myHeaders,
             body: JSON.stringify(body)
         });
 
         //send notification here to user who posted the lift
+
+        
 
         const parseRes = await response.json()
 
@@ -122,6 +124,9 @@ const PayScreen = ({ route, navigation }) => {
   return (
 
     <View>
+      <Text>Lift Summary:</Text>
+      <Text>Money will not be taken out of your account unless the driver accepts your request</Text>
+      <Text>This request will expire in 7 days</Text>
       <Button
         variant="primary"
         disabled={!loading}

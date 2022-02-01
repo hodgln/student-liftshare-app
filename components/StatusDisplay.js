@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions, Button, Alert } from 'react-native'
 import { useSelector } from "react-redux";
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
 import StatusButton from './Buttons/StatusButton';
 
 const StatusDisplay = (props) => {
@@ -14,7 +14,7 @@ const StatusDisplay = (props) => {
     const cancelRequest = async () => {
 
         try {
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/cancelrequest/${requestid}`, {
+            const response = await fetch(`http://192.168.1.142:8081/dashboard/cancelrequest/${requestid}`, {
                 method: "DELETE",
                 headers: { token: token }
             });
@@ -39,30 +39,33 @@ const StatusDisplay = (props) => {
         }
     }
 
-    const passengerPrice = async () => {
-        try {
-            console.log(liftid)
 
-            const response = await fetch(`http://192.168.86.99:8081/dashboard/passengerprice/${liftid}`, {
-                method: "GET",
+
+    const cancelPayment = async () => {
+        try {
+
+            const response = await fetch(`http://192.168.1.142:8081/payment/cancel/${requestid}`, {
+                method: "DELETE",
                 headers: { token: token }
             });
 
-            const parseRes = await response.json();
+            const parseRes = await response.json()
 
-            console.log(`parse ${parseRes}`)
-
-            setConfirmedRequests(parseRes);
+            console.log(parseRes)
 
         } catch (error) {
             console.log(error.message)
         }
     }
 
-    useEffect(() => { passengerPrice() }, []);
+
+    const cancelAll = async() => {
+        await cancelPayment()
+        cancelRequest()
+    }
 
 
-    
+
     return (
         <View style={styles.container}>
             <View style={{ width: '50%', alignItems: 'center', justifyContent: 'center' }}>
@@ -82,8 +85,8 @@ const StatusDisplay = (props) => {
             </View>
             {/* <View style={styles.verticalLine}></View> */}
             <View style={{ width: '50%', alignItems: 'center', justifyContent: 'center', padding: '6%' }}>
-                {status === "pending" ? <StatusButton style={"pending"} onPress={cancelRequest} text="cancel request"/> : null}
-                {status === "confirmed" ? <StatusButton style={"confirmed"} disabled={false} onPress={() => setIsVisibleQR(true)} text="Check In"/> : null}
+                {status === "pending" ? <StatusButton style={"pending"} onPress={cancelAll} text="cancel request" /> : null}
+                {status === "confirmed" ? <StatusButton style={"confirmed"} disabled={false} onPress={() => setIsVisibleQR(true)} text="Check In" /> : null}
             </View>
         </View>
     )
