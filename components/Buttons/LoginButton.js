@@ -12,14 +12,15 @@ const LogInButton = (props) => {
          <View style={styles.buttonShadow}>
              <LinearGradient 
              style={props.disabled ? styles.disabledButton : styles.button}
-             colors={['#00bfff', '#6495ed', '#1e90ff']}
+            //  colors={['#00bfff', '#6495ed', '#1e90ff']}
+            colors={['#C80466', '#D6438C']}
              start={{ x: 0.2, y: 0.9}}
              end={{ x: 0.9, y: 0.9 }}
              >
              {props.disabled ? (
                 <ActivityIndicator size="small" />
              ) :
-             (<Text style={{ color: "white", fontSize: 16, fontFamily: 'Inter_400Regular' }}>{props.text}</Text>)
+             (<Text style={{ color: "white", fontSize: 17, fontFamily: 'Inter_400Regular' }}>{props.text}</Text>)
             }
             </LinearGradient>
          </View>

@@ -11,8 +11,6 @@ const PriceDisplay = (props) => {
 
     // console.log(driverPriceCalc(price, 3))
 
-
-
     const priceOne = driverPriceCalc(price, 1)
 
     const priceTwo = driverPriceCalc(price, 2)

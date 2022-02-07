@@ -3,16 +3,15 @@ import { View, Text, Dimensions, StyleSheet, Button, Alert, Modal, TouchableOpac
 import { FlatList } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 import RequestCard from '../components/Cards/RequestCard';
-import { useNavigation } from '@react-navigation/core';
 import MyLiftsPassengerCard from '../components/Cards/MyLiftsPassengerCard';
 import moment from 'moment';
-import QRCode from 'react-native-qrcode-svg';
 import RouteDisplay from '../components/RouteDisplay';
 import RequestButton from '../components/Buttons/RequestButton';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/core';
 import PriceDisplay from '../components/PriceDisplay';
 import StatusButton from '../components/Buttons/StatusButton';
+import driverPriceCalc from '../server/utilities/driverPriceCalc';
 
 
 
@@ -23,11 +22,9 @@ const DriverRouteDetails = ({ route, navigation }) => {
     const [isVisibleRequests, setIsVisibleRequests] = useState(false)
     const [isVisiblePassengers, setIsVisiblePassengers] = useState(false)
     // const [isActive, setIsActive] = useState(false)
-    const [isVisibleQR, setIsVisibleQR] = useState(false)
     const [passengers, setPassengers] = useState();
     const [passengerNumber, setPassengerNumber] = useState()
     const [seatNumber, setSeatNumber] = useState()
-    const [QRids, setQRids] = useState()
     const isFocused = useIsFocused()
     const [map, setMap] = useState()
     const [showPrice, setShowPrice] = useState()
@@ -53,10 +50,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
 
 
-    const formatter = new Intl.NumberFormat('en-GB', {
-        style: 'currency',
-        currency: 'GBP',
-    })
+    
 
     const getMapImg = async (urlpath) => {
         try {
@@ -337,9 +331,12 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
     //async problem for above function
 
+    const priceDiv = +passengerNumber + +seatNumber
+
+    console.log(priceDiv)
 
 
-    // design so "price breakdown" + "delete lift" buttons are side by side
+    // design = check in, cancel and seats are all on the same row with 33% each
 
     return (
 
@@ -354,14 +351,12 @@ const DriverRouteDetails = ({ route, navigation }) => {
                                 to={to}
                                 time={moment(dateFormat).format('HH:mm')}
                                 date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
-                                price={price}
+                                price={driverPriceCalc(price, priceDiv)}
+                                infoOnPress={() => {setShowPrice(true)}}
+                                showInfo={true}
                             />
                         </View>
-                        {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <TouchableOpacity onPress={deleteLift} disabled={isVisibleRequests || isVisiblePassengers}>
-                            <Ionicons name="ios-close-circle-outline" size={30} color="#FF1654" />
-                        </TouchableOpacity>
-                    </View> */}
+
 
                     </View>
                     <View style={styles.line}></View>
@@ -378,16 +373,14 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
                         </View>
 
-                        <View style={styles.buttonBox}>
+                        {/* <View style={styles.buttonBox}>
 
-                            <View style={styles.singleButton}>
-                                <Button title="price breakdown" onPress={() => setShowPrice(true)} />
-                            </View>
+                            
                             <View style={styles.singleButton}>
                                 <Button title="delete lift" onPress={deleteLift}/>
                             </View>
 
-                        </View>
+                        </View> */}
 
                     </View>
 
@@ -395,15 +388,21 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
                     <View style={{ flexDirection: 'row', paddingVertical: '5%', alignItems: 'center', width: '90%' }}>
 
-                        <View style={{ width: '50%', alignItems: 'center' }}>
+                        <View style={{ width: '33%', alignItems: 'center' }}>
                             <View style={{ flexDirection: 'row' }}>
                                 {passengerNumber === undefined ? null : [...Array(JSON.parse(passengerNumber)).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={32} color="#0466c8" />)}
                                 {[...Array(seatNumber).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={32} color="grey" />)}
                             </View>
                         </View>
 
-                        <View style={{ width: '50%', alignItems: 'center' }}>
+                        <View style={{ width: '33%', alignItems: 'center' }}>
                             <StatusButton text="check in" onPress={checkInHandler} style="confirmed" />
+                            
+                        </View>
+
+                        <View style={{ width: '33%', alignItems: 'center' }}>
+                            <StatusButton text="check in" onPress={checkInHandler} style="confirmed" />
+                            
                         </View>
 
                     </View>
@@ -489,7 +488,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         width: Dimensions.get('screen').width * 0.9,
-        height: Dimensions.get('window').height * 0.5,
+        height: Dimensions.get('window').height * 0.4,
         // flex: 1,
         borderRadius: 30,
         // borderWidth: 0.5,
@@ -608,8 +607,8 @@ const styles = StyleSheet.create({
         paddingVertical: '3%',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '45%'
-        //flexDirection: 'row'
+        width: '45%',
+        flexDirection: 'row'
     }
 
 })

@@ -27,6 +27,7 @@ import PassengerRouteDetails from '../screens/PassengerRouteDetails';
 import DriverRouteDetails from '../screens/DriverRouteDetails';
 import LiftSearchDetails from '../screens/LiftSearchDetails';
 import DriverSignUp from '../screens/DriverSignUp';
+import DriverRoute from '../screens/DriverRoute';
 
 
 
@@ -104,7 +105,7 @@ const RootStack = () => {
           // tabBarActiveBackgroundColor: '#0466c8'
         })}
       >
-        <Tab.Screen name="Post Route" component={DriverStackOne} />
+        <Tab.Screen name="Post Route" component={DriverRoute} />
         <Tab.Screen name="My Lifts" component={DriverStackTwo} options={{
           headerShown: false }}/>
         <Tab.Screen name="Profile" component={ProfileScreen} />

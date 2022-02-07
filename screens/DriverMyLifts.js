@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, FlatList, Modal } from 'react-native';
 import { useSelector } from 'react-redux';
-import LiftCard from '../components/Cards/LiftCard';
-import { useNavigation } from '@react-navigation/core';
 import { useIsFocused } from '@react-navigation/core';
 import DriverRatings from '../components/DriverRatings';
 import PreviewCard from '../components/Cards/PreviewCard';
+import driverPriceCalc from '../server/utilities/driverPriceCalc';
 
 const DriverMyLifts = ({ route, navigation }) => {
 
@@ -79,6 +78,10 @@ const DriverMyLifts = ({ route, navigation }) => {
 
     const renderDriver = ({ item }) => {
 
+        const priceDiv = +item.seats + +item.passengers 
+
+        const price = driverPriceCalc(item.driverprice, priceDiv)
+
         return (<View>
             
             <PreviewCard
@@ -89,6 +92,7 @@ const DriverMyLifts = ({ route, navigation }) => {
                 date={item.datepicked}
                 seats={item.seats}
                 price={item.driverprice}
+                displayPrice={price}
                 id={item.liftshare_id}
                 navigation={navigation}
                 nextScreen={'Route Details'}

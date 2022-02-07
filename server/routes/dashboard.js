@@ -86,18 +86,27 @@ router.get("/profilelifts", authorisation, async (req, res) => {
         const userLifts = await pool.query(
             `SELECT 
             l.liftshare_id,
-            l.datepicked, 
+            l.datepicked,
             l.originname,
             l.originlocation,
             l.destinationlocation,
             l.destinationname,
             l.liftshare_id,
-            l.driverprice
+            l.driverprice,
+            l.seats,
+            (SELECT COUNT(*) FROM Requests WHERE status = 'confirmed' AND liftshare_id = l.liftshare_id) as passengers
             FROM Liftshares as l
-            WHERE l.user_id = $1 AND l.completed = false`, [
+            LEFT OUTER JOIN Requests as r ON r.liftshare_id = l.liftshare_id
+            WHERE l.user_id = $1 AND l.completed = false
+            GROUP BY l.liftshare_id`, [
             req.user.id
         ]
         );
+
+        //INNER JOIN Requests as r ON r.liftshare_id = l.liftshare_id
+
+
+
 
         res.json(userLifts.rows)
     } catch (error) {
@@ -783,6 +792,24 @@ router.delete("/Liftshares/:id", authorisation, async (req, res) => {
         console.log(error)
     }
 });
+
+// check if stripe registered
+
+router.get("/checkifstripe", authorisation, async (req, res) => {
+    try {
+
+        const getUser = await pool.query(
+            `SELECT * FROM Users WHERE user_id = $1`, [
+                req.user.id
+        ]);
+
+        res.json(getUser.rows[0])
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+
+})
 
 
 

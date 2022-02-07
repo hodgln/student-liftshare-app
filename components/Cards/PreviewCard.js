@@ -41,7 +41,7 @@ const PreviewCard = (props) => {
                 to={props.to}
                 date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
                 time={moment(dateFormat).format('HH:mm')}
-                price={props.price}
+                price={props.displayPrice !== undefined ? props.displayPrice : props.price}
             />
             </View>
             <View>

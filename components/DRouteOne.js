@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dimensions, Text, ScrollView, Modal, StyleSheet, View, Button, TouchableWithoutFeedback, Pressable, TextInput } from 'react-native'
 import NextButton from '../components/Buttons/NextButton';
 import RouteDropDown from '../components/RouteDropDown';
-import { useSelector } from 'react-redux';
 import DummyRouteInput from '../components/DummyRouteInput';
-import { LinearGradient } from 'expo-linear-gradient';
 
 //reconstruct driverRoute as components, not screens. 
 
@@ -12,18 +10,20 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 
 const DriverRouteOne = (props) => {
-
-    const [originID, setOriginID] = useState(null)
-    const [destinationID, setDestinationID] = useState(null)
-
-    const [originLatitude, setOriginLatitude] = useState()
-    const [originLongitude, setOriginLongitude] = useState()
-
-    const [destinationLatitude, setDestinationLatitude] = useState()
-    const [destinationLongitude, setDestinationLongitude] = useState()
-
-    const [originName, setOriginName] = useState()
-    const [destinationName, setDestinationName] = useState()
+    const {
+        setStage,
+        stages,
+        setOriginLatitude,
+        setOriginLongitude,
+        setDestinationLatitude,
+        setDestinationLongitude,
+        setOriginName,
+        setDestinationName,
+        origin,
+        destination,
+        setDistance,
+        token
+    } = props;
 
     const [placeholderFrom, setPlaceholderFrom] = useState(null)
     const [placeholderTo, setPlaceholderTo] = useState(null)
@@ -31,13 +31,8 @@ const DriverRouteOne = (props) => {
     const [fromIsVisible, setFromIsVisible] = useState(false)
     const [toIsVisible, setToIsVisible] = useState(false)
 
-
-    const token = useSelector(state => state.authorisation.userToken)
-
-    const origin = { latitude: originLatitude, longitude: originLongitude }
-
-    const destination = { latitude: destinationLatitude, longitude: destinationLongitude }
-
+    const [originID, setOriginID] = useState(null)
+    const [destinationID, setDestinationID] = useState(null)
 
 
     useEffect(() => {
@@ -111,22 +106,18 @@ const DriverRouteOne = (props) => {
 
             const parseRes = await response.json()
 
+            await setDistance(parseRes.distance / 1000)
+
+            // setOriginID(null)
+            // setDestinationID(null)
+            // setOriginName()
+            // setDestinationName()
+            // setPlaceholderFrom()
+            // setPlaceholderTo()
+
+            await setStage(stages.ROUTE_TWO)
+
             
-
-            await props.navigation.navigate('DRouteTwo', {
-                distance: parseRes.distance / 1000,
-                originname: JSON.stringify(originName),
-                destinationname: JSON.stringify(destinationName),
-                origin: origin,
-                destination: destination,
-            });
-
-            setOriginID(null)
-            setDestinationID(null)
-            setOriginName()
-            setDestinationName()
-            setPlaceholderFrom()
-            setPlaceholderTo()
 
         } catch (error) {
             console.log(error.message)
@@ -136,14 +127,8 @@ const DriverRouteOne = (props) => {
 
 
     return (
-        <View style={styles.container}>
+        <View>
             
-            <View style={styles.circle}>
-            <LinearGradient colors={['#0352A0', '#0466c8', '#238ffb']} start={{x: 0.2, y: 0}} end={{x: 1, y: 0}} style={styles.linearGradient}>
-            </LinearGradient>
-            </View>
-            
-            {/* <View style={styles.circlePosition}></View> */}
             <View style={styles.componentContainer}>
                 <View style={{ padding: '4%' }}>
                     <Text style={{ fontSize: 20, color: '#535454', fontFamily: 'Inter_400Regular' }}>Where are you driving?</Text>
@@ -285,7 +270,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white',
         borderRadius: 20,
-        backgroundColor: 'white',
+        backgroundColor: 'white'
     },
     container: {
         justifyContent: 'center',

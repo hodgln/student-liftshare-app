@@ -82,21 +82,28 @@ router.post("/expressaccount", async (req, res) => { //add in authorisation here
 
 // return: 
 
-router.get("/returnurl/:accID", async (req, res) => {
+router.get("/returnurl/:accID", authorisation, async (req, res) => {
     try {
 
         const { accID } = req.params
+
+        console.log(accID)
 
         const account = await stripe.accounts.retrieve(
             accID
         );
 
-        console.log(account.id)
+        console.log(`the acc id is ${account.id}`)
 
         if(account.tos_acceptance.date !== null) {
-            res.json(account.id)
+            const update = await pool.query("UPDATE Users SET stripe_id = $1 WHERE user_id = $2", [
+                account.id, req.user.id
+            ]);
+
+            console.log(update.rows[0])
+            res.json("success")
         } else {
-            res.json("something went wrong")
+            res.json("failure")
         }
 
     } catch (error) {
