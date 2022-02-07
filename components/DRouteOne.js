@@ -3,6 +3,7 @@ import { Dimensions, Text, ScrollView, Modal, StyleSheet, View, Button, Touchabl
 import NextButton from '../components/Buttons/NextButton';
 import RouteDropDown from '../components/RouteDropDown';
 import DummyRouteInput from '../components/DummyRouteInput';
+import { BlurView } from 'expo-blur';
 
 //reconstruct driverRoute as components, not screens. 
 
@@ -129,9 +130,9 @@ const DriverRouteOne = (props) => {
     return (
         <View>
             
-            <View style={styles.componentContainer}>
+            <BlurView style={styles.componentContainer}>
                 <View style={{ padding: '4%' }}>
-                    <Text style={{ fontSize: 20, color: '#535454', fontFamily: 'Inter_400Regular' }}>Where are you driving?</Text>
+                    <Text style={{ fontSize: 20, color: '#F0F3F4', fontFamily: 'Inter_400Regular' }}>Where are you driving?</Text>
                 </View>
                 <View style={styles.line}></View>
                 <View style={styles.routeContainer}>
@@ -176,7 +177,7 @@ const DriverRouteOne = (props) => {
 
                     <NextButton disabled={origin.longitude !== null && destination.longitude !== null ? false : true} text="next" onPress={onNextPress} />
                 </View>
-            </View>
+            </BlurView>
 
 
 
@@ -236,8 +237,8 @@ const DriverRouteOne = (props) => {
                     /* </View> */
                 ) : null}
 
+        
         </View>
-        // {/* </View> */}
     );
 };
 
@@ -268,9 +269,9 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height * 0.5,
         width: Dimensions.get('screen').width * 0.9,
         justifyContent: 'center',
-        backgroundColor: 'white',
         borderRadius: 20,
-        backgroundColor: 'white'
+        overflow: 'hidden'
+        //backgroundColor: 'white'
     },
     container: {
         justifyContent: 'center',

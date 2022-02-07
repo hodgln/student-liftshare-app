@@ -7,9 +7,9 @@ const RequestButton = (props) => {
         <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
             <View style={props.style === "filled" ? styles.filled : styles.outline}>
                 {props.style === "filled" ?
-                    (<Text style={{ color: 'white', fontFamily: 'Inter_600SemiBold', fontSize: 17 }}>{props.text}</Text>)
+                    (<Text style={{ color: 'white', fontFamily: 'Inter_500Medium', fontSize: 19 }}>{props.text}</Text>)
                     :
-                    (<Text style={{ color: '#0466c8', fontFamily: 'Inter_600SemiBold', fontSize: 17 }}>{props.text}</Text>)
+                    (<Text style={{ color: '#0466c8', fontFamily: 'Inter_500Medium', fontSize: 19 }}>{props.text}</Text>)
                 }
             </View>
         </TouchableOpacity>
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
 
     filled: {
         width: Dimensions.get('screen').width * 0.3,
-        borderRadius: 9,
+        borderRadius: 8,
         alignItems: 'center',
         height: Dimensions.get('window').height * 0.04,
         justifyContent: 'center',
@@ -32,14 +32,14 @@ const styles = StyleSheet.create({
         marginHorizontal: '3%'
     },
     outline: {
-        width: Dimensions.get('screen').width * 0.3,
-        borderRadius: 9,
+        width: '90%',
+        borderRadius: 8,
         alignItems: 'center',
-        height: Dimensions.get('window').height * 0.04,
+        height: Dimensions.get('window').height * 0.05,
         justifyContent: 'center',
         marginTop: '10%',
         borderColor: '#0466c8',
-        borderWidth: 1,
+        borderWidth: 0.5,
         marginHorizontal: '3%'
     }
 })

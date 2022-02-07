@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, Dimensions, Alert, Button, TouchableOpacity } f
 import SeatButton from '../components/Buttons/SeatButton'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NextButton from '../components/Buttons/NextButton';
-import { useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 
 
 
@@ -40,17 +40,17 @@ const DriverRouteTwo = (props) => {
 
     return (
         <View>
-            <View style={styles.componentContainer}>
+            <BlurView style={styles.componentContainer}>
                 <View style={{ padding: '4%' }}>
                     <View style={styles.textAlign}>
-                        <Text style={{ fontSize: 20, color: '#535454', fontFamily: 'Inter_400Regular' }}>How many seats are available?</Text>
+                        <Text style={{ fontSize: 20, color: '#D0D3D4', fontFamily: 'Inter_400Regular' }}>How many seats are available?</Text>
                     </View>
                     <View style={styles.line}></View>
                     <View style={{ padding: 10, justifyContent: 'center' }}>
                         <View style={styles.twoSeats}>
                             <View style={styles.addsubtract}>
                                 <TouchableOpacity onPress={() => setSeats(seats - 1)} disabled={seats === 0}>
-                                    <Ionicons name="remove-circle-outline" size={28} color="#535454" />
+                                    <Ionicons name="remove-circle-outline" size={28} color="#F0F3F4" />
                                 </TouchableOpacity>
                             </View>
                             <View style={{ width: '80%', alignItems: 'center', justifyContent: 'center' }}>
@@ -59,7 +59,7 @@ const DriverRouteTwo = (props) => {
 
                             <View style={styles.addsubtract}>
                                 <TouchableOpacity onPress={() => setSeats(seats + 1)} disabled={seats === 3}>
-                                    <Ionicons name="add-circle-outline" size={28} color="#535454"  />
+                                    <Ionicons name="add-circle-outline" size={28} color="#F0F3F4"  />
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -96,7 +96,7 @@ const DriverRouteTwo = (props) => {
                 <View style={{ alignSelf: 'center', marginBottom: Dimensions.get('screen').height * 0.03 }}>
                     <NextButton text="Post Route" disabled={seats !== 0 && date >= new Date() ? false : true} onPress={onGoPress} />
                 </View>
-            </View>
+            </BlurView>
         </View>
     )
 }
@@ -114,7 +114,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         //marginBottom: '5%',
         height: Dimensions.get('window').height * 0.1,
-        //alignSelf: 'center'
+        alignSelf: 'center',
+        width: '70%'
     },
     line: {
         borderBottomWidth: 0.3,
@@ -133,9 +134,8 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height * 0.5,
         width: Dimensions.get('screen').width * 0.9,
         justifyContent: 'center',
-        backgroundColor: 'white',
+        overflow: 'hidden',
         borderRadius: 20,
-        backgroundColor: 'white',
     },
     addsubtract: {
         width: '10%',
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     boldText: {
         fontFamily: 'Inter_800ExtraBold',
         fontSize: 50,
-        color: '#0466c8'
+        color: '#F0F3F4'
     },
 })
 

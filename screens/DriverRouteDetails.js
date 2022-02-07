@@ -12,6 +12,8 @@ import { useIsFocused } from '@react-navigation/core';
 import PriceDisplay from '../components/PriceDisplay';
 import StatusButton from '../components/Buttons/StatusButton';
 import driverPriceCalc from '../server/utilities/driverPriceCalc';
+import NextButton from '../components/Buttons/NextButton';
+import CheckInButton from '../components/Buttons/CheckInButton';
 
 
 
@@ -44,13 +46,13 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
     const dateFormat = new Date(date)
 
-
+    console.log(isActive)
 
     const token = useSelector(state => state.authorisation.userToken);
 
 
 
-    
+
 
     const getMapImg = async (urlpath) => {
         try {
@@ -140,6 +142,17 @@ const DriverRouteDetails = ({ route, navigation }) => {
         }
     }
 
+    const deleteHandler = () => {
+        Alert.alert(
+            "Are you sure you want to cancel your lift?",
+            "",
+            [
+                { text: "No" },
+                { text: "Yes", onPress: () => deleteLift() }
+            ]
+        )
+    }
+
     const initialCountPassengers = async () => {
         try {
 
@@ -195,7 +208,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
     };
 
-    const getPassengers = async () => {
+   const getPassengers = async () => {
         try {
             const myHeaders = new Headers();
 
@@ -352,7 +365,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
                                 time={moment(dateFormat).format('HH:mm')}
                                 date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
                                 price={driverPriceCalc(price, priceDiv)}
-                                infoOnPress={() => {setShowPrice(true)}}
+                                infoOnPress={() => { setShowPrice(true) }}
                                 showInfo={true}
                             />
                         </View>
@@ -360,17 +373,28 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
                     </View>
                     <View style={styles.line}></View>
+                    {/* <View style={styles.line}></View> */}
                     <View style={{ flexDirection: "row" }}>
-                        
+
                         <View style={styles.buttonBox}>
                             {/* <View style={styles.buttons}> */}
+                            {/* <TouchableOpacity onPress={getRequests} disabled={isVisiblePassengers}> */}
                             <View style={styles.singleButton}>
-                                <RequestButton text="requests" style="filled" onPress={getRequests} disabled={isVisiblePassengers} />
-                            </View>
-                            <View style={styles.singleButton}>
-                                <RequestButton text="passengers" style="outline" onPress={getPassengers} disabled={isVisibleRequests} />
+                                <RequestButton text="requests" style="outline" onPress={getRequests} disabled={isVisiblePassengers} />
+                                {/* <Text style={{ fontSize: 19, fontFamily: 'Inter_500Medium', color: '#0352A0' }} >Requests</Text> */}
                             </View>
 
+                        </View>
+
+                        <View style={styles.buttonBox}>
+                            <TouchableOpacity onPress={getPassengers} disabled={isVisibleRequests}>
+                            <View style={styles.filled}>
+                            <View style={{ flexDirection: 'row' }}>
+                                {passengerNumber === undefined ? null : [...Array(JSON.parse(passengerNumber)).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={40} color="#D6438C" />)}
+                                {[...Array(seatNumber).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={40} color="lightgrey" />)}
+                            </View>
+                            </View>
+                            </TouchableOpacity>
                         </View>
 
                         {/* <View style={styles.buttonBox}>
@@ -384,26 +408,22 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
                     </View>
 
-                    <View style={styles.line}></View>
+                    
 
-                    <View style={{ flexDirection: 'row', paddingVertical: '5%', alignItems: 'center', width: '90%' }}>
+                    <View style={{ alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row', paddingVertical: '5%', width: '90%' }}>
 
-                        <View style={{ width: '33%', alignItems: 'center' }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                {passengerNumber === undefined ? null : [...Array(JSON.parse(passengerNumber)).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={32} color="#0466c8" />)}
-                                {[...Array(seatNumber).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={32} color="grey" />)}
+
+
+                            <View style={{ width: '100%' }}>
+                                {/* <StatusButton text="check in" onPress={checkInHandler} style="confirmed" /> */}
+                                <CheckInButton text="check in passengers" onPress={checkInHandler} disabled={!isActive} />
+                                <View style={{ paddingTop: '2%'}}>
+                                <Button title="cancel lift" onPress={deleteHandler} color={'#C80466'}/>
+                                </View>
                             </View>
-                        </View>
 
-                        <View style={{ width: '33%', alignItems: 'center' }}>
-                            <StatusButton text="check in" onPress={checkInHandler} style="confirmed" />
-                            
-                        </View>
-
-                        <View style={{ width: '33%', alignItems: 'center' }}>
-                            <StatusButton text="check in" onPress={checkInHandler} style="confirmed" />
-                            
-                        </View>
+                    </View>
 
                     </View>
 
@@ -457,8 +477,8 @@ const DriverRouteDetails = ({ route, navigation }) => {
                     </Modal>
                     /* </View> */
                 ) : null}
-                       
-                {showPrice ?
+
+            {showPrice ?
                 (
                     // <View style={styles.flatListView}>
                     /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
@@ -472,7 +492,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
                             <View style={styles.QRmodal}>
                                 <View>
-                                    <PriceDisplay price={price}/>
+                                    <PriceDisplay price={price} />
                                     <Button title="close" onPress={() => setShowPrice(false)} />
                                 </View>
                             </View>
@@ -488,9 +508,9 @@ const DriverRouteDetails = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         width: Dimensions.get('screen').width * 0.9,
-        height: Dimensions.get('window').height * 0.4,
+        height: Dimensions.get('window').height * 0.42,
         // flex: 1,
-        borderRadius: 30,
+        borderRadius: 20,
         // borderWidth: 0.5,
         alignItems: 'center',
         justifyContent: 'center',
@@ -507,18 +527,38 @@ const styles = StyleSheet.create({
             width: -3
         },
         shadowRadius: 2,
-        //shadowColor: 'black',
+        shadowColor: '#0352A0',
         shadowOpacity: 0.15
+    },
+    outline: {
+        width: '90%',
+        borderRadius: 8,
+        alignItems: 'center',
+        height: Dimensions.get('window').height * 0.05,
+        justifyContent: 'center',
+        marginTop: '10%',
+        borderColor: '#0466c8',
+        borderWidth: 0.5,
+        marginHorizontal: '3%'
+    },
+    filled: {
+        width: '90%',
+        // borderRadius: 8,
+        alignItems: 'center',
+        height: Dimensions.get('window').height * 0.05,
+        justifyContent: 'center',
+        marginTop: '10%',
+        // backgroundColor: '#0352A0',
+        marginHorizontal: '3%'
     },
     singleButton: {
         width: '100%',
-        alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: '2%'
     },
     isActive: {
-        borderColor: 'lightgreen',
-        borderWidth: 3
+        borderColor: '#D6438C',
+        borderWidth: 1.3
     },
     columns: {
         flexDirection: 'row'
@@ -594,7 +634,7 @@ const styles = StyleSheet.create({
         width: '80%',
         borderColor: 'grey',
         alignSelf: 'center',
-        padding: '1%'
+        marginBottom: '1.5%'
     },
     verticalLine: {
         height: '90%',
@@ -604,11 +644,13 @@ const styles = StyleSheet.create({
         marginRight: Dimensions.get('screen').width * 0.08
     },
     buttonBox: {
-        paddingVertical: '3%',
-        alignItems: 'center',
+        // paddingBottom: '3%',
+        // paddingHorizontal: '%',
+        // alignItems: 'center',
         justifyContent: 'center',
         width: '45%',
-        flexDirection: 'row'
+        // borderWidth: 0.5,
+        // flexDirection: 'row'
     }
 
 })
