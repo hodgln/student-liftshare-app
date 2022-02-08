@@ -1,11 +1,7 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "node index.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eject": "expo eject"
+    "start": "node index.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
