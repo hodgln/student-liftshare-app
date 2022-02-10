@@ -62,7 +62,7 @@ const SignUpThree = ({ route, navigation }) => {
 
             const body = { firstname, surname, email, password, category, phoneNumber, picture }
 
-            const sendUser = await fetch("http://192.168.1.142:8081/auth/register", {
+            const sendUser = await fetch("https://spareseat-app.herokuapp.com/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

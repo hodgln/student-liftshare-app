@@ -77,7 +77,7 @@ const DriverRoute = ({ navigation }) => {
         try {
 
 
-            const response = await fetch("http://192.168.1.142:8081/dashboard/checkifstripe", {
+            const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/checkifstripe", {
                 method: "GET",
                 headers: { token: token }
             });
@@ -108,7 +108,7 @@ const DriverRoute = ({ navigation }) => {
 
 
             const body = { datepicked, originlocation, destinationlocation, originname, destinationname, seats, roundedprice }
-            const response = await fetch("http://192.168.1.142:8081/dashboard/Liftshares", {
+            const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/Liftshares", {
                 method: "POST",
                 headers: myHeaders,
                 body: JSON.stringify(body)

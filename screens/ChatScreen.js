@@ -23,7 +23,7 @@ const ChatScreen = ({route}) => {
 
     console.log(`user id ${user_id}`)
 
-    const socket = io('http://192.168.1.142:8081')
+    const socket = io('https://spareseat-app.herokuapp.com')
 
     return (
     

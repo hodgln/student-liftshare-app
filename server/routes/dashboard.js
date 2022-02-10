@@ -1,15 +1,24 @@
 const router = require("express").Router();
-const { Pool } = require("pg");
 const pool = require("../db");
 const authorisation = require("../middleware/authorisation");
 const notificationSender = require("../utilities/notificationSender");
 const passengerPriceCalc = require("../utilities/passengerPriceCalc");
+
+// change back to pool once db upgraded
+
+/* 
+- change pool for pool
+- remove pool.connect() 
+- remove pool.end()
+*/
 
 router.get("/", authorisation, async (req, res) => {
     try {
 
         //req.user has the payload
         // res.json(req.user); 
+
+        
 
         const user = await pool.query(
             `SELECT
@@ -47,11 +56,15 @@ router.get("/", authorisation, async (req, res) => {
             ]
             );
 
+            
+
             res.json({
                 userData: user.rows[0],
                 rating: getRating.rows[0].avg,
                 completed: getCompletedLifts.rows[0].count
             })
+
+            
         } else {
             const getCompletedLifts = await pool.query(
                 `SELECT
@@ -62,11 +75,15 @@ router.get("/", authorisation, async (req, res) => {
             ]
             );
 
+            
+
             res.json({
                 userData: user.rows[0],
                 rating: getRating.rows[0].avg,
                 completed: getCompletedLifts.rows[0].count
             })
+
+            
         }
 
 
@@ -83,6 +100,7 @@ router.get("/", authorisation, async (req, res) => {
 router.get("/profilelifts", authorisation, async (req, res) => {
     try {
 
+        
         const userLifts = await pool.query(
             `SELECT 
             l.liftshare_id,
@@ -106,9 +124,10 @@ router.get("/profilelifts", authorisation, async (req, res) => {
         //INNER JOIN Requests as r ON r.liftshare_id = l.liftshare_id
 
 
-
+        
 
         res.json(userLifts.rows)
+        
     } catch (error) {
         console.log(error.message);
         res.status(500).json("Server Error");
@@ -118,6 +137,8 @@ router.get("/profilelifts", authorisation, async (req, res) => {
 router.get("/getrequests/:id", authorisation, async (req, res) => {
     try {
         const { id } = req.params
+
+        
 
         await pool.query(
             `DELETE FROM Requests 
@@ -147,6 +168,8 @@ router.get("/getrequests/:id", authorisation, async (req, res) => {
         ]);
 
         
+
+        
         res.json(getrequests.rows)
         // }
 
@@ -159,6 +182,8 @@ router.get("/countpassengers/:id", authorisation, async (req, res) => {
     try {
 
         const { id } = req.params
+
+        
 
         const countPassengers = await pool.query(
             `SELECT 
@@ -176,12 +201,16 @@ router.get("/countpassengers/:id", authorisation, async (req, res) => {
             WHERE liftshare_id = $1`, [
             id
         ]
-        )
+        );
+
+        
 
         res.json({
             passengers: countPassengers.rows[0].count,
             seats: getSeats.rows[0].seats
         });
+
+        
 
     } catch (error) {
         console.log(error.message)
@@ -192,6 +221,8 @@ router.get("/passengerlifts", authorisation, async (req, res) => {
     try {
 
         // add in timestamp to requests!
+
+        
 
         await pool.query("DELETE FROM Requests WHERE created_at < now() - interval '7 days' AND status = 'pending' AND user_id = $1", [
             req.user.id
@@ -220,7 +251,10 @@ router.get("/passengerlifts", authorisation, async (req, res) => {
             req.user.id
         ]);
 
+        
+
         res.json(passengerlifts.rows)
+        
     } catch (error) {
         console.log(error.message)
     }
@@ -235,6 +269,8 @@ router.put("/handlestatus", authorisation, async (req, res) => {
         const { status, request_id, id, to } = req.body
 
         console.log(to)
+
+        
 
         await pool.query(
             "UPDATE Requests SET status = $1 WHERE request_id = $2", [
@@ -252,6 +288,8 @@ router.put("/handlestatus", authorisation, async (req, res) => {
                 id
             ]);
 
+            
+
             res.json(getDate.rows[0].datepicked)
 
             notificationSender({
@@ -260,9 +298,13 @@ router.put("/handlestatus", authorisation, async (req, res) => {
                 body: `Your lift request to ${JSON.parse(to)} has been accepted!`
             })
 
+
             // please contact the driver to arrange a meet point
 
         } else if (status === "declined") {
+
+            
+
             notificationSender({
                 somePushTokens: Array(getPushToken.rows[0].push_token),
                 someData: { liftshare_id: id },
@@ -270,6 +312,7 @@ router.put("/handlestatus", authorisation, async (req, res) => {
             })
 
             res.json("declined")
+            
         }
 
     } catch (error) {
@@ -282,21 +325,18 @@ router.put("/handlestatus", authorisation, async (req, res) => {
 router.put("/seats/:id", authorisation, async (req, res) => {
     try {
 
-
+        //does this route work as it should?
 
         const { id } = req.params
 
-        const getConfirmed = await pool.query(
+        
+
+        await pool.query(
             "SELECT count(*) FROM Requests WHERE status = 'confirmed' AND liftshare_id = $1", [
             id
         ]
         );
 
-        // const updatePrice = await pool.query(
-        //     "UPDATE Liftshares SET passengerprice = (passengerprice / $1) + 0.5 WHERE liftshare_id = $2 RETURNING *", [
-        //         getConfirmed.count, id
-        //     ]
-        // );
 
         const decrementSeats = await pool.query(
             "UPDATE Liftshares SET seats = seats - 1 WHERE liftshare_id = $1 RETURNING *", [
@@ -307,12 +347,17 @@ router.put("/seats/:id", authorisation, async (req, res) => {
 
 
         if (decrementSeats.rows.length === 0) {
-            return res.json(false)
+            
+            return(res.json(false))
+            
         };
 
         console.log(decrementSeats.rows)
 
+        
+
         res.json(true);
+        
 
         //console.log(decrementSeats.rows)
 
@@ -338,6 +383,8 @@ router.post("/Liftshares", authorisation, async (req, res) => {
 
         //call driverprice utility function here on driverprice from req.body
 
+        
+
         const newCategory = await pool.query(
             `INSERT INTO Liftshares 
         (datepicked, 
@@ -354,9 +401,10 @@ router.post("/Liftshares", authorisation, async (req, res) => {
 
         // insert price calculation in VALUES as the 8th one
 
-
+        
 
         res.json(newCategory)
+
     } catch (error) {
         console.log(error.message);
     }
@@ -391,6 +439,7 @@ router.post("/Requests/post", authorisation, async (req, res) => {
         //     return res.json(false)
         // };
 
+        
 
         const { liftid, status, intentID } = req.body
         const enterRequest = await pool.query("INSERT INTO Requests (liftshare_id, user_id, status, payment_intent_id) VALUES ($1, $2, $3, $4) RETURNING *", [
@@ -410,9 +459,11 @@ router.post("/Requests/post", authorisation, async (req, res) => {
         });
 
         
-
+        
 
         res.json({ title: "Lift Booked!", body: "Please await confirmation from the driver" });
+
+        
 
     } catch (error) {
         console.log(error.message)
@@ -424,6 +475,9 @@ router.post("/Requests/post", authorisation, async (req, res) => {
 router.delete("/cancelrequest/:requestid", authorisation, async (req, res) => {
     try {
         const { requestid } = req.params;
+
+        
+
         const cancelRequest = await pool.query("DELETE FROM Requests WHERE request_id = $1 AND user_id = $2", [
             requestid, req.user.id
         ]);
@@ -435,9 +489,13 @@ router.delete("/cancelrequest/:requestid", authorisation, async (req, res) => {
 
         //this route needs checking!!!
         if (Array.isArray(cancelRequest.rows)) {
+            
             res.json("request was cancelled");
+            
         } else {
+            
             res.json("something went wrong")
+            
         }
 
     } catch (error) {
@@ -459,6 +517,8 @@ router.post("/Liftshares/distance", authorisation, async (req, res) => {
         // )
 
         // console.log(removeLiftshares.rows);
+
+        
 
         const getAll = await pool.query(
             `SELECT 
@@ -489,9 +549,11 @@ router.post("/Liftshares/distance", authorisation, async (req, res) => {
 
         //this needs changing so that if the user id has a request the liftshare_id doesnt show up 
 
+        
+
         res.json(getAll.rows);
 
-
+        
 
     } catch (error) {
         console.log(error.message);
@@ -504,6 +566,8 @@ router.get("/driverprofile/:driver_id", authorisation, async (req, res) => {
 
         const { driver_id } = req.params
         // rewrite this from the passengers perspective
+
+        
 
         const getRating = await pool.query(
             `SELECT
@@ -523,10 +587,14 @@ router.get("/driverprofile/:driver_id", authorisation, async (req, res) => {
         ]
         );
 
+        
+
         res.json({
             rating: getRating.rows[0].avg,
             completed: getCompletedLifts.rows[0].count
-        })
+        });
+
+
 
     } catch (error) {
         console.log(error.message)
@@ -538,8 +606,7 @@ router.get("/passengerprofile/:passenger_id", authorisation, async (req, res) =>
 
         const { passenger_id } = req.params
 
-
-        // rewrite this from the passengers perspective
+        
 
         const getRating = await pool.query(
             `SELECT
@@ -560,10 +627,14 @@ router.get("/passengerprofile/:passenger_id", authorisation, async (req, res) =>
         ]
         );
 
+        
+
         res.json({
             rating: getRating.rows[0].avg,
             completed: getCompletedLifts.rows[0].count
         })
+
+        
 
     } catch (error) {
         console.log(error.message)
@@ -573,11 +644,16 @@ router.get("/passengerprofile/:passenger_id", authorisation, async (req, res) =>
 
 router.post("/ratings", authorisation, async (req, res) => {
     try {
+
+        
+
         const { user_id, rating, liftshare_id } = req.body
 
         const passengerRating = await pool.query("INSERT INTO Ratings (user_id, rating, liftshare_id, submitted_by) VALUES ($1, $2, $3, $4) RETURNING *", [
             user_id, rating, liftshare_id, req.user.id
         ]);
+
+        
 
         res.json(passengerRating)
 
@@ -590,6 +666,8 @@ router.post("/ratings", authorisation, async (req, res) => {
 
 router.get("/ratings/frompassenger", authorisation, async (req, res) => {
     try {
+
+        
 
         const liftIDs = await pool.query(
             `SELECT l.liftshare_id 
@@ -650,6 +728,8 @@ router.get("/ratings/frompassenger", authorisation, async (req, res) => {
 
         const unratedDriver = await getDriver()
 
+        
+
         res.json(unratedDriver)
 
 
@@ -663,11 +743,17 @@ router.put("/noshow/:id", authorisation, async (req, res) => {
 
         const { id } = req.params;
 
+        
+
         const editStatus = await pool.query("UPDATE Requests SET status = $1 WHERE request_id = $2", [
             "noshow", id
         ]);
 
+        
+
         res.json(editStatus)
+
+        
         
     } catch (error) {
         console.log(error.message)
@@ -678,7 +764,7 @@ router.put("/noshow/:id", authorisation, async (req, res) => {
 router.get("/ratings/fromdriver", authorisation, async (req, res) => {
     try {
 
-
+        
 
         // confirmed requests from completed lifts
         const liftIDs = await pool.query(
@@ -741,7 +827,10 @@ router.get("/ratings/fromdriver", authorisation, async (req, res) => {
 
         const passengers = await getPassengerData()
 
+        
+
         res.json(passengers)
+
 
 
 
@@ -759,13 +848,18 @@ router.put("/completelift/:liftshare_id", authorisation, async (req, res) => {
 
         console.log(` liftshare id is ${liftshare_id}`)
 
+        
+
         const completeLift = await pool.query(
             "UPDATE Liftshares SET completed = true WHERE liftshare_id = $1 RETURNING *", [
             liftshare_id
         ]
-        )
+        );
+
+        
 
         res.json(completeLift)
+
 
     } catch (error) {
         console.log(error.message)
@@ -776,18 +870,24 @@ router.put("/completelift/:liftshare_id", authorisation, async (req, res) => {
 
 router.delete("/Liftshares/:id", authorisation, async (req, res) => {
     try {
+        
+
         const { id } = req.params;
-        const deleteRequests = await pool.query(
+        await pool.query(
             `DELETE FROM Requests WHERE liftshare_id = $1`, [
             id
         ]);
 
-        const deleteLiftShare = await pool.query(
+        await pool.query(
             `DELETE FROM Liftshares WHERE liftshare_id = $1 AND user_id = $2`, [
             id, req.user.id
         ]);
 
+        
+
         res.json("liftshare was deleted")
+
+        
     } catch (error) {
         console.log(error)
     }
@@ -798,10 +898,14 @@ router.delete("/Liftshares/:id", authorisation, async (req, res) => {
 router.get("/checkifstripe", authorisation, async (req, res) => {
     try {
 
+        
+
         const getUser = await pool.query(
             `SELECT * FROM Users WHERE user_id = $1`, [
                 req.user.id
         ]);
+
+        
 
         res.json(getUser.rows[0])
         

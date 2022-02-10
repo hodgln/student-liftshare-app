@@ -17,7 +17,7 @@ const PassengerMyLifts = (props) => {
 
     const getLiftData = async () => {
         try {
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/passengerlifts`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/passengerlifts`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -37,7 +37,7 @@ const PassengerMyLifts = (props) => {
     const checkUnratedDrivers = async () => {
         try {
 
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/ratings/frompassenger`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/ratings/frompassenger`, {
                 method: 'GET',
                 headers: { token: token }
             })

@@ -18,7 +18,7 @@ const DriverMyLifts = ({ route, navigation }) => {
 
     const getLiftData = async () => {
         try {
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/profilelifts`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/profilelifts`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -35,7 +35,7 @@ const DriverMyLifts = ({ route, navigation }) => {
     const checkIncompleteLifts = async () => {
         try {
 
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/ratings/fromdriver`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/ratings/fromdriver`, {
                 method: 'GET',
                 headers: { token: token }
             })

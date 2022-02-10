@@ -20,7 +20,7 @@ router.get("/:code", authorisation, async (req, res) => {
 
         console.log(date)
 
-
+        
         const bcryptOTP = await pool.query("SELECT code, created_at FROM Confirmations WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1", [
             req.user.id
         ]);
@@ -41,13 +41,16 @@ router.get("/:code", authorisation, async (req, res) => {
 
 
         if (!correctCode) {
+            
             res.json({title: "Incorrect code", body: "please press here to resend code"})
         } else if (bcryptOTP.rows[0].created_at < fiveMinsAgo) {
+            
             res.json({title: "Your code has expired", body: "please click here to resend code"})
         } else {
             const confirm = await pool.query("UPDATE Users SET confirmed = $1 WHERE user_id = $2 RETURNING *", [
                 true, req.user.id
             ]);
+            
 
 
             res.json(confirm.rows[0].confirmed)
@@ -61,6 +64,7 @@ router.get('/reset/:code/:email', async (req, res) => {
     try {
         const { code, email } = req.params
 
+        
         const userID = await pool.query("SELECT user_id FROM Users where user_email = $1", [
             email
         ])
@@ -78,11 +82,17 @@ router.get('/reset/:code/:email', async (req, res) => {
 
 
         if (!correctCode) {
+            
             res.json({title: "Incorrect code", body: "please press here to resend code"})
+            
         } else if (bcryptOTP.rows[0].created_at < fiveMinsAgo) {
+            
             res.json({title: "Your code has expired", body: "please click here to resend code"})
+            
         } else {
+            
             res.json(true)
+            
         }
 
 
@@ -112,11 +122,14 @@ router.post("/email/:email", authorisation, async (req, res) => {
 
         console.log(bcryptOTP)
 
+        
+
         const insertConfirmation = await pool.query("INSERT INTO Confirmations (user_id, code) VALUES ($1, $2) RETURNING *", [
             req.user.id, bcryptOTP
         ]);
 
 
+        
         res.json(insertConfirmation)
 
 
@@ -133,6 +146,7 @@ router.post("/email/reset/:email",  async (req, res) => {
 
         const { email } = req.params
 
+        
         const userID = await pool.query("SELECT user_id FROM Users where user_email = $1", [
             email
         ])
@@ -145,7 +159,10 @@ router.post("/email/reset/:email",  async (req, res) => {
         
 
         if(userID.rows.length === 0) {
+            
+
             res.json("This email is not associated with an account")
+            
         } else {
 
             const OTP = EmailOTPgen(email)
@@ -155,6 +172,8 @@ router.post("/email/reset/:email",  async (req, res) => {
             await pool.query("INSERT INTO Confirmations (user_id, code) VALUES ($1, $2) RETURNING *", [
                 userID.rows[0].user_id, bcryptOTP
             ]);
+
+            
 
             res.json("sent")
         }

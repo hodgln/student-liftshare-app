@@ -52,7 +52,7 @@ const RootStack = () => {
   const isAuth = async () => {
     try {
 
-      const verify = await fetch("http://192.168.1.142:8081/auth/verified", {
+      const verify = await fetch("https://spareseat-app.herokuapp.com/auth/verified", {
         method: "GET",
         headers: { token: token }
       });

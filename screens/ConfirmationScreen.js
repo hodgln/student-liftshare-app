@@ -25,7 +25,7 @@ const ConfirmationScreen = ({ route }) => {
 
             //console.log(value)
 
-            const response = await fetch(`http://192.168.1.142:8081/confirmation/${value}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/confirmation/${value}`, {
                 method: 'GET',
                 headers: { token: token }
             });
@@ -99,7 +99,7 @@ const ConfirmationScreen = ({ route }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            await fetch("http://192.168.1.142:8081/auth/pushToken", {
+            await fetch("https://spareseat-app.herokuapp.com/auth/pushToken", {
                 method: 'PUT',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -121,7 +121,7 @@ const ConfirmationScreen = ({ route }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.1.142:8081/confirmation/email/${email}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/confirmation/email/${email}`, {
                 method: 'POST',
                 headers: myHeaders,
             });

@@ -95,12 +95,16 @@ router.get("/returnurl/:accID", authorisation, async (req, res) => {
 
         console.log(`the acc id is ${account.id}`)
 
+
+
         if(account.tos_acceptance.date !== null) {
-            const update = await pool.query("UPDATE Users SET stripe_id = $1 WHERE user_id = $2", [
+            
+            await pool.query("UPDATE Users SET stripe_id = $1 WHERE user_id = $2", [
                 account.id, req.user.id
             ]);
 
-            console.log(update.rows[0])
+            
+
             res.json("success")
         } else {
             res.json("failure")
@@ -129,6 +133,8 @@ router.post("/paydriver/:liftshare_id", authorisation, async (req, res) => {
 
         const { liftshare_id, scannedPassengers } = req.body
 
+        
+
         const userInfo = await pool.query(
             `SELECT
             l.driverprice,
@@ -151,7 +157,11 @@ router.post("/paydriver/:liftshare_id", authorisation, async (req, res) => {
 
         console.log(transfer)
 
+        
+
         res.json(transfer)
+
+        
 
     } catch (error) {
         console.log(error.message)
@@ -167,6 +177,8 @@ router.post("/checkout/:id", authorisation, async (req, res) => {
 
     try {
         const { id } = req.params
+
+        
 
 
         const price = await pool.query(`SELECT passengerprice FROM Liftshares WHERE liftshare_id = $1`, [
@@ -203,11 +215,16 @@ router.post("/checkout/:id", authorisation, async (req, res) => {
                 transfer_group: `{LIFT${id}}`,
                 capture_method: 'manual'
             });
+
+            
+
             res.json({
                 paymentIntent: paymentIntent,
                 ephemeralKey: ephemeralKey.secret,
                 customer: customer.id
             });
+
+            
             //console.log(paymentIntent.id)
             // pool.query(` UPDATE Requests SET payment_intent_id = $1 WHERE user_id = $2 AND liftshare_id = $3`, [
             //     paymentIntent.id, req.user.id, id
@@ -230,16 +247,23 @@ router.post("/checkout/:id", authorisation, async (req, res) => {
                 capture_method: 'manual'
                 // expires after 3 days? add timestamp to requests
             });
+
+            
+
+            
+            await pool.query(`UPDATE Users SET stripe_id = $1 WHERE user_id = $2`, [customer.id, req.user.id]);
+            // pool.query(` UPDATE Requests SET payment_intent_id = $1 WHERE user_id = $2 AND liftshare_id = $3`, [
+            //     paymentIntent.id, req.user.id, id
+            // ]);
+            //post paymentIntent id
+
+            
+
             res.json({
                 paymentIntent: paymentIntent,
                 ephemeralKey: ephemeralKey.secret,
                 customer: customer.id
             })
-            pool.query(`UPDATE Users SET stripe_id = $1 WHERE user_id = $2`, [customer.id, req.user.id]);
-            // pool.query(` UPDATE Requests SET payment_intent_id = $1 WHERE user_id = $2 AND liftshare_id = $3`, [
-            //     paymentIntent.id, req.user.id, id
-            // ]);
-            //post paymentIntent id
         }
 
     } catch (error) {
@@ -255,6 +279,8 @@ router.post("/capture", authorisation, async (req, res) => {
 
         const { request_id } = req.body
 
+        
+
         const paymentIntentID = await pool.query("SELECT payment_intent_id FROM Requests WHERE request_id = $1", [
             request_id
         ])
@@ -267,7 +293,10 @@ router.post("/capture", authorisation, async (req, res) => {
 
         //res.json capture success code?
 
+        
+
         res.json(capture)
+
 
     } catch (error) {
         console.log(error.message)
@@ -279,6 +308,8 @@ router.delete("/cancel/:requestid", authorisation, async (req, res) => {
 
         const { requestid } = req.params
 
+        
+
         const paymentIntentID = await pool.query("SELECT payment_intent_id FROM Requests WHERE request_id = $1", [
             requestid
         ]);
@@ -289,6 +320,8 @@ router.delete("/cancel/:requestid", authorisation, async (req, res) => {
         );
 
         //success code?
+
+        
 
         res.json(cancel)
 

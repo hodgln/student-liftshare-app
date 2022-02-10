@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const server = require('http').createServer(app);
+const PORT = process.env.PORT || 8081
 // const io = require('socket.io')(server, {
 //     cors: {
 //     origin: "http://192.168.1.142:8081",
@@ -75,7 +76,4 @@ io.on("connection", socket => {
 
 
 //start server
-server.listen(8081, () => console.log('server has started on port 8081'))
-
-
-
+server.listen(PORT, () => console.log('server has started on port 8081'))

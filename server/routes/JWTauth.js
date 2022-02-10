@@ -13,6 +13,8 @@ const authorisation = require("../middleware/authorisation");
 router.post("/register", validateInfo, async (req, res) => {
     try {
 
+        
+
         // destructure req.body
 
         const { firstname, surname, email, password, category, phoneNumber, picture } = req.body
@@ -26,6 +28,7 @@ router.post("/register", validateInfo, async (req, res) => {
         ]);
 
         if (user.rows.length !== 0) {
+            
             return res.json("User already exists");
         };
 
@@ -60,7 +63,10 @@ router.post("/register", validateInfo, async (req, res) => {
 
         const token = JWTgen(newUser.rows[0].user_id);
 
+        
+
         res.json({ token });
+        
 
     } catch (err) {
         console.log(err.message);
@@ -72,7 +78,7 @@ router.post("/register", validateInfo, async (req, res) => {
 router.post("/login", validateInfo, async (req, res) => {
     try {
 
-        //destructure req.body
+        
 
         const { email, password, category } = req.body
 
@@ -81,6 +87,7 @@ router.post("/login", validateInfo, async (req, res) => {
         const user = await pool.query("SELECT * FROM Users WHERE user_email = $1", [email]);
 
         if (user.rows.length === 0) {
+            
             return res.status(401).json("Password or Email incorrect");
         }
 
@@ -91,12 +98,14 @@ router.post("/login", validateInfo, async (req, res) => {
         const validPassword = await bcrypt.compare(password, user.rows[0].user_password)
 
         if (!validPassword) {
+            
             return res.status(401).json("Password or Email incorrect");
         };
 
         // check if account is the right one
 
         if (category != user.rows[0].user_account) {
+            
             return res.status(401).json(`Please log in to your ${user.rows[0].user_account} account`)
         };
 
@@ -110,7 +119,11 @@ router.post("/login", validateInfo, async (req, res) => {
 
         //set below to true to pass the confirmation stage in logging in.
 
+        
+
         res.json({ token: token, confirmed: user.rows[0].confirmed || false, category: user.rows[0].user_account });
+
+        
 
     } catch (err) {
         console.log(err.message);
@@ -141,6 +154,7 @@ router.put("/resetpassword", async (req, res) => {
 
         const bcryptPassword = await bcrypt.hash(password, salt);
 
+        
 
         const updatePassword = await pool.query(
             "UPDATE Users SET user_password = $1 WHERE user_email = $2 RETURNING *", [
@@ -150,11 +164,14 @@ router.put("/resetpassword", async (req, res) => {
         //split into two separate queries
 
         if (updatePassword.rows.length === 0) {
+
+            
             return res.json('could not update password')
         };
 
-        res.json(updatePassword);
+        
 
+        res.json(updatePassword);
         //console.log(decrementSeats.rows)
 
     } catch (error) {
@@ -173,10 +190,13 @@ router.put("/pushToken", authorisation, async (req, res) => {
 
         console.log("hello")
 
+        
+
         const putToken = await pool.query("UPDATE Users SET push_token = $1 WHERE user_id = $2", [
             pushToken, req.user.id
         ]);
 
+        
         
         res.json(putToken)
        

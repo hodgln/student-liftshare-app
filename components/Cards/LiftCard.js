@@ -48,7 +48,7 @@ const LiftCard = (props) => {
 
     const deleteLift = async () => {
         try {
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/Liftshares/${id}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/Liftshares/${id}`, {
                 method: "DELETE",
                 headers: { token: token }
             });
@@ -82,7 +82,7 @@ const LiftCard = (props) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/getrequests/${id}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });
@@ -113,7 +113,7 @@ const LiftCard = (props) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/getrequests/${id}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });
@@ -205,7 +205,7 @@ const LiftCard = (props) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://192.168.1.142:8081/dashboard/getrequests/${id}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com//dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });

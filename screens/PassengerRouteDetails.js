@@ -51,7 +51,7 @@ const PassengerRouteDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("http://192.168.1.142:8081/locations/signurl", {
+            const response = await fetch("https://spareseat-app.herokuapp.com/locations/signurl", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -78,7 +78,7 @@ const PassengerRouteDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("http://192.168.1.142:8081/locations/distance", {
+            const response = await fetch("https://spareseat-app.herokuapp.com/locations/distance", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
