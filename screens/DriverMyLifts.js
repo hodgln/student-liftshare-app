@@ -18,7 +18,7 @@ const DriverMyLifts = ({ route, navigation }) => {
 
     const getLiftData = async () => {
         try {
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/profilelifts`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/profilelifts`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -35,7 +35,7 @@ const DriverMyLifts = ({ route, navigation }) => {
     const checkIncompleteLifts = async () => {
         try {
 
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/ratings/fromdriver`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/ratings/fromdriver`, {
                 method: 'GET',
                 headers: { token: token }
             })
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         // padding: 20,
         height: Dimensions.get('window').height * 0.88,
-        width: Dimensions.get('window').width * 1
+        width: Dimensions.get('window').width * 1,
         // flex: 1
     },
     centredView: {

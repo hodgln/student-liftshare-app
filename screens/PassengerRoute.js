@@ -7,6 +7,7 @@ import NextButton from '../components/Buttons/NextButton';
 import RouteDropDown from '../components/RouteDropDown'
 import DummyRouteInput from '../components/DummyRouteInput';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 
 
 
@@ -71,7 +72,7 @@ const PassengerRoute = props => {
     const getCoords = async (place_id) => {
         try {
 
-            const response = await fetch(`https://spareseat-app.herokuapp.com/locations/coords/${place_id}`, {
+            const response = await fetch(`http://api.spareseat.app/locations/coords/${place_id}`, {
                 method: 'GET',
                 headers: {
                     token: token
@@ -103,18 +104,18 @@ const PassengerRoute = props => {
     const mode = 'date'
 
     return (
-        
+
         <View style={styles.container}>
 
             <View style={styles.circle}>
-                <LinearGradient colors={['#0352A0', '#0466c8', '#238ffb']} start={{ x: 0.2, y: 0 }} end={{ x: 1, y: 0 }} style={styles.linearGradient}>
+                <LinearGradient colors={['#0352A0', '#0466c8']} start={{ x: 0.2, y: 0 }} end={{ x: 1, y: 0 }} style={styles.linearGradient}>
                 </LinearGradient>
             </View>
 
             {/* <View style={styles.circlePosition}></View> */}
-            <View style={styles.componentContainer}>
+            <BlurView style={styles.componentContainer}>
                 <View style={{ padding: '4%' }}>
-                    <Text style={{ fontSize: 16, color: '#535454', fontFamily: 'Inter_400Regular' }}>Where do you want to go?</Text>
+                    <Text style={{ fontSize: 20, color: '#D0D3D4', fontFamily: 'Inter_400Regular' }}>Where do you want to go?</Text>
                 </View>
                 <View style={styles.line}></View>
                 <View style={styles.routeContainer}>
@@ -157,92 +158,96 @@ const PassengerRoute = props => {
                 {/* <View style={styles.line}></View> */}
 
                 <View style={{ paddingHorizontal: '4%', paddingTop: '4%' }}>
-                    <Text style={{ fontSize: 16, color: '#535454', fontFamily: 'Inter_400Regular', paddingBottom: '4%' }}>When are you leaving?</Text>
+                <Text style={{ fontSize: 20, color: '#535454', fontFamily: 'Inter_400Regular', paddingBottom: '4%' }}>When are you leaving?</Text>
                 </View>
 
                 <View style={styles.line}></View>
 
                 <View style={styles.datetime}>
-                 {show && (<DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={mode}
-                    is24Hour={true}
-                    display="default"
-                    onChange={onChange}
-                    minuteInterval={15}
-                />
-                )}
-            </View>
+                    {show && (<DateTimePicker
+                        testID="dateTimePicker"
+                        value={date}
+                        mode={mode}
+                        is24Hour={true}
+                        display="default"
+                        onChange={onChange}
+                        minuteInterval={15}
+                    />
+                    )}
+                </View>
 
 
-            <View style={styles.line}></View>
+                <View style={styles.line}></View>
 
                 <View style={{ alignSelf: 'center' }}>
 
                     <NextButton disabled={origin.longitude !== null && destination.longitude !== null ? false : true} text="Find Driver" onPress={onGoPress} />
                 </View>
-            </View>
+        </BlurView>
 
 
-            {fromIsVisible ?
-                (
-                    // <View style={styles.flatListView}>
-                    /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
-                    <Modal animationType="fade"
-                        transparent={true}
-                        visible={true}
-                    >
-                        <View style={styles.centredView}>
+            {
+        fromIsVisible ?
+            (
+                // <View style={styles.flatListView}>
+                /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
+                <Modal animationType="fade"
+                    transparent={true}
+                    visible={true}
+                >
+                    <View style={styles.centredView}>
 
-                            <View style={styles.inputModal}>
-                                <View>
-                                    <RouteDropDown
-                                        placeholder="from"
-                                        setID={setOriginID}
-                                        setValueName={setPlaceholderFrom}
-                                        valueName={placeholderFrom}
-                                        modalClose={setFromIsVisible}
-                                    />
-                                    <Button title="close" onPress={() => setFromIsVisible(false)} />
-                                </View>
+                        <View style={styles.inputModal}>
+                            <View>
+                                <RouteDropDown
+                                    placeholder="from"
+                                    setID={setOriginID}
+                                    setValueName={setPlaceholderFrom}
+                                    valueName={placeholderFrom}
+                                    modalClose={setFromIsVisible}
+                                />
+                                <Button title="close" onPress={() => setFromIsVisible(false)} />
                             </View>
-
                         </View>
-                    </Modal>
-                    /* </View> */
-                ) : null}
 
-            {toIsVisible ?
-                (
-                    // <View style={styles.flatListView}>
-                    /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
-                    <Modal animationType="fade"
-                        transparent={true}
-                        visible={true}
-                    >
-                        <View style={styles.centredView}>
+                    </View>
+                </Modal>
+                /* </View> */
+            ) : null
+    }
 
-                            <View style={styles.inputModal}>
-                                <View>
-                                    <RouteDropDown
-                                        placeholder="to"
-                                        setID={setDestinationID}
-                                        setValueName={setPlaceholderTo}
-                                        valueName={placeholderTo}
-                                        modalClose={setToIsVisible}
-                                    />
-                                    <Button title="close" onPress={() => setToIsVisible(false)} />
-                                </View>
+    {
+        toIsVisible ?
+            (
+                // <View style={styles.flatListView}>
+                /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
+                <Modal animationType="fade"
+                    transparent={true}
+                    visible={true}
+                >
+                    <View style={styles.centredView}>
+
+                        <View style={styles.inputModal}>
+                            <View>
+                                <RouteDropDown
+                                    placeholder="to"
+                                    setID={setDestinationID}
+                                    setValueName={setPlaceholderTo}
+                                    valueName={placeholderTo}
+                                    modalClose={setToIsVisible}
+                                />
+                                <Button title="close" onPress={() => setToIsVisible(false)} />
                             </View>
-
                         </View>
-                    </Modal>
-                    /* </View> */
-                ) : null}
+
+                    </View>
+                </Modal>
+                /* </View> */
+            ) : null
+    }
 
 
-        </View>
+        </View >
         
     )
 }
@@ -279,9 +284,8 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height * 0.65,
         width: Dimensions.get('screen').width * 0.9,
         justifyContent: 'center',
-        backgroundColor: 'white',
         borderRadius: 20,
-        backgroundColor: 'white',
+        overflow: 'hidden'
     },
     container: {
         justifyContent: 'center',

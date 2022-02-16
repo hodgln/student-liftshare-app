@@ -59,7 +59,7 @@ const ChangePassword = (props) => {
 
             const body = { email, password }
             
-            const response = await fetch(`https://spareseat-app.herokuapp.com/auth/resetpassword`, {
+            const response = await fetch(`http://api.spareseat.app/auth/resetpassword`, {
                 method: 'PUT',
                 headers: {
                     "Content-Type": "application/json"

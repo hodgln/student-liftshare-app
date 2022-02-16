@@ -25,7 +25,7 @@ const DriverCard = (props) => {
 
     const passengerPrice = async () => {
         try {
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/passengerprice/${liftshare_id}`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/passengerprice/${liftshare_id}`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -42,7 +42,7 @@ const DriverCard = (props) => {
 
     const profileInfo = async () => {
         try {
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/driverprofile/${driver_id}`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/driverprofile/${driver_id}`, {
                 method: "GET",
                 headers: { token: token }
             });

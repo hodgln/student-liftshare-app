@@ -51,7 +51,7 @@ const PassengerRouteDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("https://spareseat-app.herokuapp.com/locations/signurl", {
+            const response = await fetch("http://api.spareseat.app/locations/signurl", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -78,7 +78,7 @@ const PassengerRouteDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("https://spareseat-app.herokuapp.com/locations/distance", {
+            const response = await fetch("http://api.spareseat.app/locations/distance", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -208,8 +208,8 @@ const PassengerRouteDetails = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         width: Dimensions.get('screen').width * 0.9,
-        height: Dimensions.get('window').height * 0.5,
-        borderRadius: 20,
+        height: Dimensions.get('window').height * 0.46,
+        borderRadius: 15,
         borderWidth: 0.1,
         backgroundColor: 'white',
 

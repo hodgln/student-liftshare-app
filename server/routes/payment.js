@@ -330,4 +330,31 @@ router.delete("/cancel/:requestid", authorisation, async (req, res) => {
     }
 })
 
+router.get("/stripelink", authorisation, async (req, res) => {
+    try {
+
+        
+
+        const paymentIntentID = await pool.query("SELECT stripe_id FROM Users WHERE user_id = $1", [
+            req.user.id
+        ]);
+
+        
+
+        if(paymentIntentID.rows[0].stripe_id !== null) {
+            const link = await stripe.accounts.createLoginLink(paymentIntentID.rows[0].stripe_id)
+
+            res.json(link)
+        } else {
+            res.json("Please register with stripe first!")
+        }
+
+        
+
+
+    } catch (error) {
+        console.log(error.message)
+    }
+})
+
 module.exports = router;

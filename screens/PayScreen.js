@@ -2,20 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Dimensions, StyleSheet, Button, Alert } from 'react-native';
 import { useStripe } from '@stripe/stripe-react-native'
 import { useSelector } from 'react-redux'
-import { useNavigation } from '@react-navigation/core';
+import CheckInButton from '../components/Buttons/CheckInButton';
+import { Ionicons } from '@expo/vector-icons'
+import { CardStyleInterpolators } from '@react-navigation/stack';
 
 
 
 
 const PayScreen = ({ route, navigation }) => {
-  /*eventually style this so that onPress of the 'book lift' button it expands and 
-  unfocusses on the rest of the screen ( like a modal ) with a border around the outside
-  for the paycard*/
-  const { liftid } = route.params;
+
+  const { liftid, to, from, price, date, time } = route.params;
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [loading, setLoading] = useState(false);
   const token = useSelector(state => state.authorisation.userToken);
   const [intentID, setIntentID] = useState()
+
 
   const fetchPaymentSheetParams = async () => {
 
@@ -24,7 +25,7 @@ const PayScreen = ({ route, navigation }) => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", token);
 
-    const response = await fetch(`https://spareseat-app.herokuapp.com/payment/checkout/${liftid}`, {
+    const response = await fetch(`http://api.spareseat.app/payment/checkout/${liftid}`, {
       method: "POST",
       headers: myHeaders
     });
@@ -44,32 +45,32 @@ const PayScreen = ({ route, navigation }) => {
     };
   };
 
-  const requestLift = async() => {
+  const requestLift = async () => {
     try {
-        const status = 'pending'
-        const body = { liftid, status, intentID };
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("token", token);
+      const status = 'pending'
+      const body = { liftid, status, intentID };
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", token);
 
-        const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/Requests/post", {
-            method: "POST",
-            headers: myHeaders,
-            body: JSON.stringify(body)
-        });
+      const response = await fetch("http://api.spareseat.app/dashboard/Requests/post", {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(body)
+      });
 
-        //send notification here to user who posted the lift
+      //send notification here to user who posted the lift
 
-        
 
-        const parseRes = await response.json()
 
-        return(parseRes)
+      const parseRes = await response.json()
+
+      return (parseRes)
 
     } catch (error) {
-        console.log(error.message)
+      console.log(error.message)
     }
-}
+  }
 
 
 
@@ -107,7 +108,10 @@ const PayScreen = ({ route, navigation }) => {
         [
           {
             text: "OK",
-            onPress: () => navigation.navigate('My Lifts')
+            onPress: () => {
+              navigation.navigate('My Lifts')
+              navigation.popToTop()
+            }
             //once directed to homescreen, add notification in myLifts
           }
         ]
@@ -123,14 +127,75 @@ const PayScreen = ({ route, navigation }) => {
   //screen was the wrapper here before
   return (
 
-    <View>
-      <Text>Lift Summary:</Text>
-      <Text>Money will not be taken out of your account unless the driver accepts your request</Text>
-      <Text>This request will expire in 7 days</Text>
-      <Button
-        variant="primary"
+    <View style={styles.container}>
+      <Text style={{ fontFamily: 'Inter_300Light', fontSize: 27 }}>Lift Summary:</Text>
+      <View style={styles.line}></View>
+
+      <View style={{ flexDirection: 'row', height: '40%' }}>
+        <View style={{ width: '30%', height: '100%', alignItems: 'flex-end', justifyContent: 'center' }}>
+          <View style={{ height: '25%', justifyContent: 'center' }}>
+            <Text style={styles.smallText}>Leaving from: </Text>
+          </View>
+
+          <View style={{ height: '25%', justifyContent: 'center' }}>
+            <Text style={styles.smallText}>Going to: </Text>
+          </View>
+
+          <View style={{ height: '25%', justifyContent: 'center' }}>
+            <Text style={styles.smallText}>Date: </Text>
+          </View>
+
+          <View style={{ height: '25%', justifyContent: 'center' }}>
+            <Text style={styles.smallText}>Time: </Text>
+          </View>
+
+        </View>
+        <View style={{ borderWidth: 0.5, marginHorizontal: '2%', borderColor: 'grey' }}></View>
+
+        <View style={{ width: '70%', height: '100%', alignItems: 'flex-start', justifyContent: 'center' }}>
+
+          <View style={{ height: '25%', justifyContent: 'center' }}>
+            <Text style={styles.routeText}>{JSON.parse(from)}</Text>
+          </View>
+
+          <View style={{ height: '25%', justifyContent: 'center' }}>
+            <Text style={styles.routeText}>{JSON.parse(to)}</Text>
+          </View>
+
+          <View style={{ height: '25%', justifyContent: 'center' }}>
+            <Text style={styles.routeText}>{date}</Text>
+          </View>
+
+          <View style={{ height: '25%', justifyContent: 'center' }}>
+            <Text style={styles.routeText}>{time}</Text>
+          </View>
+
+        </View>
+
+
+      </View>
+
+      <View style={styles.priceBox}>
+        <Text style={{ fontSize: 28, fontFamily: 'Inter_600SemiBold', padding: '2%', color: '#0352A0' }}>£{price}</Text>
+        <View style={styles.infoBox}>
+          <View style={{ padding: '1.5%' }}>
+            <Ionicons name="information-circle-sharp" size={30} color="#D6438C" />
+          </View>
+          <View>
+            <Text style={styles.infoText}>Money will not be taken out of your account unless the driver accepts your request</Text>
+          </View>
+        </View>
+        <View style={styles.infoBox}>
+          <View style={{ padding: '1.5%' }} >
+            <Ionicons name="information-circle-sharp" size={30} color="#D6438C" />
+          </View>
+
+          <Text style={styles.infoText} >This request will expire in 7 days</Text>
+        </View>
+      </View>
+      <CheckInButton
         disabled={!loading}
-        title="Checkout"
+        text="Checkout"
         onPress={openPaymentSheet}
       />
     </View>
@@ -140,16 +205,22 @@ const PayScreen = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: Dimensions.get('screen').width * 0.8,
-    height: Dimensions.get('window').height * 0.2,
-    borderRadius: 20,
-    borderWidth: 4,
-    alignItems: 'center',
+    flex: 1,
+    //alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 15
+    marginBottom: 15,
+    backgroundColor: 'white',
+    padding: '3%'
   },
   buttons: {
     flexDirection: 'row'
+  },
+  priceBox: {
+    padding: '2%',
+    backgroundColor: 'lightgrey',
+    borderWidth: 0.4,
+    borderRadius: 10,
+    marginVertical: '4%'
   },
   modal: {
     width: Dimensions.get('screen').width * 0.8,
@@ -159,7 +230,32 @@ const styles = StyleSheet.create({
   flatListView: {
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  routeText: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 22,
+    color: '#0352A0'
+  },
+  line: {
+    borderBottomWidth: 0.5,
+    width: Dimensions.get('screen').width * 0.9,
+    borderColor: 'grey',
+    padding: '1%',
+    marginVertical: '1.5%',
+  },
+  infoBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: '4%',
+    width: '90%'
+  },
+  infoText: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 15,
+  },
+  smallText: {
+    fontFamily: 'Inter_300Light'
   }
-})
+});
 
 export default PayScreen;

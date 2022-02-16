@@ -17,7 +17,7 @@ const PassengerMyLifts = (props) => {
 
     const getLiftData = async () => {
         try {
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/passengerlifts`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/passengerlifts`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -37,7 +37,7 @@ const PassengerMyLifts = (props) => {
     const checkUnratedDrivers = async () => {
         try {
 
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/ratings/frompassenger`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/ratings/frompassenger`, {
                 method: 'GET',
                 headers: { token: token }
             })
@@ -137,13 +137,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         //flex: 1, 
         width: Dimensions.get('screen').width * 1,
-        // shadowOffset: {
-        //     height: 3,
-        //     width: -3
-        // },
-        // shadowRadius: 2,
-        // //shadowColor: 'black',
-        // shadowOpacity: 0.15,
+        shadowOffset: {
+            height: 3,
+            width: -3
+        },
+        shadowRadius: 2,
+        //shadowColor: 'black',
+        shadowOpacity: 0.15,
         padding: '2%'
     },
     centredView: {

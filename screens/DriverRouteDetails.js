@@ -63,7 +63,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("https://spareseat-app.herokuapp.com/locations/signurl", {
+            const response = await fetch("http://api.spareseat.app/locations/signurl", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -90,7 +90,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("https://spareseat-app.herokuapp.com/locations/distance", {
+            const response = await fetch("http://api.spareseat.app/locations/distance", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -114,7 +114,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
     const deleteLift = async () => {
         try {
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/Liftshares/${id}`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/Liftshares/${id}`, {
                 method: "DELETE",
                 headers: { token: token }
             });
@@ -161,7 +161,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/countpassengers/${id}`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/countpassengers/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });
@@ -184,7 +184,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/getrequests/${id}`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });
@@ -215,7 +215,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/getrequests/${id}`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });
@@ -318,7 +318,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/getrequests/${id}`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/getrequests/${id}`, {
                 method: "GET",
                 headers: myHeaders
             });

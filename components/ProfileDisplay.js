@@ -53,11 +53,11 @@ const ProfileDisplay = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        height: Dimensions.get('screen').height * 0.15,
+        height: Dimensions.get('screen').height * 0.12,
         width: Dimensions.get('screen').width * 0.78,
         borderRadius: 12,
         justifyContent: 'center',
-        
+        alignItems: 'center'
     },
     columnSection: {
         alignItems: 'center',

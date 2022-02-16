@@ -77,7 +77,7 @@ const DriverRoute = ({ navigation }) => {
         try {
 
 
-            const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/checkifstripe", {
+            const response = await fetch("http://api.spareseat.app/dashboard/checkifstripe", {
                 method: "GET",
                 headers: { token: token }
             });
@@ -108,7 +108,7 @@ const DriverRoute = ({ navigation }) => {
 
 
             const body = { datepicked, originlocation, destinationlocation, originname, destinationname, seats, roundedprice }
-            const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/Liftshares", {
+            const response = await fetch("http://api.spareseat.app/dashboard/Liftshares", {
                 method: "POST",
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -149,7 +149,7 @@ const DriverRoute = ({ navigation }) => {
         <View style={styles.container}>
 
             <View style={styles.circle}>
-                <LinearGradient colors={['#0352A0', '#0466c8', '#238ffb']} start={{ x: 0.2, y: 0 }} end={{ x: 1, y: 0 }} style={styles.linearGradient}>
+                <LinearGradient colors={['#0352A0', '#0466c8']} start={{ x: 0.2, y: 0 }} end={{ x: 1, y: 0 }} style={styles.linearGradient}>
                 </LinearGradient>
             </View>
 

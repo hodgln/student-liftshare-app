@@ -24,7 +24,7 @@ const LiftSearchDetails = ({ route, navigation }) => {
 
     const profileInfo = async () => {
         try {
-            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/driverprofile/${driver_id}`, {
+            const response = await fetch(`http://api.spareseat.app/dashboard/driverprofile/${driver_id}`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -50,7 +50,7 @@ const LiftSearchDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("https://spareseat-app.herokuapp.com/locations/signurl", {
+            const response = await fetch("http://api.spareseat.app/locations/signurl", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -77,7 +77,7 @@ const LiftSearchDetails = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
 
-            const response = await fetch("https://spareseat-app.herokuapp.com/locations/distance", {
+            const response = await fetch("http://api.spareseat.app/locations/distance", {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -147,6 +147,7 @@ const LiftSearchDetails = ({ route, navigation }) => {
             <View style={styles.backgroundContainer}>
                 <View style={styles.container}>
 
+                    <View style={{ width: '91%', flexDirection: 'row', paddingHorizontal: '3%' }}>
                     <RouteDisplay
                         from={from}
                         to={to}
@@ -154,10 +155,19 @@ const LiftSearchDetails = ({ route, navigation }) => {
                         date={moment(dateFormat).format('ddd Do MMM')}
                         price={price}
                     />
+                    </View>
                     <View style={styles.line}></View>
                     <ProfileDisplay picture={picture} firstname={driver_firstname} completed={completedLifts} rating={rating} />
                     <View style={styles.line}></View>
-                    <SeatsDisplay seats={seats} liftshare_id={liftshare_id} />
+                    <SeatsDisplay 
+                    seats={seats}
+                    liftshare_id={liftshare_id}
+                    from={from}
+                    to={to}
+                    price={price}
+                    time={moment(dateFormat).format('HH:mm')}
+                    date={moment(dateFormat).format('dddd Do MMM')} 
+                    />
                 </View>
             </View>
 
@@ -170,8 +180,8 @@ const LiftSearchDetails = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         width: Dimensions.get('screen').width * 0.9,
-        height: Dimensions.get('window').height * 0.5,
-        borderRadius: 30,
+        height: Dimensions.get('window').height * 0.46,
+        borderRadius: 15,
         alignItems: 'center',
         marginBottom: Dimensions.get('window').height * 0.02,
         alignSelf: 'center',

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Modal, StyleSheet, Dimensions, FlatList } from 'react-native'
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, Button, Modal, StyleSheet, Dimensions, FlatList, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { LOGGED_OUT } from '../store/actions/authentication';
 import { Avatar } from 'react-native-elements'
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
+import ProfileComponent from '../components/ProfileComponent';
+import * as Linking from 'expo-linking';
 
 const ProfileScreen = (props) => {
 
@@ -16,6 +17,9 @@ const ProfileScreen = (props) => {
     const [profilePicture, setProfilePicture] = useState('empty')
     const [rating, setRating] = useState('')
     const [completed, setCompleted] = useState('')
+    const [category, setCategory] = useState('')
+
+    console.log(`category ${category}`)
 
 
     const token = useSelector(state => state.authorisation.userToken);
@@ -25,13 +29,15 @@ const ProfileScreen = (props) => {
     const getUserData = async () => {
         try {
             //only render the myLifts section if User category (fetch from backend) is driver
-            const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/", {
+            const response = await fetch("http://api.spareseat.app/dashboard/", {
                 method: "GET",
                 headers: { token: token }
             });
 
             const parseRes = await response.json()
 
+
+            console.log(parseRes.user_account)
 
 
             setFirstname(parseRes.userData.user_firstname);
@@ -41,8 +47,9 @@ const ProfileScreen = (props) => {
             setProfilePicture(parseRes.userData.profile_picture)
             setRating(parseRes.rating)
             setCompleted(parseRes.completed)
+            setCategory(parseRes.userData.user_account)
 
-            
+
 
             //handle this in an 'action/case'
 
@@ -55,11 +62,33 @@ const ProfileScreen = (props) => {
         }
     };
 
-    
 
-    
+    const linkToStripe = async() => {
+        // TEST THIS LOGIC!!!
 
-    const goPressHandler = async() => {
+        try {
+
+            const response = await fetch("http://api.spareseat.app/payment/stripelink", {
+                method: "GET",
+                headers: { token: token }
+            });
+
+            const parseRes = await response.json()
+
+            if(typeof parseRes === 'object') {
+                // follow the link out of the app
+                Linking.openURL(parseRes.url)
+            } else {
+                Alert.alert(response)
+            }
+            
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+
+    const goPressHandler = async () => {
         dispatch({ type: LOGGED_OUT })
     };
 
@@ -84,11 +113,11 @@ const ProfileScreen = (props) => {
                 <Text style={styles.name}>{firstname} {surname}</Text>
                 <View style={styles.topMidContainer}>
                     <View style={styles.statsContainer}>
-                        <Text>Completed lifts:</Text>
+                        <Text style={styles.regularText}>Completed lifts:</Text>
                         <Text style={styles.numberSize}>{completed}</Text>
                     </View>
                     <View style={styles.statsContainer}>
-                        <Text>Driver rating:</Text>
+                        <Text style={styles.regularText}>Driver rating:</Text>
                         <Text style={styles.numberSize}>{rating ? JSON.parse(rating).toFixed(1) : '---'}</Text>
                     </View>
                 </View>
@@ -96,15 +125,26 @@ const ProfileScreen = (props) => {
             </View>
             <View style={styles.bottomContainer}>
                 <View>
-                    <View style={{ flexDirection: "row", padding: '2%' }}>
+                    <ProfileComponent text={email} />
+                    <ProfileComponent text={phoneNumber} />
+                    {category === "driver" ? (
+                    <ProfileComponent text="Stripe Dashboard" onPress={linkToStripe}/>
+                    ) : (
+                        null
+                    )}
+                    <ProfileComponent text="Terms and Conditions" />
+                    <ProfileComponent text="Privacy policy" />
+                    <ProfileComponent text="Log out" onPress={goPressHandler}/>
+
+                    {/* <View style={{ flexDirection: "row", padding: '2%' }}>
                         <Ionicons name="mail-outline" size={24} color="black" />
                         <Text style={styles.emailFont}>: {email} </Text>
                     </View>
                     <View style={{ flexDirection: "row", padding: '2%' }}>
                         <Ionicons name="call-outline" size={24} color="black" />
                         <Text style={styles.emailFont}>: {phoneNumber}</Text>
-                    </View>
-                    <Button title="log out" onPress={goPressHandler} />
+                    </View> */}
+                    {/* <Button title="log out" onPress={goPressHandler} /> */}
                 </View>
             </View>
         </View>
@@ -140,14 +180,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flex: 1,
+        marginTop: '2%'
     },
     topMidContainer: {
         flexDirection: 'row'
     },
     name: {
         fontSize: 25,
-        fontWeight: '600',
-        padding: '3%'
+        fontFamily: 'Inter_600SemiBold',
+        padding: '3%',
+        color: '#0352A0'
     },
     statsContainer: {
         alignItems: 'center',
@@ -160,8 +202,19 @@ const styles = StyleSheet.create({
         padding: '1%'
     },
     numberSize: {
-        fontWeight: '700',
-        fontSize: 40
+        fontSize: 40,
+        fontFamily: 'Inter_700Bold',
+        color: '#0352A0'
+    },
+    regularText: {
+        fontFamily: 'Inter_200ExtraLight'
+    },
+    line: {
+        borderBottomWidth: 0.5,
+        width: Dimensions.get('screen').width * 1,
+        borderColor: 'grey',
+        padding: '1%',
+        marginLeft: '6%'
     }
 })
 

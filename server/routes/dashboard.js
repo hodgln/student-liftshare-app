@@ -43,8 +43,6 @@ router.get("/", authorisation, async (req, res) => {
         ]
         );
 
-        console.log(getRating)
-
         if (user.rows[0].user_account === 'passenger') {
             const getCompletedLifts = await pool.query(
                 `SELECT

@@ -23,7 +23,7 @@ const ValidateCode = (props) => {
 
             //email needs sending to the api in the body!
 
-            const response = await fetch(`https://spareseat-app.herokuapp.com/confirmation/reset/${value}/${email}`)
+            const response = await fetch(`http://api.spareseat.app/confirmation/reset/${value}/${email}`)
 
             const parseRes = await response.json()
 
@@ -54,7 +54,7 @@ const ValidateCode = (props) => {
     const resendCode = async (email) => {
         try {
 
-            const response = await fetch(`https://spareseat-app.herokuapp.com/confirmation/email/reset/${email}`, {
+            const response = await fetch(`http://api.spareseat.app/confirmation/email/reset/${email}`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"

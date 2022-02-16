@@ -20,8 +20,6 @@ import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import SignUpOne from '../screens/SignUpOne';
 import SignUpTwo from '../screens/SignUpTwo';
 import SignUpThree from '../screens/SignUpThree';
-import DriverRouteOne from '../screens/DriverRouteOne';
-import DriverRouteTwo from '../screens/DriverRouteTwo';
 import PasswordResetScreen from '../screens/ResetPassword';
 import PassengerRouteDetails from '../screens/PassengerRouteDetails';
 import DriverRouteDetails from '../screens/DriverRouteDetails';
@@ -52,7 +50,7 @@ const RootStack = () => {
   const isAuth = async () => {
     try {
 
-      const verify = await fetch("https://spareseat-app.herokuapp.com/auth/verified", {
+      const verify = await fetch("http://api.spareseat.app/auth/verified", {
         method: "GET",
         headers: { token: token }
       });

@@ -24,7 +24,7 @@ const RatingCard = (props) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/ratings", {
+            const response = await fetch("http://api.spareseat.app/dashboard/ratings", {
                 method: "POST",
                 headers: myHeaders,
                 body: JSON.stringify(body)
