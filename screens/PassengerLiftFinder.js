@@ -35,7 +35,7 @@ const PassengerLiftFinder = ({ route, navigation }) => {
             myHeaders.append("token", token);
 
             const body = { originlocation, destinationlocation }
-            const response = await fetch(`http://api.spareseat.app/dashboard/Liftshares/distance`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/Liftshares/distance`, {
                 method: "POST",
                 headers: myHeaders,
                 body: JSON.stringify(body)

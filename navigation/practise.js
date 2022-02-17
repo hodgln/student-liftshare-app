@@ -50,7 +50,7 @@ const RootStack = () => {
   const isAuth = async () => {
     try {
 
-      const verify = await fetch("http://api.spareseat.app/auth/verified", {
+      const verify = await fetch("https://spareseat-app.herokuapp.com/auth/verified", {
         method: "GET",
         headers: { token: token }
       });

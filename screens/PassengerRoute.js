@@ -72,7 +72,7 @@ const PassengerRoute = props => {
     const getCoords = async (place_id) => {
         try {
 
-            const response = await fetch(`http://api.spareseat.app/locations/coords/${place_id}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/locations/coords/${place_id}`, {
                 method: 'GET',
                 headers: {
                     token: token

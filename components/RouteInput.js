@@ -14,7 +14,7 @@ const RouteInput = (props) => {
         if (text.length > 2) {
             try {
 
-                const response = await fetch(`http://api.spareseat.app/locations/${text}`, {
+                const response = await fetch(`https://spareseat-app.herokuapp.com/locations/${text}`, {
                     method: 'GET',
                     headers: {
                         token: token

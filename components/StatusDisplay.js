@@ -14,7 +14,7 @@ const StatusDisplay = (props) => {
     const cancelRequest = async () => {
 
         try {
-            const response = await fetch(`http://api.spareseat.app/dashboard/cancelrequest/${requestid}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/cancelrequest/${requestid}`, {
                 method: "DELETE",
                 headers: { token: token }
             });
@@ -44,7 +44,7 @@ const StatusDisplay = (props) => {
     const cancelPayment = async () => {
         try {
 
-            const response = await fetch(`http://api.spareseat.app/payment/cancel/${requestid}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/payment/cancel/${requestid}`, {
                 method: "DELETE",
                 headers: { token: token }
             });

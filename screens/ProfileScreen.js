@@ -29,7 +29,7 @@ const ProfileScreen = (props) => {
     const getUserData = async () => {
         try {
             //only render the myLifts section if User category (fetch from backend) is driver
-            const response = await fetch("http://api.spareseat.app/dashboard/", {
+            const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/", {
                 method: "GET",
                 headers: { token: token }
             });
@@ -68,7 +68,7 @@ const ProfileScreen = (props) => {
 
         try {
 
-            const response = await fetch("http://api.spareseat.app/payment/stripelink", {
+            const response = await fetch("https://spareseat-app.herokuapp.com/payment/stripelink", {
                 method: "GET",
                 headers: { token: token }
             });

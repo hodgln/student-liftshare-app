@@ -42,7 +42,7 @@ const DriverCheckIn = ({ route }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            await fetch(`http://api.spareseat.app/dashboard/completelift/${liftshare_id}`, {
+            await fetch(`https://spareseat-app.herokuapp.com/dashboard/completelift/${liftshare_id}`, {
                 method: 'PUT',
                 headers: myHeaders
             });
@@ -67,7 +67,7 @@ const DriverCheckIn = ({ route }) => {
 
             const body = { liftshare_id, scannedPassengers }
 
-            const response = await fetch(`http://api.spareseat.app/payment/paydriver/${liftshare_id}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/payment/paydriver/${liftshare_id}`, {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -120,7 +120,7 @@ const DriverCheckIn = ({ route }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://api.spareseat.app/dashboard/noshow/${request_id}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/noshow/${request_id}`, {
                 method: 'PUT',
                 headers: myHeaders
             });

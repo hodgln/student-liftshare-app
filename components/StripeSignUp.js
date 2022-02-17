@@ -37,7 +37,7 @@ const StripeSignUp = (props) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch("http://api.spareseat.app/payment/expressaccount", {
+            const response = await fetch("https://spareseat-app.herokuapp.com/payment/expressaccount", {
                 method: "POST",
                 body: JSON.stringify(body),
                 headers: myHeaders
@@ -103,7 +103,7 @@ const StripeSignUp = (props) => {
 
             console.log(id)
 
-            const response = await fetch(`http://api.spareseat.app/payment/returnurl/${id}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/payment/returnurl/${id}`, {
                 method: 'GET',
                 headers: { token: token }
             });

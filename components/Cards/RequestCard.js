@@ -38,7 +38,7 @@ const RequestCard = (props) => {
 
     const profileInfo = async () => {
         try {
-            const response = await fetch(`http://api.spareseat.app/dashboard/passengerprofile/${passenger_id}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/dashboard/passengerprofile/${passenger_id}`, {
                 method: "GET",
                 headers: { token: token }
             });
@@ -68,7 +68,7 @@ const RequestCard = (props) => {
             myHeaders.append("token", token);
             const body = { status, request_id, id, to }
 
-            const response = await fetch("http://api.spareseat.app/dashboard/handlestatus", {
+            const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/handlestatus", {
                 method: "PUT",
                 headers: myHeaders,
                 body: JSON.stringify(body)
@@ -82,7 +82,7 @@ const RequestCard = (props) => {
 
                 const cancelBody = { request_id } 
                 
-                const cancelPayment = await fetch("http://api.spareseat.app/payment/cancel", {
+                const cancelPayment = await fetch("https://spareseat-app.herokuapp.com/payment/cancel", {
                     method: "POST",
                     headers: myHeaders,
                     body: JSON.stringify(cancelBody)
@@ -122,7 +122,7 @@ const RequestCard = (props) => {
 
                 const captureBody = { request_id } 
 
-                const capturePayment = await fetch("http://api.spareseat.app/payment/capture", {
+                const capturePayment = await fetch("https://spareseat-app.herokuapp.com/payment/capture", {
                     method: "POST",
                     headers: myHeaders,
                     body: JSON.stringify(captureBody)

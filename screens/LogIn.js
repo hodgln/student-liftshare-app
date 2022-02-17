@@ -86,7 +86,7 @@ const LogIn = ({ route, navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`http://api.spareseat.app/confirmation/email/${email}`, {
+            const response = await fetch(`https://spareseat-app.herokuapp.com/confirmation/email/${email}`, {
                 method: 'POST',
                 headers: myHeaders,
             });
@@ -144,7 +144,7 @@ const LogIn = ({ route, navigation }) => {
                 myHeaders.append("Content-Type", "application/json");
                 myHeaders.append("token", jwtToken);
     
-                await fetch("http://api.spareseat.app/auth/pushToken", {
+                await fetch("https://spareseat-app.herokuapp.com/auth/pushToken", {
                     method: 'PUT',
                     headers: myHeaders,
                     body: JSON.stringify(body)
@@ -163,7 +163,7 @@ const LogIn = ({ route, navigation }) => {
 
             const body = { email, password, category }
 
-            const loginUser = await fetch("http://api.spareseat.app/auth/login", {
+            const loginUser = await fetch("https://spareseat-app.herokuapp.com/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -175,7 +175,6 @@ const LogIn = ({ route, navigation }) => {
 
             //get res with if confirmed or not 
 
-            //console.log(parseResponse)
 
             if (parseResponse.confirmed === false) {
                 Alert.alert(

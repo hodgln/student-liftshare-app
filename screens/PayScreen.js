@@ -25,7 +25,7 @@ const PayScreen = ({ route, navigation }) => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", token);
 
-    const response = await fetch(`http://api.spareseat.app/payment/checkout/${liftid}`, {
+    const response = await fetch(`https://spareseat-app.herokuapp.com/payment/checkout/${liftid}`, {
       method: "POST",
       headers: myHeaders
     });
@@ -53,7 +53,7 @@ const PayScreen = ({ route, navigation }) => {
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", token);
 
-      const response = await fetch("http://api.spareseat.app/dashboard/Requests/post", {
+      const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/Requests/post", {
         method: "POST",
         headers: myHeaders,
         body: JSON.stringify(body)
