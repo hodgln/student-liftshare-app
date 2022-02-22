@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, FlatList, Button, TouchableOpacity, ImageBackground } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Ionicons, Foundation, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'
-import * as Linking from 'expo-linking';
-import { BlurView } from 'expo-blur'
-import { LinearGradient } from 'expo-linear-gradient'
 
 
 

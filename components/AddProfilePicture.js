@@ -19,8 +19,6 @@ const AddProfilePicture = async () => {
         quality: 1,
     });
 
-    //console.log(result);
-
     if (!result.cancelled) {
         return ({
             inputID: 'choose',

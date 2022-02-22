@@ -7,6 +7,8 @@ const EmailOTPgen = (email) => {
 
 const OTP = parseInt(Math.floor(100000 + Math.random() * 900000))
 console.log(OTP)
+
+console.log(`envs are ${process.env.GMAIL_NAME}`)
     
 
 //move the declaration of transporter variable to index.js if possible
@@ -14,7 +16,7 @@ console.log(OTP)
 const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: process.env.GMAIL_USER,
+      user: process.env.GMAIL_NAME,
       pass: process.env.GMAIL_PASS
     }
   });

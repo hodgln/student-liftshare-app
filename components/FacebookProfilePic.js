@@ -23,6 +23,8 @@ const FacebookProfilePic = async () => {
 
         const parseRes = await response.json()
 
+        console.log(parseRes)
+
          return({
             inputID: 'facebook',
             url: parseRes.picture.data.url,

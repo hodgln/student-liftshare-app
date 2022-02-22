@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, Image, Button, ScrollView, Alert, Dimensions, TouchableOpacity } from 'react-native'
-import Input from '../components/Input';
 import { Ionicons } from "@expo/vector-icons";
-import { Avatar } from 'react-native-elements/dist/avatar/Avatar';
 import AddProfilePicture from '../components/AddProfilePicture';
 import FacebookProfilePic from '../components/FacebookProfilePic';
 import BackButton from '../components/Buttons/BackButton';
@@ -52,25 +50,32 @@ const SignUpThree = ({ route, navigation }) => {
 
     const onGoPress = async () => {
         try {
-            //const category = 'driver'
 
-            // const url = Linking.createURL('', { queryParams: { params: 'emailToken' } });
+            const body = { firstname, surname, email, password, category, phoneNumber }
 
-            //read about paths in expo linking
+            const formdata = new FormData()
 
-            //add scheme
+            formdata.append('photo', {
+                uri: picture,
+                type: 'image/jpg',
+                name: `${firstname}${surname}.jpg`
+            });
 
-            const body = { firstname, surname, email, password, category, phoneNumber, picture }
+            formdata.append('data', JSON.stringify(body))
 
+            console.log(formdata)
+
+    
             const sendUser = await fetch("https://spareseat-app.herokuapp.com/auth/register", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "multipart/form-data",
+                    Accept: 'application/json'
                 },
-                body: JSON.stringify(body)
+                body: formdata
             });
 
-            const parseResponse = await sendUser.json();
+            const parseResponse = await sendUser.text();
 
             //dispatch({ type: LOGGED_IN, token: parseResponse.token, category: 'driver' });
 

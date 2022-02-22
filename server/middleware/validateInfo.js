@@ -1,5 +1,6 @@
 module.exports = function(req, res, next) {
-    const { firstname, surname, email, password } = req.body;
+    // this is not working because it is multiform
+    const { firstname, surname, email, password } = req.body
   
     function validEmail(userEmail) {
       //return /^[\w]+[\w.%+-]*@[\w.-]+\.ac\.uk$/.test(userEmail);
