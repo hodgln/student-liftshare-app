@@ -57,8 +57,8 @@ const SignUpThree = ({ route, navigation }) => {
 
             formdata.append('photo', {
                 uri: picture,
-                type: 'image/jpg',
-                name: `${firstname}${surname}.jpg`
+                type: 'image/png',
+                name: `${firstname}${surname}.png`
             });
 
             formdata.append('data', JSON.stringify(body))
@@ -75,7 +75,7 @@ const SignUpThree = ({ route, navigation }) => {
                 body: formdata
             });
 
-            const parseResponse = await sendUser.text();
+            const parseResponse = await sendUser.json();
 
             //dispatch({ type: LOGGED_IN, token: parseResponse.token, category: 'driver' });
 

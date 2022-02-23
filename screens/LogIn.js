@@ -205,7 +205,7 @@ const LogIn = ({ route, navigation }) => {
     };
 
     const loginPress = async() => {
-        await setIsLoading(true)
+        setIsLoading(true)
         await onGoPress()
         setIsLoading(false)
     }

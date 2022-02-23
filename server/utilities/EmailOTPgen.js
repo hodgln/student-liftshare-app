@@ -21,13 +21,18 @@ const transporter = nodemailer.createTransport({
     }
   });
 
-  transporter.sendMail({
-    to: email,
-    subject: 'Please confirm your email',
-    html: `Please enter the code provided in the app to confirm your email,
-    
-    code: ${OTP}`
-})
+  try {
+    transporter.sendMail({
+      to: email,
+      subject: 'Please confirm your email',
+      html: `Please enter the code provided in the app to confirm your email,
+      
+      code: ${OTP}`
+  });
+  } catch (error) {
+    console.log(error.message)
+  }
+  
 
   //create 5 digit verification code which is valid for two minutes and bcrypt it?
 
