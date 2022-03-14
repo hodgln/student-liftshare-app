@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity, Dimensions, ProgressViewIOSComponent } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from '../navigation/RootNavigation'
 import { useSelector, useDispatch } from 'react-redux';
@@ -12,7 +12,7 @@ import ProfileScreen from '../screens/ProfileScreen'
 import PassengerLiftFinder from '../screens/PassengerLiftFinder';
 import DriverMyLifts from '../screens/DriverMyLifts';
 import PassengerMyLifts from '../screens/PassengerMyLifts';
-import { LOGGED_OUT } from '../store/actions/authentication';
+import { LOGGED_OUT, LOGGED_IN } from '../store/actions/authentication';
 import DriverCheckIn from '../screens/DriverCheckIn';
 import PayScreen from '../screens/PayScreen';
 import ConfirmationScreen from '../screens/ConfirmationScreen';
@@ -35,8 +35,9 @@ const RootStack = () => {
 
   // manage below in state and pass state into ? : function for navigation permissions
 
-  const [signedIn, setSignedIn] = useState(false);
+  // const [signedIn, setSignedIn] = useState(false);
   const [isDriver, setIsDriver] = useState(true);
+  const [loading, setLoading] = useState(true)
 
   // console.log(`signed in is: ${signedIn}`);
 
@@ -44,31 +45,68 @@ const RootStack = () => {
 
   const driverOrPassenger = useSelector(state => state.authorisation.userCategory);
   const token = useSelector(state => state.authorisation.userToken);
+  const isLogged = useSelector(state => state.authorisation.isLoggedIn)
 
+  console.log(`signedIn ${isLogged}`)
+  // issue is that signed in is not being changed 
 
-
-  const isAuth = async () => {
+  const updateToken = async () => {
     try {
 
       const verify = await fetch("https://spareseat-app.herokuapp.com/auth/verified", {
-        method: "GET",
-        headers: { token: token }
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 'refresh': token })
       });
 
-      const parseRes = await verify.json();
+      if (verify.status === 200) {
+        const parseRes = await verify.json();
 
-      parseRes === true ? setSignedIn(true) : setSignedIn(false) && dispatch({ type: LOGGED_OUT })
+        console.log(parseRes.token)
+        dispatch({ type: LOGGED_IN, token: parseRes.token, category: parseRes.category })
+      } else {
+        dispatch({ type: LOGGED_OUT })
+        // null
+        // setSignedIn(true)
+        // console.log("hi")
+      }
 
-      // console.log(`parse ${parseRes}`)
+      //parseRes === true ? setSignedIn(true) : setSignedIn(false) && dispatch({ type: LOGGED_OUT })
+
+      if (loading) {
+        setLoading(false)
+      }
 
     } catch (error) {
       console.log(error.message)
     }
   }
 
+  // call update token every 5 or 15 mins AND on the first load. 
+
+  // useEffect(() => {
+  //   updateToken()
+  // })
+
+
+
   useEffect(() => {
-    isAuth()
-  })
+    
+    if (loading) {
+      updateToken()
+    }
+
+    let fourMinutes = 1000 * 60 * 4
+
+    let interval = setInterval(() => {
+      if (token) {
+        updateToken()
+      }
+    }, fourMinutes)
+    return () => clearInterval(interval)
+  }, [token, loading]);
 
   // useEffect(() => {if(signedIn === false) {
   //   dispatch({type: LOGGED_OUT})
@@ -105,7 +143,8 @@ const RootStack = () => {
       >
         <Tab.Screen name="Post Route" component={DriverRoute} />
         <Tab.Screen name="My Lifts" component={DriverStackTwo} options={{
-          headerShown: false }}/>
+          headerShown: false
+        }} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     )
@@ -141,9 +180,11 @@ const RootStack = () => {
         })}
       >
         <Tab.Screen name="Post Route" component={PassengerStackOne} options={{
-          headerShown: false }}/>
+          headerShown: false
+        }} />
         <Tab.Screen name="My Lifts" component={PassengerStackTwo} options={{
-          headerShown: false }}/>
+          headerShown: false
+        }} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     )
@@ -152,7 +193,7 @@ const RootStack = () => {
 
   const PassengerStackOne = () => {
     return (
-      <Stack.Navigator screenOptions={{ headerTitleStyle: {fontFamily: 'Inter_600SemiBold' }}} >
+      <Stack.Navigator screenOptions={{ headerTitleStyle: { fontFamily: 'Inter_600SemiBold' } }} >
         <Stack.Screen name="Lift Search" component={PassengerRoute} />
         <Stack.Screen name="Choose Driver" component={PassengerLiftFinder} />
         <Stack.Screen name="Lift Details" component={LiftSearchDetails} />
@@ -163,7 +204,7 @@ const RootStack = () => {
 
   const PassengerStackTwo = () => {
     return (
-      <Stack.Navigator screenOptions={{ headerTitleStyle: {fontFamily: 'Inter_600SemiBold' }}} >
+      <Stack.Navigator screenOptions={{ headerTitleStyle: { fontFamily: 'Inter_600SemiBold' } }} >
         <Stack.Screen name="My Lifts" component={PassengerMyLifts} />
         <Stack.Screen name="Route Details" component={PassengerRouteDetails} />
       </Stack.Navigator>
@@ -180,15 +221,14 @@ const RootStack = () => {
     )
   }
 
-  const DriverStackOne = () => {
+
+  const authScreensStack = () => {
     return (
       <Stack.Navigator>
-        <Stack.Screen name="DRouteOne" component={DriverRouteOne} options={{ headerShown: false }} />
-        <Stack.Screen name="DRouteTwo" component={DriverRouteTwo} options={{ headerShown: false }} />
+        <Stack.Screen name="ChoiceScreen" component={ChoiceScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     )
   }
-
 
   console.log(driverOrPassenger)
 
@@ -201,7 +241,7 @@ const RootStack = () => {
   // };
 
   const authScreens = {
-    Choice: ChoiceScreen,
+    Choice: authScreensStack,
     LogIn: LogIn,
     SignUpOne: SignUpOne,
     SignUpTwo: SignUpTwo,
@@ -210,6 +250,9 @@ const RootStack = () => {
     CScreen: ConfirmationScreen,
     PReset: PasswordResetScreen
   };
+  // const authScreens = {
+  //   authScreens: authScreensStack
+  // };
 
   const driverScreens = {
     DScreens: DriverNavBar,
@@ -241,28 +284,31 @@ const RootStack = () => {
 
   return (
     <NavigationContainer style={styles.container} ref={navigationRef}>
-      <Stack.Navigator
-        screenOptions={{
-          initialRouteName: "Choice",
-          // headerRight: () => signedIn ? <HeaderProfileButton /> : null
-          // ,
-          headerShown: false
+      {loading ? null :
+        <Stack.Navigator
+          screenOptions={{
+            initialRouteName: "Choice",
 
-          //headerTitle: signedIn ? null : () => <HeaderButton />
-        }}
-      >
-        {Object.entries({
+            // headerRight: () => signedIn ? <HeaderProfileButton /> : null
+            // ,
+            headerShown: false
 
-          //...commonScreens,
+            //headerTitle: signedIn ? null : () => <HeaderButton />
+          }}
+        >
+          {Object.entries({
 
-          ...(signedIn ? (isDriver ? driverScreens : passengerScreens) : authScreens),
-        }).map(([name, component]) => (
-          <Stack.Screen name={name} component={component} />
-        ))}
-        {/* <Tab.Navigator>
+            //...commonScreens,
+
+            ...(isLogged ? (isDriver ? driverScreens : passengerScreens) : authScreens),
+          }).map(([name, component]) => (
+            <Stack.Screen name={name} component={component} />
+          ))}
+          {/* <Tab.Navigator>
         <Tab.Screen name='Home'  component={HomeScreen}/>
       </Tab.Navigator> */}
-      </Stack.Navigator>
+        </Stack.Navigator>
+      }
     </NavigationContainer>
   );
 }

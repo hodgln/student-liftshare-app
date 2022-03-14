@@ -14,7 +14,7 @@ const DummyRouteInput = (props) => {
 
     return (
 
-        <View style={styles.Input} tint='dark' intensity={40}>
+        <View style={styles.Input}>
 
             <View style={{ flexDirection: 'row', width: '100%', height: '100%' }}>
                 <View style={{ justifyContent: 'center'}}>

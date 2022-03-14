@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Dimensions, Alert, Button, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Alert, Button, TextInput, TouchableOpacity } from 'react-native'
 import SeatButton from '../components/Buttons/SeatButton'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NextButton from '../components/Buttons/NextButton';
@@ -10,20 +10,20 @@ import { BlurView } from 'expo-blur';
 
 const DriverRouteTwo = (props) => {
 
-    const { 
-        setSeats,
-        onGoPress,
+    const {
         date,
-        seats,
-        setDate
-     } = props
-
-    console.log(seats)
+        setDate,
+        stages,
+        setStage,
+        regFunc,
+        reg,
+        isValid
+    } = props
 
 
     const [show, setShow] = useState(true);
 
-    
+
 
     // console.log(destinationlocation)
 
@@ -43,25 +43,30 @@ const DriverRouteTwo = (props) => {
             <BlurView style={styles.componentContainer}>
                 <View style={{ padding: '4%' }}>
                     <View style={styles.textAlign}>
-                        <Text style={{ fontSize: 20, color: '#D0D3D4', fontFamily: 'Inter_400Regular' }}>How many seats are available?</Text>
+                        <Text style={{ fontSize: 20, color: '#D0D3D4', fontFamily: 'Inter_400Regular' }}>What is your registration number?</Text>
                     </View>
                     <View style={styles.line}></View>
-                    <View style={{ padding: 10, justifyContent: 'center' }}>
-                        <View style={styles.twoSeats}>
-                            <View style={styles.addsubtract}>
-                                <TouchableOpacity onPress={() => setSeats(seats - 1)} disabled={seats === 0}>
-                                    <Ionicons name="remove-circle-outline" size={28} color="#F0F3F4" />
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{ width: '80%', alignItems: 'center', justifyContent: 'center' }}>
-                                <Text style={styles.boldText}>{seats}</Text>
-                            </View>
-
-                            <View style={styles.addsubtract}>
-                                <TouchableOpacity onPress={() => setSeats(seats + 1)} disabled={seats === 3}>
-                                    <Ionicons name="add-circle-outline" size={28} color="#F0F3F4"  />
-                                </TouchableOpacity>
-                            </View>
+                    <View style={styles.Input}>
+                        <View style={{ width: '10%' }}></View>
+                        <View style={{ width: '80%', height: '100%', alignItems: 'center', flexDirection: 'row' }}>
+                            <TextInput
+                                {...props}
+                                placeholder={props.placeholder}
+                                keyboardType='default'
+                                autoCapitalize='none'
+                                returnKeyType='done'
+                                autoCorrect={false}
+                                value={reg}
+                                onChangeText={text => regFunc(text)}
+                                style={styles.textInput}
+                                autoFocus={true}
+                                selectionColor={"white"}
+                                autoCapitalize="characters"
+                                maxLength={7}
+                            />
+                        </View>
+                        <View style={{ width: '10%' }}>
+                            {!isValid ? null : (<Ionicons name="checkmark-circle-outline" size={35} color="lightgreen" />) }
                         </View>
                     </View>
                 </View>
@@ -94,7 +99,7 @@ const DriverRouteTwo = (props) => {
 
                 <View style={styles.bottomline}></View>
                 <View style={{ alignSelf: 'center', marginBottom: Dimensions.get('screen').height * 0.03 }}>
-                    <NextButton text="Post Route" disabled={seats !== 0 && date >= new Date() ? false : true} onPress={onGoPress} />
+                    <NextButton text="next" disabled={date >= new Date() && reg.length > 1 ? false : true} onPress={() => setStage(stages.ROUTE_THREE)} />
                 </View>
             </BlurView>
         </View>
@@ -118,9 +123,9 @@ const styles = StyleSheet.create({
         width: '70%'
     },
     line: {
-        borderBottomWidth: 0.3,
+        borderBottomWidth: 0.5,
         width: '85%',
-        borderColor: 'grey',
+        borderColor: 'lightgrey',
     },
     bottomline: {
         borderBottomWidth: 1,
@@ -147,6 +152,26 @@ const styles = StyleSheet.create({
         fontSize: 50,
         color: '#F0F3F4'
     },
+    Input: {
+        padding: 5,
+        borderRadius: 10,
+        overflow: 'hidden',
+        marginTop: Dimensions.get('window').height * 0.02,
+        height: Dimensions.get('window').height * 0.06,
+        justifyContent: 'center',
+        textAlign: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        width: '100%',
+    },
+    textInput: {
+        height: '100%',
+        fontFamily: 'Inter_400Regular',
+        fontSize: 40,
+        width: '100%',
+        color: 'white',
+        textAlign: 'center',
+    }
 })
 
 export default DriverRouteTwo;

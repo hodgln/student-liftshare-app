@@ -24,7 +24,6 @@ router.get("/:text", authorisation, async (req, res) => {
 
                 res.json(r.data.predictions)
 
-                //above is the problem
             }).catch((e) => {
                 console.log(e)
             });

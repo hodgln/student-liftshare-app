@@ -14,4 +14,4 @@ const passengerPriceCalc = (price) => {
 
 }
 
-module.exports = passengerPriceCalc
+module.exports = passengerPriceCalc;

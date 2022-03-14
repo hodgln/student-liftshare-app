@@ -1,23 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, FlatList, Button, TouchableOpacity, ImageBackground } from 'react-native'
-import { useSelector } from 'react-redux'
 import { Ionicons, Foundation, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'
 
 
-
-
-
-
-
-
-const HomeScreen = props => {
-
-    const isLoggedIn = useSelector(state => state.authorisation.isLoggedIn)
-    const driverOrPassenger = useSelector(state => state.authorisation.userCategory)
-    const token = useSelector(state => state.authorisation.token)
-
-
-    //console.log(isLoggedIn)
+const HomeScreen = ({ navigation }) => {
 
     const [passengerClick, setPassengerClick] = useState(false);
     const [driverClick, setDriverClick] = useState(false);
@@ -51,7 +37,7 @@ const HomeScreen = props => {
             console.log('please select one of the above options')
         }
 
-        props.navigation.navigate('LogIn', { category: category })
+        navigation.navigate('LogIn', { category: category })
     }
 
 
@@ -68,20 +54,18 @@ const HomeScreen = props => {
                     <View style={styles.columnButtons}>
                         <TouchableOpacity style={{ alignItems: 'center' }} onPress={passengerClickHandle} >
 
-                            <MaterialCommunityIcons name="seat-passenger" size={100} color={passengerClick ? "green" : "black"} />
-
-                            {/* <Button title="Passenger" onPress={} disabled={isLoggedIn ? true : false} /> */}
-                            <Text>Passenger</Text>
+                            
+                            <Text style={{ fontFamily: 'Inter_400Regular' }}>I am a</Text>
+                            <Text style={{ fontSize: 28, fontFamily: 'Inter_600SemiBold', padding: '2%', color: passengerClick ? '#C80466' : '#0352A0' }}>Passenger</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.verticalLine}>
                     </View>
                     <View style={styles.columnButtons}>
                         <TouchableOpacity style={{ alignItems: 'center' }} onPress={driverClickHandle} >
-                            <MaterialCommunityIcons name="steering" size={100} color={driverClick ? 'green' : 'black'} />
 
-                            {/* <Button title="Passenger" onPress={} disabled={isLoggedIn ? true : false} /> */}
-                            <Text>Driver</Text>
+                            <Text style={{ fontFamily: 'Inter_400Regular' }}>I am a</Text>
+                            <Text style={{ fontSize: 28, fontFamily: 'Inter_600SemiBold', padding: '2%', color: driverClick ? '#C80466' : '#0352A0' }}>Driver</Text>
                         </TouchableOpacity>
 
                     </View>
@@ -90,7 +74,7 @@ const HomeScreen = props => {
                 <View style={styles.goButton} >
                     {isVisible ?
                         <TouchableOpacity onPress={goToLogin}>
-                            <Ionicons name="chevron-forward-circle-outline" style={{ fontSize: 28 }} color="green"></Ionicons>
+                            <Ionicons name="chevron-forward-circle-outline" style={{ fontSize: 40 }} color='#0352A0'></Ionicons>
                         </TouchableOpacity>
                         : null}
                     {/* <Button title="+" onPress={goToLogin} disabled={isLoggedIn ? true : false} /> */}

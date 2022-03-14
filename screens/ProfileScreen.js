@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Modal, StyleSheet, Dimensions, FlatList, Alert } from 'react-native';
+import { View, Text, Button, Modal, StyleSheet, Dimensions, FlatList, Alert, TouchableOpacity } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { LOGGED_OUT } from '../store/actions/authentication';
 import { Avatar } from 'react-native-elements'
 import { Ionicons } from '@expo/vector-icons';
 import ProfileComponent from '../components/ProfileComponent';
 import * as Linking from 'expo-linking';
+import AddProfilePicture from '../components/AddProfilePicture';
+import PhoneChange from '../components/PhoneChange';
 
-const ProfileScreen = (props) => {
+const ProfileScreen = ({ route, navigation }) => {
 
     // const [userInfo, setUserInfo] = useState('')
     const [firstname, setFirstname] = useState('')
@@ -17,9 +19,11 @@ const ProfileScreen = (props) => {
     const [profilePicture, setProfilePicture] = useState('empty')
     const [rating, setRating] = useState('')
     const [completed, setCompleted] = useState('')
-    const [category, setCategory] = useState('')
+    const [category, setCategory] = useState('');
+    const [disabled, setDisabled] = useState(false);
+    const [showPhone, setShowPhone] = useState(false);
 
-    console.log(`category ${category}`)
+    // console.log(route.params.setSigned)
 
 
     const token = useSelector(state => state.authorisation.userToken);
@@ -87,6 +91,63 @@ const ProfileScreen = (props) => {
         }
     }
 
+            
+
+    const changeProfilePic = async () => {
+        try {
+
+            const newChoice = await AddProfilePicture()
+
+            setProfilePicture(newChoice.url)
+
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "mutipart/form-data");
+            myHeaders.append("token", token);
+
+            const formdata = new FormData()
+
+            // handle different picture formats
+            formdata.append('newpic', {
+                uri: newChoice.url,
+                type: 'image/jpg',
+                name: `${firstname}${surname}.jpg`
+            });
+            
+            await fetch("https://spareseat-app.herokuapp.com/auth/changepic", {
+                method: "PUT",
+                headers: myHeaders,
+                body: formdata
+            });
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+
+    const changePhoneNo = async (newPhone) => {
+        try {
+
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "mutipart/form-data");
+            myHeaders.append("token", token);
+
+            const response = await fetch(`https://spareseat-app.herokuapp.com/auth/changephone/${newPhone}`,{
+                method: "PUT",
+                headers: myHeaders
+            });
+
+            const parseRes = await response.json()
+
+            setPhoneNumber(parseRes)
+
+            setShowPhone(false)
+            
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
 
     const goPressHandler = async () => {
         dispatch({ type: LOGGED_OUT })
@@ -100,6 +161,13 @@ const ProfileScreen = (props) => {
         <View style={styles.screenContainer}>
             <View style={styles.topContainer}>
                 <View>
+                    <TouchableOpacity onPress={
+                        async() => {
+                            setDisabled(true)
+                            await changeProfilePic()
+                            setDisabled(false)
+                        }
+                    } disabled={disabled}>
                     <Avatar
                         rounded
                         size='xlarge'
@@ -108,6 +176,7 @@ const ProfileScreen = (props) => {
                                 profilePicture !== undefined ? profilePicture : 'empty',
                         }}
                     />
+                    </TouchableOpacity>
                 </View>
 
                 <Text style={styles.name}>{firstname} {surname}</Text>
@@ -126,7 +195,7 @@ const ProfileScreen = (props) => {
             <View style={styles.bottomContainer}>
                 <View>
                     <ProfileComponent text={email} />
-                    <ProfileComponent text={phoneNumber} />
+                    <ProfileComponent text={phoneNumber} onPress={() => setShowPhone(true)}/>
                     {category === "driver" ? (
                     <ProfileComponent text="Stripe Dashboard" onPress={linkToStripe}/>
                     ) : (
@@ -136,17 +205,34 @@ const ProfileScreen = (props) => {
                     <ProfileComponent text="Privacy policy" />
                     <ProfileComponent text="Log out" onPress={goPressHandler}/>
 
-                    {/* <View style={{ flexDirection: "row", padding: '2%' }}>
-                        <Ionicons name="mail-outline" size={24} color="black" />
-                        <Text style={styles.emailFont}>: {email} </Text>
-                    </View>
-                    <View style={{ flexDirection: "row", padding: '2%' }}>
-                        <Ionicons name="call-outline" size={24} color="black" />
-                        <Text style={styles.emailFont}>: {phoneNumber}</Text>
-                    </View> */}
-                    {/* <Button title="log out" onPress={goPressHandler} /> */}
                 </View>
             </View>
+
+            {showPhone ?
+                (
+                    // <View style={styles.flatListView}>
+                    /* <Button title="-" onPress={() => setIsVisiblePassengers(false)} /> */
+                    <Modal animationType="slide"
+                        transparent={true}
+                        visible={true}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed.")
+                        }}>
+                        <View style={styles.centredView}>
+
+                            <View style={styles.QRmodal}>
+                                
+                                    <PhoneChange 
+                                    closeModal={() => setShowPhone(false)}
+                                    changePhone={changePhoneNo}
+                                    />
+                                
+                            </View>
+
+                        </View>
+                    </Modal>
+                    /* </View> */
+                ) : null}
         </View>
     )
 
@@ -166,6 +252,24 @@ const styles = StyleSheet.create({
         },
         shadowRadius: 15,
         shadowOpacity: 0.3
+    },
+    QRmodal: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        height: Dimensions.get('window').height * 0.4,
+        width: Dimensions.get('window').width * 0.95,
+        justifyContent: 'center'
     },
     topContainer: {
         alignItems: 'center',
@@ -190,6 +294,13 @@ const styles = StyleSheet.create({
         fontFamily: 'Inter_600SemiBold',
         padding: '3%',
         color: '#0352A0'
+    },
+    centredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        //marginTop: 22,
+        height: Dimensions.get('window').height * 0.4
     },
     statsContainer: {
         alignItems: 'center',

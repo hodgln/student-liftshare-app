@@ -4,7 +4,7 @@
 
 
 export const loggedIn = () => {
-    return({ type: LOGGED_IN, token: token, category: category })
+    return({ type: LOGGED_IN, token: token, category: category  })
 };
 
 export const loggedOut = () => {

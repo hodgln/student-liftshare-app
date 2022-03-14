@@ -8,7 +8,7 @@ import BackButton from '../components/Buttons/BackButton';
 
 const SignUpThree = ({ route, navigation }) => {
 
-    const { phoneNumber, firstname, surname, email, password, category, account } = route.params
+    const { phoneNumber, firstname, surname, email, password, category } = route.params
 
     const [pictureIsValid, setPictureIsValid] = useState(false)
     const [picture, setPicture] = useState('')
@@ -55,6 +55,7 @@ const SignUpThree = ({ route, navigation }) => {
 
             const formdata = new FormData()
 
+            // handle different picture formats
             formdata.append('photo', {
                 uri: picture,
                 type: 'image/png',
@@ -62,8 +63,6 @@ const SignUpThree = ({ route, navigation }) => {
             });
 
             formdata.append('data', JSON.stringify(body))
-
-            console.log(formdata)
 
     
             const sendUser = await fetch("https://spareseat-app.herokuapp.com/auth/register", {
