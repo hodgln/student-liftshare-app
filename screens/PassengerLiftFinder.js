@@ -82,7 +82,6 @@ const PassengerLiftFinder = ({ route, navigation }) => {
                 driver_firstname={item.user_firstname}
                 driver_surname={item.user_surname}
                 picture={item.profile_picture}
-                navigation={navigation}
                 driver_id={item.user_id}
                 nextScreen={'Lift Details'}
             />
@@ -113,7 +112,6 @@ const styles = StyleSheet.create({
         },
         shadowRadius: 2,
         //shadowColor: 'black',
-        shadowOpacity: 0.15,
-        padding: '2%'
+        shadowOpacity: 0.15
     }
 });

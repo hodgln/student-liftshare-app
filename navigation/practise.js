@@ -298,11 +298,14 @@ const RootStack = () => {
         >
           {Object.entries({
 
-            //...commonScreens,
+            // each child in a list should have a unique key prop 
+
+            // to do with the .map function
+            // key is just name?
 
             ...(isLogged ? (isDriver ? driverScreens : passengerScreens) : authScreens),
           }).map(([name, component]) => (
-            <Stack.Screen name={name} component={component} />
+            <Stack.Screen key={name} name={name} component={component} />
           ))}
           {/* <Tab.Navigator>
         <Tab.Screen name='Home'  component={HomeScreen}/>

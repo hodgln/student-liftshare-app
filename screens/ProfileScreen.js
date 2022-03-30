@@ -41,9 +41,6 @@ const ProfileScreen = ({ route, navigation }) => {
             const parseRes = await response.json()
 
 
-            console.log(parseRes.user_account)
-
-
             setFirstname(parseRes.userData.user_firstname);
             setSurname(parseRes.userData.user_surname);
             setEmail(parseRes.userData.user_email)

@@ -24,13 +24,20 @@ const PreviewCard = (props) => {
 
         
 
-    //from, to, date, time, price
+    // the way the props are passed is causing the warning error, 
+    // append isactive to the props and pass as one
+    // OR 
+    // destructure props and pass them one by one
+
+    // destructure props object into navigation and non-navigation and then pass the non-navigation in route params
+
+    const active = { isActive: isActive } 
 
     return (
         
         <TouchableOpacity 
         style={isActive ? [styles.container, styles.isActive] : styles.container}
-        onPress={() => navigation.navigate(props.nextScreen, {...props, isActive} )}    
+        onPress={() => navigation.navigate(props.nextScreen, {...props, ...active} )}    
         //shared element transition here
         >
             
@@ -65,6 +72,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         alignSelf: 'center',
         backgroundColor: 'white',
+        marginVertical: '2%'
         //flexDirection: 'row'
     },
     isActive: {

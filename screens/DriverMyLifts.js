@@ -94,7 +94,6 @@ const DriverMyLifts = ({ route, navigation }) => {
                 price={item.driverprice}
                 displayPrice={price}
                 id={item.liftshare_id}
-                navigation={navigation}
                 nextScreen={'Route Details'}
             />
             {/* <LiftCard
@@ -140,7 +139,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         // padding: 20,
-        height: Dimensions.get('window').height * 0.88,
+        height: '100%',
         width: Dimensions.get('window').width * 1,
         // flex: 1
     },

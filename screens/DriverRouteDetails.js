@@ -31,7 +31,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
     const [map, setMap] = useState()
     const [showPrice, setShowPrice] = useState()
 
-    // display the seats as the number of confirmed requests + the number of seats.
+
 
     const {
         from,
@@ -44,14 +44,11 @@ const DriverRouteDetails = ({ route, navigation }) => {
         isActive
     } = route.params
 
+
+
     const dateFormat = new Date(date)
 
-    console.log(isActive)
-
     const token = useSelector(state => state.authorisation.userToken);
-
-
-
 
 
     const getMapImg = async (urlpath) => {
@@ -82,8 +79,6 @@ const DriverRouteDetails = ({ route, navigation }) => {
         try {
 
             const body = { origin, destination }
-
-            console.log(origin, destination)
 
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
@@ -303,8 +298,9 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
         const result = await initialCountPassengers()
 
-        setPassengerNumber(result.passengers)
-        setSeatNumber(result.seats)
+
+        setPassengerNumber(result?.passengers)
+        setSeatNumber(result?.seats)
 
     }, [isFocused, isVisibleRequests]);
 
@@ -346,10 +342,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
     const priceDiv = +passengerNumber + +seatNumber
 
-    console.log(priceDiv)
-
-
-    // design = check in, cancel and seats are all on the same row with 33% each
+    // warning error is caused by seat icons not having a key in the array
 
     return (
 
@@ -364,7 +357,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
                                 to={to}
                                 time={moment(dateFormat).format('HH:mm')}
                                 date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
-                                price={driverPriceCalc(price, priceDiv)}
+                                price={priceDiv ? driverPriceCalc(price, priceDiv) : '---'}
                                 infoOnPress={() => { setShowPrice(true) }}
                                 showInfo={true}
                             />
@@ -390,8 +383,8 @@ const DriverRouteDetails = ({ route, navigation }) => {
                             <TouchableOpacity onPress={getPassengers} disabled={isVisibleRequests}>
                             <View style={styles.filled}>
                             <View style={{ flexDirection: 'row' }}>
-                                {passengerNumber === undefined ? null : [...Array(JSON.parse(passengerNumber)).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={40} color="#D6438C" />)}
-                                {[...Array(seatNumber).keys()].map(() => <MaterialCommunityIcons name="seatbelt" size={40} color="lightgrey" />)}
+                                {passengerNumber === undefined ? null : [...Array(JSON.parse(passengerNumber)).keys()].map((key) => <MaterialCommunityIcons name="seatbelt" size={40} color="#D6438C" key={key}/>)}
+                                {[...Array(seatNumber).keys()].map((key) => <MaterialCommunityIcons name="seatbelt" size={40} color="lightgrey" key={key} />)}
                             </View>
                             </View>
                             </TouchableOpacity>

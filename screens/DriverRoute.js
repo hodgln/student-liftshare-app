@@ -66,8 +66,6 @@ const DriverRoute = ({ navigation }) => {
     const [reg, setReg] = useState()
     const [isValidReg, setIsValidReg] = useState(false)
 
-    console.log(isValidReg)
-
     const token = useSelector(state => state.authorisation.userToken)
 
     const origin = { latitude: originLatitude, longitude: originLongitude }
@@ -130,6 +128,8 @@ const DriverRoute = ({ navigation }) => {
 
             const parseRes = await response.json()
 
+            // console.log(parseRes)
+
             if(parseRes.status === 200) {
                 // deal with tax, mot, if both are okay return true. 
 
@@ -157,7 +157,9 @@ const DriverRoute = ({ navigation }) => {
 
     const filterCarData = (mot, tax) => {
 
-        const MOTlegit = mot !== 'No results returned'
+        console.log(mot, tax)
+
+        const MOTlegit = mot === 'Valid'
         const taxlegit = tax === 'Taxed'
 
         if (MOTlegit && taxlegit) {
@@ -304,7 +306,7 @@ const DriverRoute = ({ navigation }) => {
                     date={date}
                     seats={seats}
                     setSeats={setSeats}
-                    onGoPress={checkRegNo}
+                    onGoPress={postLift}
                     suggestedPrice={roundedprice}
                     setPrice={setPrice}
                     price={price}

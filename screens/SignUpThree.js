@@ -112,9 +112,9 @@ const SignUpThree = ({ route, navigation }) => {
                         uri: pictureIsValid ? picture : 'placeholder'
                     }}/>
                     <View style={{ flexDirection: 'row', width: '70%', justifyContent: 'center' }}>
-                        <View style={styles.pictureButtons}>
+                        {/* <View style={styles.pictureButtons}>
                             <Button title="use Facebook profile picture" onPress={pictureHandler.bind(this, 'facebook')} disabled={!isVisibleFB} />
-                        </View>
+                        </View> */}
                         <View style={styles.pictureButtons}>
                             <Button title="choose from library" onPress={pictureHandler.bind(this, 'choose')} disabled={!isVisibleChoose} />
                         </View>
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get('window').height * 0.08
     },
     pictureButtons: {
-        width: '50%',
+        width: '100%',
         borderRadius: 15,
         shadowOffset: {
             height: 3,

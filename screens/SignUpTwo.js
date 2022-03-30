@@ -132,7 +132,7 @@ const SignUpTwo = ({ route, navigation }) => {
                     />
                     </View>
                     <View style={{ marginTop: 20 }}>
-                        <TouchableOpacity disabled={!formState.formIsValid} onPress={() => navigation.navigate((category === 'passenger' ? 'SignUpThree' : 'DriverSignUp'), {
+                        <TouchableOpacity disabled={!formState.formIsValid} onPress={() => navigation.navigate(('SignUpThree'), {
                             phoneNumber: formState.inputValues.phoneNumber,
                             firstname: formState.inputValues.firstname,
                             surname: formState.inputValues.surname,

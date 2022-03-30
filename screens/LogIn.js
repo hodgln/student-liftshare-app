@@ -1,5 +1,5 @@
 import React, { useReducer, useCallback, useState } from 'react'
-import { View, Text, StyleSheet, TextInput, Button, ScrollView, Alert, Dimensions, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Button, Image, ScrollView, Alert, Dimensions, ActivityIndicator } from 'react-native'
 import { useDispatch } from 'react-redux';
 import Input from '../components/Input';
 import { LOGGED_IN } from '../store/actions/authentication'
@@ -104,56 +104,56 @@ const LogIn = ({ route, navigation }) => {
 
     const registerForPushNotificationsAsync = async (jwtToken) => {
         if (Constants.isDevice) {
-          const { status: existingStatus } = await Notifications.getPermissionsAsync();
-          let finalStatus = existingStatus;
-          if (existingStatus !== 'granted') {
-            const { status } = await Notifications.requestPermissionsAsync();
-            finalStatus = status;
-          }
-          if (finalStatus !== 'granted') {
-            alert('Failed to get push token for push notification!');
-            return;
-          }
-          const token = (await Notifications.getExpoPushTokenAsync()).data;
-          saveToken(token, jwtToken, existingStatus)
-        //   this.setState({ expoPushToken: token });
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+            }
+            const token = (await Notifications.getExpoPushTokenAsync()).data;
+            saveToken(token, jwtToken, existingStatus)
+            //   this.setState({ expoPushToken: token });
         } else {
-          alert('Must use physical device for Push Notifications');
+            alert('Must use physical device for Push Notifications');
         }
-      
-        if (Platform.OS === 'android') {
-          Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: '#FF231F7C',
-          });
-        }
-        };
 
-        const saveToken = async(pushToken, jwtToken, existingStatus) => {
-            if(existingStatus !== "granted") {
-            
+        if (Platform.OS === 'android') {
+            Notifications.setNotificationChannelAsync('default', {
+                name: 'default',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+        }
+    };
+
+    const saveToken = async (pushToken, jwtToken, existingStatus) => {
+        if (existingStatus !== "granted") {
+
             try {
                 const body = { pushToken }
-    
+
                 //console.log(jwtToken)
-    
+
                 const myHeaders = new Headers();
-    
+
                 myHeaders.append("Content-Type", "application/json");
                 myHeaders.append("token", jwtToken);
-    
+
                 await fetch("https://spareseat-app.herokuapp.com/auth/pushToken", {
                     method: 'PUT',
                     headers: myHeaders,
                     body: JSON.stringify(body)
                 });
-                
+
             } catch (error) {
                 console.log(error.message)
             }
-        } 
+        }
     }
 
     const onGoPress = async () => {
@@ -204,7 +204,7 @@ const LogIn = ({ route, navigation }) => {
         //props.navigation.navigate('DPNav')
     };
 
-    const loginPress = async() => {
+    const loginPress = async () => {
         setIsLoading(true)
         await onGoPress()
         setIsLoading(false)
@@ -216,7 +216,7 @@ const LogIn = ({ route, navigation }) => {
 
     for (var i = 0; i < arr.length; i++) {
         arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
-    
+
     }
 
     const logInHeader = arr.join(" ");
@@ -224,14 +224,22 @@ const LogIn = ({ route, navigation }) => {
     return (
         //<View style={styles.dropShadow}></View>
         <View style={styles.DriverLogIn}>
-            <View style={styles.headerComponent}>
-                <View style={styles.backButton}>
-                    <BackButton onPress={() => navigation.goBack()} />
+            
+            
+                <View style={styles.headerComponent}>
+                    <View style={styles.backButton}>
+                        <BackButton onPress={() => navigation.goBack()} />
+                    </View>
                 </View>
-            </View>
-            <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <View>
-                <Text style={{fontWeight: '700', fontSize: 25}}>{logInHeader}</Text>
+
+            <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+                {/* <View style={styles.headerContainer}>
+                    <Image source={require('../assets/SpareseatText.png')} style={styles.SpareseatText} />
+                </View> */}
+                
+                <View style={{ marginTop: '10%' }}>
+
+                    <Text style={{ fontFamily: 'Inter_500Medium', fontSize: 26 }}>{logInHeader}</Text>
                 </View>
                 <Input
                     inputID='email'
@@ -259,7 +267,7 @@ const LogIn = ({ route, navigation }) => {
                 <LogInButton onPress={loginPress} text="LOG IN" disabled={isLoading} />
                 <Button title="sign up" onPress={() => navigation.navigate('SignUpOne', { category: category })} />
             </View>
-        </View>
+            </View>
     )
 }
 
@@ -268,14 +276,15 @@ const styles = StyleSheet.create({
         // backgroundColor: '#fff',
         // alignItems: 'center',
         // justifyContent: 'center',
-        padding: '3%',
-        flex: 1,
+        // padding: '3%',
+        width: Dimensions.get('screen').width * 1,
+        height: '100%'
 
     },
     backButton: {
         alignSelf: 'flex-start',
-        // width: '100%',
-        
+        width: '100%',
+        marginTop: Dimensions.get('window').height * 0.025
     },
     dropShadow: {
         shadowOffset: {
@@ -286,10 +295,22 @@ const styles = StyleSheet.create({
         shadowOpacity: 7
     },
     headerComponent: {
-        width: '100%',
+        width: Dimensions.get('screen').width * 1,
         marginTop: Dimensions.get('window').height * 0.025,
-        //alignItems: 'center',
-        flexDirection: 'row'
+        alignSelf: 'center',
+        flexDirection: 'row',
+    },
+    SpareseatText: {
+        height: '29%',
+        width: '70%',
+        alignSelf: 'center'
+    },
+    headerContainer: {
+        height: '25%', 
+        justifyContent: 'center', 
+        width: Dimensions.get('screen').width * 1, 
+        backgroundColor: '#0352A0',
+        borderBottomRightRadius: 40
     }
 })
 

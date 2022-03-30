@@ -915,7 +915,7 @@ router.post("/checkregno", authorisation, async (req, res) => {
 
         console.log(registrationNumber)
 
-        var data = JSON.stringify({ registrationNumber: 'AA19AAA' });
+        var data = JSON.stringify({ registrationNumber: registrationNumber });
 
         const config = {
             method: 'post',
@@ -928,19 +928,25 @@ router.post("/checkregno", authorisation, async (req, res) => {
             data: data,
         };
 
-        // const response = await axios(config).catch(error => res.json(error))
-
-        // res.json(response)
+        // below is fine for response
 
         axios(config)
             .then(function (response) {
-                console.log("response")
-                res.json(response);
+                console.log(`reponse.status is ${response.status}`)
+                res.json({
+                    data: response.data,
+                    status: response.status
+                });
             })
             .catch(function (error) {
-                console.log("error")
-                res.json(error);
+                console.log(error.response.status)
+                res.json({
+                    data: null,
+                    status: error.response.status
+                });
             });
+
+        
 
 
     } catch (error) {

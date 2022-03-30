@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, FlatList, Button, TouchableOpacity, ImageBackground } from 'react-native'
+import { View, Text, StyleSheet, FlatList, Button, Image, TouchableOpacity, ImageBackground, Dimensions } from 'react-native'
 import { Ionicons, Foundation, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'
+import NextButton from '../components/Buttons/NextButton';
 
 
 const HomeScreen = ({ navigation }) => {
@@ -45,11 +46,14 @@ const HomeScreen = ({ navigation }) => {
 
     return (
 
-
+        <View style={{ flex: 1, backgroundColor: 'white'}}>
+        <View style={{ width: '50%', height: '50%', zIndex: 0, borderWidth: 1, backgroundColor: '#0352A0' }}>
         <View style={styles.HomeScreen}>
 
             <View style={styles.loginElements}>
-                <View style={styles.header}></View>
+                <View style={styles.header}>
+                    <Image source={require('../assets/SpareseatText.png')} style={styles.SpareseatText} />
+                </View>
                 <View style={styles.loginButtons}>
                     <View style={styles.columnButtons}>
                         <TouchableOpacity style={{ alignItems: 'center' }} onPress={passengerClickHandle} >
@@ -71,18 +75,20 @@ const HomeScreen = ({ navigation }) => {
                     </View>
 
                 </View>
-                <View style={styles.goButton} >
-                    {isVisible ?
+                <View style={styles.goButton}>
+                    {/* {isVisible ?
                         <TouchableOpacity onPress={goToLogin}>
                             <Ionicons name="chevron-forward-circle-outline" style={{ fontSize: 40 }} color='#0352A0'></Ionicons>
                         </TouchableOpacity>
-                        : null}
+                        : null} */}
+                        <NextButton onPress={goToLogin} text="next" disabled={!isVisible}/>
                     {/* <Button title="+" onPress={goToLogin} disabled={isLoggedIn ? true : false} /> */}
                 </View>
             </View>
 
         </View>
-
+        </View>
+        </View>
     )
 }
 
@@ -92,6 +98,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-around',
         height: '100%',
+        width: Dimensions.get('screen').width * 1,
+        height: Dimensions.get('window').height * 1
         //backgroundColor: 'black'
     },
     background: {
@@ -101,7 +109,10 @@ const styles = StyleSheet.create({
     },
     header: {
         alignItems: 'center',
-        height: "33%"
+        height: "40%",
+        backgroundColor: '#0352A0',
+        borderBottomRightRadius: 50,
+        justifyContent: 'center'
     },
     routeFinder: {
         alignItems: 'center',
@@ -128,17 +139,26 @@ const styles = StyleSheet.create({
     loginButtons: {
         flexDirection: 'row',
         height: '33%',
-
+        backgroundColor: 'white',
+        borderTopLeftRadius: 50,
+        borderBottomRightRadius: 50
     },
     columnButtons: {
         width: '50%',
         justifyContent: 'center',
         alignItems: 'center',
+        // borderTopLeftRadius: 40
     },
     goButton: {
         height: '33%',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    SpareseatText: {
+        height: '17%',
+        width: '75%',
+        alignSelf: 'center',
+        marginTop: '10%'
     }
 })
 
