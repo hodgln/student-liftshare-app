@@ -26,7 +26,7 @@ const PassengerMyLifts = (props) => {
 
             const parseRes = await response.json();
 
-            setDisplayInfo(parseRes);
+            return(parseRes)
 
         } catch (error) {
             console.log(`error message is: ${error.message}`)
@@ -44,15 +44,15 @@ const PassengerMyLifts = (props) => {
 
             const parseRes = await response.json()
 
-            console.log(parseRes)
+            return(parseRes)
 
-            if (parseRes.length !== 0) {
-                setNotRatedDriver(parseRes)
-                // setNotRatedLiftshare(parseRes.liftID)
-                setIsVisibleRatings(true)
-            } else {
-                return
-            }
+            // if (parseRes.length !== 0) {
+            //     setNotRatedDriver(parseRes)
+            //     // setNotRatedLiftshare(parseRes.liftID)
+            //     setIsVisibleRatings(true)
+            // } else {
+            //     return
+            // }
 
         } catch (error) {
             console.log(error.message)
@@ -63,11 +63,27 @@ const PassengerMyLifts = (props) => {
         await checkUnratedDrivers()
         getLiftData()
 
-        // check unrated drivers isnt resolving
-
     }
 
-    useEffect(() => { onRefresh() }, [isFocused === true]);
+    useEffect(() => {
+        let isMounted = true
+
+        Promise.all([
+            getLiftData(), checkUnratedDrivers()
+        ]).then((data) => {
+            if(isMounted) {
+            setDisplayInfo(data[0])
+            data[1].length !== 0 ? (
+                setNotRatedDriver(data[1]) &&
+                setIsVisibleRatings(true)
+            ) : (
+                null
+            )
+            }
+        });
+
+        return () => { isMounted = false };
+    }, [isFocused === true]);
 
 
     //console.log(isFocused)

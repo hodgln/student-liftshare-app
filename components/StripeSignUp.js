@@ -18,10 +18,6 @@ const StripeSignUp = (props) => {
         stages
     } = props
 
-    // test this on legit phone 
-
-    console.log(link)
-
 
     const stripeRegister = async () => {
         try {

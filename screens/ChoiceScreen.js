@@ -52,7 +52,7 @@ const HomeScreen = ({ navigation }) => {
 
             <View style={styles.loginElements}>
                 <View style={styles.header}>
-                    <Image source={require('../assets/SpareseatText.png')} style={styles.SpareseatText} />
+                    <Image source={require('../assets/SpareseatTextWhite.png')} style={styles.SpareseatText} />
                 </View>
                 <View style={styles.loginButtons}>
                     <View style={styles.columnButtons}>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     SpareseatText: {
-        height: '17%',
+        height: '20%',
         width: '75%',
         alignSelf: 'center',
         marginTop: '10%'

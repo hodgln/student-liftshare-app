@@ -12,8 +12,7 @@ import { BlurView } from 'expo-blur';
 
 const DriverRouteOne = (props) => {
     const {
-        setStage,
-        stages,
+        onNext,
         setOriginLatitude,
         setOriginLongitude,
         setDestinationLatitude,
@@ -116,8 +115,6 @@ const DriverRouteOne = (props) => {
             // setPlaceholderFrom()
             // setPlaceholderTo()
 
-            await setStage(stages.ROUTE_TWO)
-
             
 
         } catch (error) {
@@ -125,7 +122,10 @@ const DriverRouteOne = (props) => {
         }
     }
 
-
+    const onPress = async() => {
+        await onNext('ROUTE_TWO')
+        await onNextPress()
+    }
 
     return (
         <View>
@@ -175,7 +175,7 @@ const DriverRouteOne = (props) => {
                 <View style={styles.line}></View>
                 <View style={{ alignSelf: 'center' }}>
 
-                    <NextButton disabled={origin.longitude !== null && destination.longitude !== null ? false : true} text="next" onPress={onNextPress} />
+                    <NextButton disabled={origin.longitude !== null && destination.longitude !== null ? false : true} text="next" onPress={onPress} />
                 </View>
             </BlurView>
 

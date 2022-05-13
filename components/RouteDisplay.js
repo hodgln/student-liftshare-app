@@ -6,11 +6,12 @@ const RouteDisplay = (props) => {
 
     const { from, to, date, time, price, showInfo, infoOnPress } = props
 
-    
+    const showPrice = parseInt(price * 100)
+
 
     return (
         <View style={styles.container}>
-            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: '5%' }}>
+            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: '7%', marginBottom: '2%' }}>
                 <MaterialCommunityIcons name="record-circle-outline" size={20} color="grey" />
                 <View style={styles.verticalLine}></View>
                 <Ionicons name="ios-location-outline" size={24} color="#0466c8" />
@@ -46,14 +47,14 @@ const RouteDisplay = (props) => {
                         (<View style={{ justifyContent: 'flex-end' }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 {/* <Text style={{ fontSize: 16, fontWeight: '600', paddingVertical: '2%', color: '#0352A0' }}>up to </Text> */}
-                                <Text style={{ fontSize: 22, fontWeight: '600', padding: '2%', color: '#0352A0' }}>£{price}</Text>
+                                <Text style={{ fontSize: 22, fontWeight: '600', padding: '2%', color: '#0352A0' }}>£{(showPrice / 100).toFixed(2)}</Text>
                                 <TouchableOpacity onPress={infoOnPress}>
                                     <Ionicons name="information-circle-sharp" size={30} color="#0352A0" />
                                 </TouchableOpacity>
                             </View>
                         </View>) :
                         (<View style={[styles.dateTime, { justifyContent: 'flex-end' }]}>
-                            <Text style={{ fontSize: 22, fontWeight: '600', padding: '2%', color: '#0352A0' }}>£{price}</Text>
+                            <Text style={{ fontSize: 22, fontWeight: '600', padding: '2%', color: '#0352A0' }}>£{(showPrice  / 100).toFixed(2)}</Text>
                         </View>)
                     }
                 </View>
@@ -71,7 +72,8 @@ const styles = StyleSheet.create({
         width: '50%',
     },
     verticalLine: {
-        height: '37%',
+        //height: '40%',
+        flex: 1,
         width: 1,
         backgroundColor: '#909090',
         //justifyContent: 'center',
@@ -87,10 +89,10 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         flexDirection: 'row',
-        height: Dimensions.get('screen').height * 0.18,
-        borderRadius: 12,
+        //height: Dimensions.get('screen').height * 0.18,
         // borderWidth: 2,
         borderColor: '#0466c8',
+        padding: '1%'
     }
 })
 

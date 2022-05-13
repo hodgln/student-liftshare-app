@@ -1,4 +1,4 @@
-import { LOGGED_IN, LOGGED_OUT } from "../actions/authentication";
+import { LOGGED_IN, LOGGED_OUT, REFRESH_TOKEN } from "../actions/authentication";
 
 const initialState = {
     isLoggedIn: false,
@@ -21,6 +21,11 @@ const authReducer = (state = initialState, action) => {
             userCategory: null,
             isLoggedIn: false
         });
+        case REFRESH_TOKEN:
+            return({
+                ...state,
+                userToken: action.token
+            })
         default: return state;
     }
 };

@@ -11,11 +11,11 @@ const PriceDisplay = (props) => {
 
     // console.log(driverPriceCalc(price, 3))
 
-    const priceOne = driverPriceCalc(price, 1)
+    const priceOne = driverPriceCalc(price, 1).toFixed(2)
 
-    const priceTwo = driverPriceCalc(price, 2)
+    const priceTwo = driverPriceCalc(price, 2).toFixed(2)
 
-    const priceThree = driverPriceCalc(price, 3)
+    const priceThree = driverPriceCalc(price, 3).toFixed(2)
 
     return (
         <View style={styles.container}>

@@ -86,14 +86,10 @@ const LogIn = ({ route, navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch(`https://spareseat-app.herokuapp.com/confirmation/email/${email}`, {
+            await fetch(`https://spareseat-app.herokuapp.com/confirmation/email/${email}`, {
                 method: 'POST',
                 headers: myHeaders,
             });
-
-            const parseRes = await response.json()
-
-            console.log(parseRes.rows)
 
             navigation.navigate("CScreen", { token: token, email: email })
 

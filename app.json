@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "LiftShare1",
-    "slug": "LiftShare1",
+    "name": "Spareseat",
+    "slug": "Spareseat",
     "scheme": "spareseat",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/SpareseatIconFlat.png",
+    "icon": "./assets/icon.png",
     "facebookScheme": "fb3031407350517054",
     "facebookAppId": "3031407350517054",
     "facebookDisplayName": "Dan Hodgin",
@@ -15,8 +15,7 @@
     ],
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "contain"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -30,7 +29,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#0466C8"
       }
     },
     "web": {

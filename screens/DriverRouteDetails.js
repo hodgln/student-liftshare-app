@@ -289,9 +289,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
 
     useEffect(async () => {
-        // if (momentFormat(dateFormat) === momentFormat(todayDate)) {
-        //     setIsActive(true)
-        // }
+        // change to promise all + isMounted
 
 
         mapHandler()
@@ -389,15 +387,6 @@ const DriverRouteDetails = ({ route, navigation }) => {
                             </View>
                             </TouchableOpacity>
                         </View>
-
-                        {/* <View style={styles.buttonBox}>
-
-                            
-                            <View style={styles.singleButton}>
-                                <Button title="delete lift" onPress={deleteLift}/>
-                            </View>
-
-                        </View> */}
 
                     </View>
 
@@ -501,7 +490,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         width: Dimensions.get('screen').width * 0.9,
-        height: Dimensions.get('window').height * 0.42,
+        //height: Dimensions.get('window').height * 0.42,
         // flex: 1,
         borderRadius: 20,
         // borderWidth: 0.5,

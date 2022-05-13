@@ -13,13 +13,25 @@ const DriverRouteTwo = (props) => {
     const {
         date,
         setDate,
-        stages,
-        setStage,
-        regFunc,
+        onPressRouteTwo,
+        setIsValidReg,
         reg,
-        isValid
+        isValid,
+        setReg
     } = props
 
+    const isRegValid = (text) => {
+        const regex = new RegExp('(^[A-Z]{2}[0-9]{2}\s?[A-Z]{3}$)|(^[A-Z][0-9]{1,3}[A-Z]{3}$)|(^[A-Z]{3}[0-9]{1,3}[A-Z]$)|(^[0-9]{1,4}[A-Z]{1,2}$)|(^[0-9]{1,3}[A-Z]{1,3}$)|(^[A-Z]{1,2}[0-9]{1,4}$)|(^[A-Z]{1,3}[0-9]{1,3}$)|(^[A-Z]{1,3}[0-9]{1,4}$)|(^[0-9]{3}[DX]{1}[0-9]{3}$)')
+
+        if (regex.test(text) === true && text.length === 7) {
+            setIsValidReg(true)
+        } else {
+            setIsValidReg(false)
+        }
+
+        setReg(text)
+
+    }
 
     const [show, setShow] = useState(true);
 
@@ -53,11 +65,9 @@ const DriverRouteTwo = (props) => {
                                 {...props}
                                 placeholder={props.placeholder}
                                 keyboardType='default'
-                                autoCapitalize='none'
-                                returnKeyType='done'
                                 autoCorrect={false}
                                 value={reg}
-                                onChangeText={text => regFunc(text)}
+                                onChangeText={(text) => isRegValid(text)}
                                 style={styles.textInput}
                                 autoFocus={true}
                                 selectionColor={"white"}
@@ -99,7 +109,7 @@ const DriverRouteTwo = (props) => {
 
                 <View style={styles.bottomline}></View>
                 <View style={{ alignSelf: 'center', marginBottom: Dimensions.get('screen').height * 0.03 }}>
-                    <NextButton text="next" disabled={date >= new Date() && reg.length > 1 ? false : true} onPress={() => setStage(stages.ROUTE_THREE)} />
+                    <NextButton text="next" disabled={date >= new Date() && reg.length > 1 ? false : true} onPress={() => onPressRouteTwo()} />
                 </View>
             </BlurView>
         </View>

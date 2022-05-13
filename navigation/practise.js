@@ -12,7 +12,7 @@ import ProfileScreen from '../screens/ProfileScreen'
 import PassengerLiftFinder from '../screens/PassengerLiftFinder';
 import DriverMyLifts from '../screens/DriverMyLifts';
 import PassengerMyLifts from '../screens/PassengerMyLifts';
-import { LOGGED_OUT, LOGGED_IN } from '../store/actions/authentication';
+import { LOGGED_OUT, LOGGED_IN, REFRESH_TOKEN } from '../store/actions/authentication';
 import DriverCheckIn from '../screens/DriverCheckIn';
 import PayScreen from '../screens/PayScreen';
 import ConfirmationScreen from '../screens/ConfirmationScreen';
@@ -26,6 +26,7 @@ import DriverRouteDetails from '../screens/DriverRouteDetails';
 import LiftSearchDetails from '../screens/LiftSearchDetails';
 import DriverSignUp from '../screens/DriverSignUp';
 import DriverRoute from '../screens/DriverRoute';
+import AppLoading from 'expo-app-loading';
 
 
 
@@ -47,7 +48,6 @@ const RootStack = () => {
   const token = useSelector(state => state.authorisation.userToken);
   const isLogged = useSelector(state => state.authorisation.isLoggedIn)
 
-  console.log(`signedIn ${isLogged}`)
   // issue is that signed in is not being changed 
 
   const updateToken = async () => {
@@ -64,8 +64,9 @@ const RootStack = () => {
       if (verify.status === 200) {
         const parseRes = await verify.json();
 
-        console.log(parseRes.token)
-        dispatch({ type: LOGGED_IN, token: parseRes.token, category: parseRes.category })
+        console.log("refreshed")
+
+        dispatch({ type: REFRESH_TOKEN, token: parseRes.token })
       } else {
         dispatch({ type: LOGGED_OUT })
         // null
@@ -230,8 +231,6 @@ const RootStack = () => {
     )
   }
 
-  console.log(driverOrPassenger)
-
 
 
   // const commonScreens = {
@@ -284,7 +283,7 @@ const RootStack = () => {
 
   return (
     <NavigationContainer style={styles.container} ref={navigationRef}>
-      {loading ? null :
+      {loading ? <AppLoading /> :
         <Stack.Navigator
           screenOptions={{
             initialRouteName: "Choice",

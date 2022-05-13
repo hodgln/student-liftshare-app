@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Dimensions, Alert, Button, TouchableOpacity, TextInput } from 'react-native'
-import SeatButton from '../components/Buttons/SeatButton'
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Button } from 'react-native'
 import NextButton from '../components/Buttons/NextButton';
 import { TextInputMask } from 'react-native-masked-text'
 import { Ionicons } from '@expo/vector-icons';
@@ -23,16 +21,18 @@ const DriverRouteThree = (props) => {
     const workingPrice = price.substring(1)
 
 
-    const priceOne = workingPrice > 3 ? `£${driverPriceCalc(workingPrice, 1)}` : '...'
+    const priceOne = workingPrice > 3 ? `£${driverPriceCalc(workingPrice, 1).toFixed(2)}` : '...'
 
-    const priceTwo = workingPrice > 3 ? `£${driverPriceCalc(workingPrice, 2)}` : '...'
+    const priceTwo = workingPrice > 3 ? `£${driverPriceCalc(workingPrice, 2).toFixed(2)}` : '...'
 
     const priceThree = workingPrice > 3 ? `£${driverPriceCalc(workingPrice, 3)}` : '...'
+
+    // the view is not rendering properly due to the price display section being flex: 1
 
     return (
         <View>
             <BlurView style={styles.componentContainer}>
-                <View style={{ padding: '2.5%', height: '30%' }}>
+                <View style={{ padding: '2.5%', height: '40%', marginBottom: '5%' }}>
                     <View style={styles.textAlign}>
                         <Text style={{ fontSize: 20, color: '#D0D3D4', fontFamily: 'Inter_400Regular' }}>Please set a max price for your lift</Text>
                     </View>
@@ -40,9 +40,9 @@ const DriverRouteThree = (props) => {
                     <View style={styles.textAlign}>
                         <Text style={{ fontSize: 16, color: '#D0D3D4', fontFamily: 'Inter_400Regular' }}>Suggested price: £{suggestedPrice}</Text>
                     </View>
-                    <View style={{ padding: 10, justifyContent: 'center' }}>
+                    <View>
 
-                        <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                        <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'row', height: '50%' }}>
 
                             {/* <TextInput
                                 value={price}
@@ -66,8 +66,8 @@ const DriverRouteThree = (props) => {
                                     autoFocus={true}
                                 />
                             </View>
-                            <View style={{ width: '20%' }}>
-                                <TouchableOpacity onPress={infoOnPress}>
+                            <View style={{ width: '20%', alignItems: 'center' }}>
+                                <TouchableOpacity onPress={() => infoOnPress()}>
                                     <Ionicons name="information-circle-sharp" size={30} color="#0352A0" />
                                 </TouchableOpacity>
                             </View>
@@ -76,7 +76,7 @@ const DriverRouteThree = (props) => {
                     </View>
                 </View>
 
-                <View style={{ flex: 1, padding: 15, width: '100%', justifyContent: 'flex-end' }}>
+                <View style={{ width: '100%', height: '30%', padding: 15, width: '100%', justifyContent: 'flex-end' }}>
                     {/* <View style={styles.textAlign}>
                         <Text style={{ fontSize: 16, color: '#535454', fontFamily: 'Inter_400Regular' }}>* this depends on the number of passengers you choose:</Text>
                     </View> */}
@@ -90,7 +90,7 @@ const DriverRouteThree = (props) => {
                     <View style={styles.priceArea}>
 
                     </View> */}
-                    <View style={{ flexDirection: 'row', height: '70%' }}>
+                    <View style={{ flexDirection: 'row', height: '100%' }}>
                         <View style={{ width: '33%', alignItems: 'center', borderRightWidth: 0.5, borderRightColor: '#535454' }}>
                             <View style={{ flexDirection: 'row', height: '50%' }}>
                                 <MaterialCommunityIcons name="seatbelt" size={26} color="#0352A0" />

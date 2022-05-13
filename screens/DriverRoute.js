@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Button, Dimensions, Alert, Modal } from 'react-native';
+import React, { useState, useEffect, Component } from 'react';
+import { View, Text, StyleSheet, FlatList, Button, Dimensions, Alert, Modal, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import DriverRouteOne from '../components/DRouteOne';
 import DriverRouteTwo from '../components/DRouteTwo';
@@ -7,7 +7,10 @@ import DriverRouteThree from '../components/DRouteThree';
 import StripeSignUp from '../components/StripeSignUp';
 import { useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/core';
-import PriceDisplay from '../components/PriceDisplay';
+import BackButton from '../components/Buttons/BackButton';
+
+// Change flatlist so that data refrences components and renderItem is responsible for rendering the components (with props) 
+// - this may solve the issue of functions as "undefined" 
 
 
 const DriverRoute = ({ navigation }) => {
@@ -19,25 +22,32 @@ const DriverRoute = ({ navigation }) => {
         ROUTE_THREE: 'ROUTE_THREE'
     };
 
+    const [initialIndex, setInitialIndex] = useState("loading")
+
+    //const [flatListRef, setFlatListRef] = useState()
+
     const isFocused = useIsFocused()
 
-    useEffect(async () => {
-        // setStage(stages.ROUTE_ONE)
+    const myRef = React.createRef();
+    // this.myRef.current.doSomething();
+
+    useEffect(() => {
+        let isMounted = true
 
         // stripe check and then setState
-        const result = await checkIfStripe()
+        checkIfStripe().then(result => {
+            if (isMounted) {
+                result.stripe_id ?
+                    setInitialIndex(data.findIndex((item) => item.key === "ROUTE_ONE"))
+                    :
+                    setUser(result) && setInitialIndex(data.findIndex((item) => item.key === "STRIPE_SIGNUP"));
+            }
+        })
 
-        if (result.stripe_id !== null) {
-            setStage(stages.ROUTE_ONE)
-        } else {
-            setUser(result)
-            setStage(stages.STRIPE_SIGNUP)
-        }
-
-
+        return () => { isMounted = false };
     }, [isFocused]);
 
-    
+    const ITEM_WIDTH = Dimensions.get("screen").width * 1
 
     const [stage, setStage] = useState(stages.STRIPE_SIGNUP)
     // const [email, setEmail] = useState()
@@ -87,6 +97,22 @@ const DriverRoute = ({ navigation }) => {
 
 
 
+    const data = [
+        {
+            key: 'STRIPE_SIGNUP'
+        },
+        {
+            key: 'ROUTE_ONE'
+        },
+        {
+            key: 'ROUTE_TWO'
+        },
+        {
+            key: 'ROUTE_THREE'
+        }
+    ];
+
+
     // check if stripe registered
 
     const checkIfStripe = async () => {
@@ -112,7 +138,7 @@ const DriverRoute = ({ navigation }) => {
 
     // check if vehicle is taxed and MOT'd
 
-    const checkRegNo = async() => {
+    const checkRegNo = async () => {
         try {
 
             const myHeaders = new Headers();
@@ -120,7 +146,7 @@ const DriverRoute = ({ navigation }) => {
             myHeaders.append("Content-Type", "application/json");
             myHeaders.append("token", token);
 
-            const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/checkregno",{
+            const response = await fetch("https://spareseat-app.herokuapp.com/dashboard/checkregno", {
                 method: "POST",
                 headers: myHeaders,
                 body: JSON.stringify({ registrationNumber: reg })
@@ -130,7 +156,7 @@ const DriverRoute = ({ navigation }) => {
 
             // console.log(parseRes)
 
-            if(parseRes.status === 200) {
+            if (parseRes.status === 200) {
                 // deal with tax, mot, if both are okay return true. 
 
                 const filterResult = filterCarData(parseRes.data.motStatus, parseRes.data.taxStatus)
@@ -138,16 +164,15 @@ const DriverRoute = ({ navigation }) => {
                 return filterResult
 
                 // if not, send alert and dont allow to post. 
-            } else if(parseRes.status === 400) {
+            } else if (parseRes.status === 400) {
                 Alert.alert("Registration number not recognised")
                 return false
             } else {
-                console.log(parseRes.message)
                 Alert.alert("Could not verify car registration")
                 return false
             }
 
-            
+
         } catch (error) {
             console.log(error.message)
         }
@@ -155,9 +180,7 @@ const DriverRoute = ({ navigation }) => {
 
     // filter data and return alerts based on input
 
-    const filterCarData = (mot, tax) => {
-
-        console.log(mot, tax)
+    const filterCarData = async (mot, tax) => {
 
         const MOTlegit = mot === 'Valid'
         const taxlegit = tax === 'Taxed'
@@ -165,8 +188,12 @@ const DriverRoute = ({ navigation }) => {
         if (MOTlegit && taxlegit) {
             return true
         } else if (!MOTlegit && taxlegit) {
-            Alert.alert("Could not find MOT data")
-            return false
+            Alert.alert(
+                "Could not find MOT data",
+                "We may ask you for information on this in the future"
+            )
+            return true
+
         } else if (!taxlegit && MOTlegit) {
             Alert.alert("Could not find tax data")
             return false
@@ -221,48 +248,131 @@ const DriverRoute = ({ navigation }) => {
 
     // use regex to check whether reg no is valid 
 
-    const isRegValid = (text) => {
-        const regex = new RegExp('(^[A-Z]{2}[0-9]{2}\s?[A-Z]{3}$)|(^[A-Z][0-9]{1,3}[A-Z]{3}$)|(^[A-Z]{3}[0-9]{1,3}[A-Z]$)|(^[0-9]{1,4}[A-Z]{1,2}$)|(^[0-9]{1,3}[A-Z]{1,3}$)|(^[A-Z]{1,2}[0-9]{1,4}$)|(^[A-Z]{1,3}[0-9]{1,3}$)|(^[A-Z]{1,3}[0-9]{1,4}$)|(^[0-9]{3}[DX]{1}[0-9]{3}$)')
+    // const isRegValid = (text) => {
+    //     const regex = new RegExp('(^[A-Z]{2}[0-9]{2}\s?[A-Z]{3}$)|(^[A-Z][0-9]{1,3}[A-Z]{3}$)|(^[A-Z]{3}[0-9]{1,3}[A-Z]$)|(^[0-9]{1,4}[A-Z]{1,2}$)|(^[0-9]{1,3}[A-Z]{1,3}$)|(^[A-Z]{1,2}[0-9]{1,4}$)|(^[A-Z]{1,3}[0-9]{1,3}$)|(^[A-Z]{1,3}[0-9]{1,4}$)|(^[0-9]{3}[DX]{1}[0-9]{3}$)')
 
-        if(regex.test(text) === true && text.length === 7) {
-            setIsValidReg(true)
-        } else {
-            setIsValidReg(false)
-        }
+    //     if (regex.test(text) === true && text.length === 7) {
+    //         setIsValidReg(true)
+    //     } else {
+    //         setIsValidReg(false)
+    //     }
 
-        setReg(text)
-        
-    }
+    //     setReg(text)
+
+    // }
 
     // check if reg has MOT with the DVLA
 
 
-    const postLift = async() => {
+    const onPressRouteTwo = async () => {
         const regResponse = await checkRegNo();
-        if(regResponse === true) {
-            onGoPress()
+        if (regResponse === true) {
+            scrollToItem('ROUTE_THREE')
         } else {
-            console.log(regResponse)
+            null
         }
-        
+
     }
 
 
 
     const liftPostedHandler = async () => {
         await navigation.navigate('My Lifts', { refresh: true })
-        setStage(ROUTE_ONE)
-        navigation.popToTop()
+        scrollToItem('ROUTE_ONE')
     }
 
 
-    // const infoOnPress = () => {
-    //     if(price.substring(1) > 3.00) {
-    //         setShowPrice(true)
-    //     } else {
-    //         null
-    //     }
-    // }
+    const infoOnPress = () => {
+        if (price.substring(1) > 3.00) {
+            setShowPrice(true)
+        } else {
+            null
+        }
+    }
+
+    const renderItem = ({ item }) => {
+
+        // change so it conditionally renders components
+
+        // https://stackoverflow.com/questions/67001089/reactnative-flatlist-scrolltoindex-issue
+
+        // { || item.key === "ROUTE_TWO" && <RouteTwo />}
+
+        return (
+
+            <View style={{ width: Dimensions.get("screen").width * 1, height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                {
+                    item.key === "STRIPE_SIGNUP" &&
+                    <View style={styles.container}>
+                        <StripeSignUp
+                            user={user}
+                            setStage={setStage}
+                            stages={stages}
+                        />
+                    </View>
+                    || item.key === "ROUTE_ONE" &&
+                    <View style={styles.container}>
+                        <DriverRouteOne
+                            onNext={scrollToItem}
+                            setOriginLatitude={setOriginLatitude}
+                            setOriginLongitude={setOriginLongitude}
+                            setDestinationLatitude={setDestinationLatitude}
+                            setDestinationLongitude={setDestinationLongitude}
+                            setOriginName={setOriginName}
+                            setDestinationName={setDestinationName}
+                            setDistance={setDistance}
+                            origin={origin}
+                            destination={destination}
+                            token={token}
+                        />
+                    </View>
+                    || item.key === "ROUTE_TWO" &&
+                    <View style={styles.container}>
+                        <View style={{ position: 'absolute', top: '2%', zIndex: 1, alignSelf: 'flex-start' }}>
+                            <BackButton onPress={() => scrollToItem('ROUTE_ONE')} />
+                        </View>
+                        <DriverRouteTwo
+                            setDate={setDate}
+                            date={date}
+                            setReg={setReg}
+                            //regFunc={isRegValid}
+                            setIsValidReg={setIsValidReg}
+                            reg={reg}
+                            onPressRouteTwo={onPressRouteTwo}
+                            isValid={isValidReg}
+                        //flatListRef={flatListRef}
+                        />
+                    </View>
+                    || item.key === "ROUTE_THREE" &&
+                    <View style={styles.container}>
+                        <View style={{ position: 'absolute', top: '2%', zIndex: 1, alignSelf: 'flex-start' }}>
+                            <BackButton onPress={() => scrollToItem('ROUTE_TWO')} />
+                        </View>
+                        <DriverRouteThree
+                            setDate={setDate}
+                            date={date}
+                            seats={seats}
+                            setSeats={setSeats}
+                            onGoPress={onGoPress}
+                            suggestedPrice={roundedprice}
+                            setPrice={setPrice}
+                            price={price}
+                            infoOnPress={infoOnPress}
+                        //flatListRef={flatListRef}
+                        />
+                    </View>
+                }
+            </View>
+        )
+    }
+
+    const scrollToItem = (key) => {
+        const index = data.findIndex((item) => item.key === key)
+
+        if ((myRef !== null) && (myRef.current !== null)) {
+            myRef.current.scrollToIndex({ index: index, animated: true });
+        }
+    }
 
 
     return (
@@ -272,54 +382,20 @@ const DriverRoute = ({ navigation }) => {
                 <LinearGradient colors={['#0352A0', '#0466c8']} start={{ x: 0.2, y: 0 }} end={{ x: 1, y: 0 }} style={styles.linearGradient}>
                 </LinearGradient>
             </View>
+            {initialIndex === "loading" ? <ActivityIndicator size={200} /> :
+                <FlatList
+                    data={data}
+                    renderItem={renderItem}
+                    ref={myRef}
+                    keyExtractor={(item) => item.key}
+                    horizontal
+                    getItemLayout={(data, index) => ({ index, length: ITEM_WIDTH, offset: (ITEM_WIDTH * index) })}
+                    initialScrollIndex={initialIndex}
+                    scrollEnabled={false}
+                    centerContent={true}
+                />
+            }
 
-            {stage === stages.ROUTE_ONE &&
-                <DriverRouteOne
-                    setStage={setStage}
-                    stages={stages}
-                    setOriginLatitude={setOriginLatitude}
-                    setOriginLongitude={setOriginLongitude}
-                    setDestinationLatitude={setDestinationLatitude}
-                    setDestinationLongitude={setDestinationLongitude}
-                    setOriginName={setOriginName}
-                    setDestinationName={setDestinationName}
-                    setDistance={setDistance}
-                    origin={origin}
-                    destination={destination}
-                    token={token}
-                />
-            }
-            {stage === stages.ROUTE_TWO &&
-                <DriverRouteTwo
-                    setDate={setDate}
-                    date={date}
-                    regFunc={isRegValid}
-                    reg={reg}
-                    setStage={setStage}
-                    stages={stages}
-                    isValid={isValidReg}
-                />
-            }
-            {stage === stages.ROUTE_THREE &&
-                <DriverRouteThree
-                    setDate={setDate}
-                    date={date}
-                    seats={seats}
-                    setSeats={setSeats}
-                    onGoPress={postLift}
-                    suggestedPrice={roundedprice}
-                    setPrice={setPrice}
-                    price={price}
-                    infoOnPress={() => setShowPrice(true)}
-                />
-            }
-            {stage === stages.STRIPE_SIGNUP &&
-                <StripeSignUp
-                    user={user}
-                    setStage={setStage}
-                    stages={stages}
-                />
-            }
             {showPrice ?
                 (
                     // <View style={styles.flatListView}>
@@ -333,8 +409,8 @@ const DriverRoute = ({ navigation }) => {
                         <View style={styles.centredView}>
 
                             <View style={styles.QRmodal}>
-                                <View>
-                                    <View style={{ padding: '2%', marginTop: '5%' }}>
+                                <View style={{ justifyContent: 'center' }}>
+                                    <View style={{ padding: '2%', marginTop: '5%', justifyContent: 'space-evenly' }}>
                                         <Text style={styles.textContainer}>How much money you earn from your lift depends on the number of passengers you choose to have in your car.</Text>
                                         <Text style={styles.textContainer}>So, if you only want one passenger in your car, don't worry! </Text>
                                         <Text style={styles.textContainer}>Set the price to suit having one passenger. </Text>
@@ -346,7 +422,6 @@ const DriverRoute = ({ navigation }) => {
 
                         </View>
                     </Modal>
-                    /* </View> */
                 ) : null}
 
         </View>
@@ -395,8 +470,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        height: Dimensions.get('window').height * 0.4,
-        width: Dimensions.get('window').width * 0.9,
         justifyContent: 'center'
     },
     textContainer: {
@@ -406,10 +479,13 @@ const styles = StyleSheet.create({
         color: '#535454'
     },
     centredView: {
-        flex: 1,
         justifyContent: "center",
         alignItems: "center",
         //marginTop: 22,
-        height: Dimensions.get('window').height * 0.4
+        height: '100%'
     },
+    itemContainer: {
+        height: Dimensions.get('window').height * 1,
+        justifyContent: 'center'
+    }
 });

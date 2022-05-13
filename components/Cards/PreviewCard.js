@@ -62,10 +62,11 @@ const PreviewCard = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: Dimensions.get('screen').width * 0.9,
-        height: Dimensions.get('window').height * 0.225,
-        // flex: 1,
-        borderRadius: 30,
+        // width: Dimensions.get('screen').width * 0.9,
+        // height: Dimensions.get('window').height * 0.225,
+        flex: 1,
+        borderRadius: 20,
+        padding: '1%',
         // borderWidth: 0.5,
         alignItems: 'center',
         justifyContent: 'center',

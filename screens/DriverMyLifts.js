@@ -26,7 +26,8 @@ const DriverMyLifts = ({ route, navigation }) => {
 
             const parseRes = await response.json();
 
-            setDisplayInfo(parseRes);
+            return(parseRes)
+            
         } catch (error) {
             console.log(error.message)
         }
@@ -42,37 +43,43 @@ const DriverMyLifts = ({ route, navigation }) => {
 
             const parseRes = await response.json()
 
-            // console.log(parseRes)
-
-
-            if (parseRes.passengers.length !== 0) {
-                setNotRatedPassengers(parseRes.passengers)
-                setNotRatedID(parseRes.liftshareID)
-                // setNotRatedLiftshare(parseRes.liftID)
-                setIsVisibleRatings(true)
-
-                // console.log(parseRes.userIDs)
-            } else {
-                setIsVisibleRatings(false)
-            }
+            return(parseRes)
 
         } catch (error) {
             console.log(error.message)
         }
     }
 
-    const onRefresh = async () => {
-        await getLiftData()
-        checkIncompleteLifts()
+    // const onRefresh = async () => {
+    //     await getLiftData()
+    //     checkIncompleteLifts()
 
-    }
+    // }
 
     //function that asks db for completed lifts, returns liftshare_id and user_ids
 
     //unfinishedratings = true then launch ratings modal, 
 
     useEffect(() => {
-        onRefresh()
+        let isMounted = true
+
+        Promise.all([
+            getLiftData(), checkIncompleteLifts()
+        ]).then((data) => {
+            if(isMounted) {
+            setDisplayInfo(data[0])
+            data[1].passengers.length !== 0 ? (
+                setNotRatedPassengers(data[1].passengers) &&
+                setNotRatedID(data[1].liftshareID) &&
+                setIsVisibleRatings(true)
+            ) : (
+                setIsVisibleRatings(false)
+            )
+            }
+        });
+
+        return () => { isMounted = false };
+
     }, [isFocused, refresh]);
 
 
