@@ -59,8 +59,8 @@ const HomeScreen = ({ navigation }) => {
                         <TouchableOpacity style={{ alignItems: 'center' }} onPress={passengerClickHandle} >
 
                             
-                            <Text style={{ fontFamily: 'Inter_400Regular' }}>I am a</Text>
-                            <Text style={{ fontSize: 28, fontFamily: 'Inter_600SemiBold', padding: '2%', color: passengerClick ? '#C80466' : '#0352A0' }}>Passenger</Text>
+                            <Text style={{ fontFamily: 'Inter_Regular' }}>I am a</Text>
+                            <Text style={{ fontSize: 28, fontFamily: 'Inter_Medium', padding: '2%', color: passengerClick ? '#C80466' : '#0352A0' }}>Passenger</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.verticalLine}>
@@ -68,8 +68,8 @@ const HomeScreen = ({ navigation }) => {
                     <View style={styles.columnButtons}>
                         <TouchableOpacity style={{ alignItems: 'center' }} onPress={driverClickHandle} >
 
-                            <Text style={{ fontFamily: 'Inter_400Regular' }}>I am a</Text>
-                            <Text style={{ fontSize: 28, fontFamily: 'Inter_600SemiBold', padding: '2%', color: driverClick ? '#C80466' : '#0352A0' }}>Driver</Text>
+                            <Text style={{ fontFamily: 'Inter_Regular' }}>I am a</Text>
+                            <Text style={{ fontSize: 28, fontFamily: 'Inter_Medium', padding: '2%', color: driverClick ? '#C80466' : '#0352A0' }}>Driver</Text>
                         </TouchableOpacity>
 
                     </View>

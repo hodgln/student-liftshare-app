@@ -31,7 +31,7 @@ const RouteDropDown = (props) => {
                 props.modalClose(false)
             }}>
                 <View style={{ justifyContent: 'center', padding: '5%' }}>
-                    <Text style={{ fontSize: 15, fontFamily: 'Inter_400Regular' }}>{item.name}</Text>
+                    <Text style={{ fontSize: 15, fontFamily: 'Inter_Regular' }}>{item.name}</Text>
                 </View>
                 <View style={styles.line}></View>
             </TouchableOpacity>

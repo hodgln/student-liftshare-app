@@ -6,7 +6,7 @@ const StatusButton = (props) => {
         return (
             <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
                 <View style={props.style === "confirmed" ? styles.confirmed : styles.pending }>
-                        <Text style={{  color: 'white', fontFamily: 'Inter_500Medium', fontSize: 17 }}>{props.text}</Text>
+                        <Text style={{  color: 'white', fontFamily: 'Inter_Medium', fontSize: 17 }}>{props.text}</Text>
                 </View>
             </TouchableOpacity>
 

@@ -5,6 +5,8 @@ import { CodeField, useBlurOnFulfill, useClearByFocusCell, Cursor } from 'react-
 import { LOGGED_IN } from '../store/actions/authentication';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import NextButton from '../components/Buttons/NextButton';
+
 
 const CELL_COUNT = 6;
 
@@ -161,9 +163,8 @@ const ConfirmationScreen = ({ route }) => {
                     </Text>
                 )}
             />
-            <TouchableOpacity onPress={onGoPress} style={value.length === 6 ? [styles.button, styles.readyButton] : styles.button} disabled={value.length === 6 ? false : true}>
-                <Text>GO</Text>
-            </TouchableOpacity>
+            <NextButton onPress={onGoPress} disabled={value.length === 6 ? false : true} text="Next" />
+
         </View>
     )
 };

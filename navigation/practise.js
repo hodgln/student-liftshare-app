@@ -194,7 +194,7 @@ const RootStack = () => {
 
   const PassengerStackOne = () => {
     return (
-      <Stack.Navigator screenOptions={{ headerTitleStyle: { fontFamily: 'Inter_600SemiBold' } }} >
+      <Stack.Navigator screenOptions={{ headerTitleStyle: { fontFamily: 'Inter_SemiBold' } }} >
         <Stack.Screen name="Lift Search" component={PassengerRoute} />
         <Stack.Screen name="Choose Driver" component={PassengerLiftFinder} />
         <Stack.Screen name="Lift Details" component={LiftSearchDetails} />
@@ -205,7 +205,7 @@ const RootStack = () => {
 
   const PassengerStackTwo = () => {
     return (
-      <Stack.Navigator screenOptions={{ headerTitleStyle: { fontFamily: 'Inter_600SemiBold' } }} >
+      <Stack.Navigator screenOptions={{ headerTitleStyle: { fontFamily: 'Inter_SemiBold' } }} >
         <Stack.Screen name="My Lifts" component={PassengerMyLifts} />
         <Stack.Screen name="Route Details" component={PassengerRouteDetails} />
       </Stack.Navigator>

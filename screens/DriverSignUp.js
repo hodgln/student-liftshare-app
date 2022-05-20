@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         paddingVertical: '2.5%',
-        fontFamily: 'Inter_500Medium',
+        fontFamily: 'Inter_Medium',
         fontSize: 16
     },
     backButton: {

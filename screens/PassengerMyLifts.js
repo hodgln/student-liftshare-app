@@ -59,11 +59,7 @@ const PassengerMyLifts = (props) => {
         }
     }
 
-    const onRefresh = async () => {
-        await checkUnratedDrivers()
-        getLiftData()
-
-    }
+    
 
     useEffect(() => {
         let isMounted = true
@@ -120,12 +116,17 @@ const PassengerMyLifts = (props) => {
     return (
         // <View style={styles.categoriesContainer}>
         <View>
-            <FlatList
+            {displayInfo?.length !== 0 ? <FlatList
                 data={displayInfo}
                 renderItem={renderPassenger}
                 keyExtractor={item => JSON.stringify(item.request_id)}
             />
-
+            : 
+            <View style={{ alignItems: 'center', justifyContent: "center", height: '100%' }}>
+                 <Text style={styles.textStyle}>Nothing to see here!</Text>
+                 <Text style={styles.textStyleTwo}>Make a lift request to get started 👍 </Text>
+            </View>
+           }
 
 
 
@@ -168,6 +169,16 @@ const styles = StyleSheet.create({
         alignItems: "center",
         //marginTop: 22,
         height: Dimensions.get('window').height * 0.4
+    },
+    textStyle: {
+        fontFamily: 'Inter_Medium',
+        fontSize: 17,
+        padding: '1%'
+    },
+    textStyleTwo: {
+        fontFamily: 'Inter_Regular',
+        fontSize: 15,
+        padding: '1%'
     }
 })
 

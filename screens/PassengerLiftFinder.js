@@ -66,7 +66,6 @@ const PassengerLiftFinder = ({ route, navigation }) => {
         if(item.seats <= 0) {
             return null
         } else {
-            console.log(item.passengerprice)
         return (<View style={styles.container}>
             <PreviewCard
                 name={item.category}
@@ -89,12 +88,21 @@ const PassengerLiftFinder = ({ route, navigation }) => {
         }
     }
 
-    return (     
-            <FlatList
+    return ( 
+            <View> 
+            { lifts?.length !== 0 ? 
+                <FlatList
                 data={lifts}
                 renderItem={renderItem}
-                keyExtractor={item => JSON.stringify(item.liftshare_id)}
-            />
+                keyExtractor={(item, index) => 
+                    index
+                }
+            /> : 
+            <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontFamily: "Inter_Medium", fontSize: 15 }}>Sorry, there are no lifts currently ☹️</Text>
+            </View>
+            }
+            </View>   
     )
 }
 

@@ -83,6 +83,7 @@ const DriverMyLifts = ({ route, navigation }) => {
     }, [isFocused, refresh]);
 
 
+
     const renderDriver = ({ item }) => {
 
         const priceDiv = +item.seats + +item.passengers 
@@ -113,14 +114,20 @@ const DriverMyLifts = ({ route, navigation }) => {
             /> */}
         </View>)
     };
+
     return (
         <View style={styles.categoriesContainer}>
-            <FlatList
+            {displayInfo?.length !== 0 ? <FlatList
                 style={styles.myLifts}
                 data={displayInfo}
                 renderItem={renderDriver}
                 keyExtractor={item => JSON.stringify(item.liftshare_id)}
-            />
+            /> : 
+            <View style={{ alignItems: 'center'}}>
+                 <Text style={styles.textStyle}>Nothing to see here!</Text>
+                 <Text style={styles.textStyleTwo}>Please post a lift to get started 👍 </Text>
+            </View>
+           }
             {
                 isVisibleRatings ?
 
@@ -169,6 +176,14 @@ const styles = StyleSheet.create({
         //shadowColor: 'black',
         shadowOpacity: 0.6,
     },
-
-
+    textStyle: {
+        fontFamily: 'Inter_Medium',
+        fontSize: 17,
+        padding: '1%'
+    },
+    textStyleTwo: {
+        fontFamily: 'Inter_Regular',
+        fontSize: 15,
+        padding: '1%'
+    }
 });

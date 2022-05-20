@@ -115,7 +115,7 @@ const PassengerRoute = props => {
             {/* <View style={styles.circlePosition}></View> */}
             <BlurView style={styles.componentContainer}>
                 <View style={{ padding: '4%' }}>
-                    <Text style={{ fontSize: 20, color: '#D0D3D4', fontFamily: 'Inter_400Regular' }}>Where do you want to go?</Text>
+                    <Text style={{ fontSize: 20, color: '#D0D3D4', fontFamily: 'Inter_Regular' }}>Where do you want to go?</Text>
                 </View>
                 <View style={styles.line}></View>
                 <View style={styles.routeContainer}>
@@ -158,7 +158,7 @@ const PassengerRoute = props => {
                 {/* <View style={styles.line}></View> */}
 
                 <View style={{ paddingHorizontal: '4%', paddingTop: '4%' }}>
-                <Text style={{ fontSize: 20, color: '#535454', fontFamily: 'Inter_400Regular', paddingBottom: '4%' }}>When are you leaving?</Text>
+                <Text style={{ fontSize: 20, color: '#535454', fontFamily: 'Inter_Regular', paddingBottom: '4%' }}>When are you leaving?</Text>
                 </View>
 
                 <View style={styles.line}></View>

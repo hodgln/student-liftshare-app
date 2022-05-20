@@ -16,7 +16,7 @@ const NextButton = (props) => {
              start={{ x: 0.2, y: 0.9}}
              end={{ x: 0.9, y: 0.9 }}
              >
-             <Text style={{ color: 'white', fontSize: 17, fontFamily: 'Inter_600SemiBold' }}>{props.text}</Text>
+             <Text style={{ color: 'white', fontSize: 17, fontFamily: 'Inter_SemiBold' }}>{props.text}</Text>
              </LinearGradient>
          </View>
      </TouchableOpacity>

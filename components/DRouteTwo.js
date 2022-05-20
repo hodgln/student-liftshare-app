@@ -55,7 +55,7 @@ const DriverRouteTwo = (props) => {
             <BlurView style={styles.componentContainer}>
                 <View style={{ padding: '4%' }}>
                     <View style={styles.textAlign}>
-                        <Text style={{ fontSize: 20, color: '#D0D3D4', fontFamily: 'Inter_400Regular' }}>What is your registration number?</Text>
+                        <Text style={{ fontSize: 20, color: '#D0D3D4', fontFamily: 'Inter_Regular' }}>What is your registration number?</Text>
                     </View>
                     <View style={styles.line}></View>
                     <View style={styles.Input}>
@@ -75,16 +75,16 @@ const DriverRouteTwo = (props) => {
                                 maxLength={7}
                             />
                         </View>
-                        <View style={{ width: '10%' }}>
-                            {!isValid ? null : (<Ionicons name="checkmark-circle-outline" size={35} color="lightgreen" />) }
+                        <View style={{ width: '10%', height: '100%' }}>
+                            {!isValid ? null : (<Ionicons name="checkmark-circle-outline" size={32} color="lightgreen" />) }
                         </View>
                     </View>
                 </View>
 
-                <View style={{ flex: 1, padding: 15, justifyContent: 'center' }}>
+                <View style={{ flex: 1, padding: 10, justifyContent: 'center' }}>
 
                     <View style={styles.textAlign}>
-                        <Text style={{ fontSize: 20, color: '#535454', fontFamily: 'Inter_400Regular' }}>When are you leaving?</Text>
+                        <Text style={{ fontSize: 20, color: '#535454', fontFamily: 'Inter_Regular' }}>When are you leaving?</Text>
                     </View>
 
                     <View style={styles.line}></View>
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     boldText: {
-        fontFamily: 'Inter_800ExtraBold',
+        fontFamily: 'Inter_ExtraBold',
         fontSize: 50,
         color: '#F0F3F4'
     },
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     },
     textInput: {
         height: '100%',
-        fontFamily: 'Inter_400Regular',
+        fontFamily: 'Inter_Regular',
         fontSize: 40,
         width: '100%',
         color: 'white',

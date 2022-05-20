@@ -34,11 +34,11 @@ const DriverRouteThree = (props) => {
             <BlurView style={styles.componentContainer}>
                 <View style={{ padding: '2.5%', height: '40%', marginBottom: '5%' }}>
                     <View style={styles.textAlign}>
-                        <Text style={{ fontSize: 20, color: '#D0D3D4', fontFamily: 'Inter_400Regular' }}>Please set a max price for your lift</Text>
+                        <Text style={{ fontSize: 20, color: '#D0D3D4', fontFamily: 'Inter_Regular' }}>Please set a max price for your lift</Text>
                     </View>
                     <View style={styles.topLine}></View>
                     <View style={styles.textAlign}>
-                        <Text style={{ fontSize: 16, color: '#D0D3D4', fontFamily: 'Inter_400Regular' }}>Suggested price: £{suggestedPrice}</Text>
+                        <Text style={{ fontSize: 16, color: '#D0D3D4', fontFamily: 'Inter_Regular' }}>Suggested price: £{suggestedPrice}</Text>
                     </View>
                     <View>
 
@@ -179,14 +179,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     boldText: {
-        fontFamily: 'Inter_800ExtraBold',
+        fontFamily: 'Inter_ExtraBold',
         fontSize: 40,
         color: '#F0F3F4',
         flex: 1
     },
     price: {
         fontSize: 20,
-        fontFamily: 'Inter_600SemiBold',
+        fontFamily: 'Inter_SemiBold',
         padding: '2%',
         color: '#0352A0'
     }

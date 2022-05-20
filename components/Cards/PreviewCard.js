@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import RouteDisplay from '../RouteDisplay';
 import moment from 'moment';
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
 
 
@@ -20,9 +20,10 @@ const PreviewCard = (props) => {
             setIsActive(true)
         } else {
             setIsActive(false)
-        }}, []);
+        }
+    }, []);
 
-        
+
 
     // the way the props are passed is causing the warning error, 
     // append isactive to the props and pass as one
@@ -31,31 +32,31 @@ const PreviewCard = (props) => {
 
     // destructure props object into navigation and non-navigation and then pass the non-navigation in route params
 
-    const active = { isActive: isActive } 
+    const active = { isActive: isActive }
 
     return (
-        
-        <TouchableOpacity 
-        style={isActive ? [styles.container, styles.isActive] : styles.container}
-        onPress={() => navigation.navigate(props.nextScreen, {...props, ...active} )}    
+
+        <TouchableOpacity
+            style={isActive ? [styles.container, styles.isActive] : styles.container}
+            onPress={() => navigation.navigate(props.nextScreen, { ...props, ...active })}
         //shared element transition here
         >
-            
-            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-                <View style={{ width: '80%'}}>
-            <RouteDisplay
-                from={props.from}
-                to={props.to}
-                date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
-                time={moment(dateFormat).format('HH:mm')}
-                price={props.displayPrice !== undefined ? props.displayPrice : props.price}
-            />
+
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: '5%' }}>
+                <View style={{ width: '80%' }}>
+                    <RouteDisplay
+                        from={props.from}
+                        to={props.to}
+                        date={isActive ? "Today" : moment(dateFormat).format('ddd Do MMM')}
+                        time={moment(dateFormat).format('HH:mm')}
+                        price={props.displayPrice !== undefined ? props.displayPrice : props.price}
+                    />
+                </View>
+                <View>
+                    <Ionicons name="chevron-forward" size={50} color="lightgrey" />
+                </View>
             </View>
-            <View>
-            <Ionicons name="chevron-forward" size={50} color="lightgrey" />
-            </View>
-            </View>
-            
+
         </TouchableOpacity>
     )
 };

@@ -533,8 +533,9 @@ router.post("/Liftshares/distance", authorisation, async (req, res) => {
         FROM Requests as r
         RIGHT JOIN Liftshares AS l ON l.liftshare_id = r.liftshare_id
         RIGHT JOIN Users AS u ON u.user_id = l.user_id
-        WHERE l.liftshare_id NOT IN (SELECT r.liftshare_id FROM Requests as r WHERE r.user_id = $3)
-        order by distance`, [originlocation, destinationlocation, req.user.id]
+        WHERE l.liftshare_id NOT IN (SELECT r.liftshare_id FROM Requests as r WHERE r.user_id = $3) AND l.datepicked > NOW()
+        order by distance
+        LIMIT 10`, [originlocation, destinationlocation, req.user.id]
         );
 
 

@@ -20,7 +20,7 @@ const LogInButton = (props) => {
              {props.disabled ? (
                 <ActivityIndicator size="small" />
              ) :
-             (<Text style={{ color: "white", fontSize: 17, fontFamily: 'Inter_400Regular' }}>{props.text}</Text>)
+             (<Text style={{ color: "white", fontSize: 17, fontFamily: 'Inter_Regular' }}>{props.text}</Text>)
             }
             </LinearGradient>
          </View>

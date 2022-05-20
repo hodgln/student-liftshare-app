@@ -132,7 +132,7 @@ const DriverRouteOne = (props) => {
             
             <BlurView style={styles.componentContainer}>
                 <View style={{ padding: '4%' }}>
-                    <Text style={{ fontSize: 20, color: '#F0F3F4', fontFamily: 'Inter_400Regular' }}>Where are you driving?</Text>
+                    <Text style={{ fontSize: 20, color: '#F0F3F4', fontFamily: 'Inter_Regular' }}>Where are you driving?</Text>
                 </View>
                 <View style={styles.line}></View>
                 <View style={styles.routeContainer}>

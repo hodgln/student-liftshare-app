@@ -19,7 +19,7 @@ const PriceDisplay = (props) => {
 
     return (
         <View style={styles.container}>
-            <Text style={{ fontSize: 20, fontFamily: 'Inter_700Bold', paddingBottom: '5%', color: '#0352A0' }}>Price Breakdown</Text>
+            <Text style={{ fontSize: 20, fontFamily: 'Inter_Bold', paddingBottom: '5%', color: '#0352A0' }}>Price Breakdown</Text>
             <View style={{ flexDirection: 'row' }}>
                 <View style={{ width: '50%', height: '90%', alignItems: 'center', justifyContent: 'center' }}>
                     <View style={styles.row}>
@@ -81,16 +81,16 @@ const styles = StyleSheet.create({
         width: '33%'
     },
     headerText: {
-        fontFamily: 'Inter_400Regular',
+        fontFamily: 'Inter_Regular',
         color: 'white'
     },
     boldText: {
-        fontFamily: 'Inter_800ExtraBold',
+        fontFamily: 'Inter_ExtraBold',
         fontSize: 30,
         color: 'white'
     },
     nameText: {
-        fontFamily: 'Inter_600SemiBold',
+        fontFamily: 'Inter_SemiBold',
         color: 'white'
     },
     linearGradient: {

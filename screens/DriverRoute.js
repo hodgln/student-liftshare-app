@@ -15,14 +15,22 @@ import BackButton from '../components/Buttons/BackButton';
 
 const DriverRoute = ({ navigation }) => {
 
-    const stages = {
-        STRIPE_SIGNUP: 'STRIPE_SIGNUP',
-        ROUTE_ONE: 'ROUTE_ONE',
-        ROUTE_TWO: 'ROUTE_TWO',
-        ROUTE_THREE: 'ROUTE_THREE'
-    };
+    const data = [
+        {
+            key: 'STRIPE_SIGNUP'
+        },
+        {
+            key: 'ROUTE_ONE'
+        },
+        {
+            key: 'ROUTE_TWO'
+        },
+        {
+            key: 'ROUTE_THREE'
+        }
+    ];
 
-    const [initialIndex, setInitialIndex] = useState("loading")
+    const [initialIndex, setInitialIndex] = useState()
 
     //const [flatListRef, setFlatListRef] = useState()
 
@@ -31,25 +39,9 @@ const DriverRoute = ({ navigation }) => {
     const myRef = React.createRef();
     // this.myRef.current.doSomething();
 
-    useEffect(() => {
-        let isMounted = true
-
-        // stripe check and then setState
-        checkIfStripe().then(result => {
-            if (isMounted) {
-                result.stripe_id ?
-                    setInitialIndex(data.findIndex((item) => item.key === "ROUTE_ONE"))
-                    :
-                    setUser(result) && setInitialIndex(data.findIndex((item) => item.key === "STRIPE_SIGNUP"));
-            }
-        })
-
-        return () => { isMounted = false };
-    }, [isFocused]);
-
     const ITEM_WIDTH = Dimensions.get("screen").width * 1
 
-    const [stage, setStage] = useState(stages.STRIPE_SIGNUP)
+
     // const [email, setEmail] = useState()
 
     const [originLatitude, setOriginLatitude] = useState()
@@ -97,20 +89,25 @@ const DriverRoute = ({ navigation }) => {
 
 
 
-    const data = [
-        {
-            key: 'STRIPE_SIGNUP'
-        },
-        {
-            key: 'ROUTE_ONE'
-        },
-        {
-            key: 'ROUTE_TWO'
-        },
-        {
-            key: 'ROUTE_THREE'
-        }
-    ];
+    useEffect(() => {
+        let isMounted = true
+
+        // stripe check and then setState
+        checkIfStripe().then(result => {
+            const stripeIndex = data.findIndex((item) => item.key === "STRIPE_SIGNUP")
+            const routeOneIndex = data.findIndex((item) => item.key === "ROUTE_ONE")
+
+            if (isMounted) {
+                console.log(result.stripe_id === null)
+                result.stripe_id === null ?
+                    (setUser(result), setInitialIndex(stripeIndex))
+                    :
+                    setInitialIndex(routeOneIndex);
+            }
+        })
+
+        return () => { isMounted = false };
+    }, [isFocused]);
 
 
     // check if stripe registered
@@ -306,8 +303,7 @@ const DriverRoute = ({ navigation }) => {
                     <View style={styles.container}>
                         <StripeSignUp
                             user={user}
-                            setStage={setStage}
-                            stages={stages}
+                            onNext={scrollToItem}
                         />
                     </View>
                     || item.key === "ROUTE_ONE" &&
@@ -382,7 +378,7 @@ const DriverRoute = ({ navigation }) => {
                 <LinearGradient colors={['#0352A0', '#0466c8']} start={{ x: 0.2, y: 0 }} end={{ x: 1, y: 0 }} style={styles.linearGradient}>
                 </LinearGradient>
             </View>
-            {initialIndex === "loading" ? <ActivityIndicator size={200} /> :
+            {initialIndex !== undefined ? 
                 <FlatList
                     data={data}
                     renderItem={renderItem}
@@ -394,6 +390,7 @@ const DriverRoute = ({ navigation }) => {
                     scrollEnabled={false}
                     centerContent={true}
                 />
+                : <ActivityIndicator size={200} /> 
             }
 
             {showPrice ?
@@ -474,7 +471,7 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         paddingVertical: '2.5%',
-        fontFamily: 'Inter_500Medium',
+        fontFamily: 'Inter_Medium',
         fontSize: 16,
         color: '#535454'
     },

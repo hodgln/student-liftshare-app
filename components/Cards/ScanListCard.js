@@ -40,7 +40,7 @@ const ScanListCard = (props) => {
 
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-                            <Text style={{ fontSize: 20, fontFamily: 'Inter_500Medium', padding: '1%', color: "#11AC38" }}>Confirmed</Text>
+                            <Text style={{ fontSize: 20, fontFamily: 'Inter_Medium', padding: '1%', color: "#11AC38" }}>Confirmed</Text>
                             <Ionicons name="checkmark-circle-outline" size={24} color="#11AC38" style={{ padding: '1%' }} />
 
                         </View>
@@ -51,7 +51,7 @@ const ScanListCard = (props) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
                             {/* <View style={styles.rightColumn}> */}
-                            <Text style={{ fontSize: 20, fontFamily: 'Inter_500Medium', padding: '1%', color: '#C86604' }}>Pending</Text>
+                            <Text style={{ fontSize: 20, fontFamily: 'Inter_Medium', padding: '1%', color: '#C86604' }}>Pending</Text>
                             <Ionicons name="time-outline" size={24} color="#C86604" style={{ padding: '1%' }} />
                             {/* </View> */}
                         </View>
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         width: '40%'
     },
     nameText: {
-        fontFamily: 'Inter_600SemiBold',
+        fontFamily: 'Inter_SemiBold',
         fontSize: 18,
         color: '#0466c8'
     },

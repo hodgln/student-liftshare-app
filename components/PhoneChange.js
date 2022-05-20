@@ -17,12 +17,12 @@ const PhoneChange = (props) => {
 
 
     return (
-        <View style={{ height: '100%', }}>
+        <View style={{ height: '100%' }}>
             <View style={{ height: '20%' }}>
-                <Text style={{ fontFamily: 'Inter_300Light', fontSize: 27 }}>Change phone number</Text>
+                <Text style={{ fontFamily: 'Inter_Light', fontSize: 27 }}>Change phone number</Text>
                 <View style={styles.line}></View>
             </View>
-            <Text style={{ fontFamily: 'Inter_300Light' }}>this will be used for contact prior to a lift.</Text>
+            <Text style={{ fontFamily: 'Inter_Light', paddingVertical: '2.5%' }}>this will be used for contact prior to a lift.</Text>
             <View style={{ justifyContent: 'center', height: '60%' }}>
                 <Input
                     placeholder='new phone number'

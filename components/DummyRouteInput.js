@@ -70,6 +70,6 @@ const styles = StyleSheet.create({
     },
     placeholder: {
         color: 'grey',
-        fontFamily: 'Inter_400Regular'
+        fontFamily: 'Inter_Regular'
     }
 });

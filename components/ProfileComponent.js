@@ -10,7 +10,7 @@ const ProfileComponent = (props) => {
             <TouchableOpacity onPress={props.onPress}>
             <View style={{ flexDirection: 'row', marginLeft: '6%', alignItems: 'center' }}>
                 <View style={{ width: '50%' }}>
-                    <Text style={{ fontFamily: 'Inter_400Regular' }}>{props.text}</Text>
+                    <Text style={{ fontFamily: 'Inter_Regular' }}>{props.text}</Text>
                 </View>
                 <View style={{ width: '45%', alignItems: 'flex-end' }}>
                     <Ionicons name="chevron-forward" size={25} color="lightgrey" />

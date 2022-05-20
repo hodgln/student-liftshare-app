@@ -41,16 +41,16 @@ const styles = StyleSheet.create({
         width: '33%'
     },
     headerText: {
-        fontFamily: 'Inter_400Regular',
+        fontFamily: 'Inter_Regular',
         color: 'white'
     },
     boldText: {
-        fontFamily: 'Inter_800ExtraBold',
+        fontFamily: 'Inter_ExtraBold',
         fontSize: 30,
         color: 'white'
     },
     nameText: {
-        fontFamily: 'Inter_600SemiBold',
+        fontFamily: 'Inter_SemiBold',
         color: 'white'
     },
     linearGradient: {

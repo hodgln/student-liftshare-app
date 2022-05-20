@@ -17,7 +17,7 @@ const BookButton = (props) => {
                 time: props.time
                  })} disabled={props.disabled}>
                 <View style={styles.confirmed}>
-                        <Text style={{ color: 'white', fontFamily: 'Inter_600SemiBold', fontSize: 17 }}>{props.text}</Text>
+                        <Text style={{ color: 'white', fontFamily: 'Inter_SemiBold', fontSize: 17 }}>{props.text}</Text>
                 </View>
             </TouchableOpacity>
 

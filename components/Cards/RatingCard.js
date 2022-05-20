@@ -61,7 +61,7 @@ const RatingCard = (props) => {
                             picture,
                     }}
                 />
-                <Text style={{ fontSize: 17, fontFamily: 'Inter_600SemiBold', color: '#0352A0' }}>{firstname}</Text>
+                <Text style={{ fontSize: 17, fontFamily: 'Inter_SemiBold', color: '#0352A0' }}>{firstname}</Text>
             </View>
             <View style={styles.verticalLine}></View>
             <View style={styles.rightColumn}>

@@ -65,19 +65,31 @@ const StatusDisplay = (props) => {
     }
 
 
+    const onPressCancel = () => {
+        return(
+            Alert.alert(
+                "Are you sure you want to cancel your request?",
+                "this action cannot be undone",
+                [
+                    {text: 'No', onPress: () => {}},
+                    {text: 'Yes', onPress: () => cancelAll()}
+                ]
+            )
+        )
+    }
 
     return (
         <View style={styles.container}>
             <View style={{ width: '50%', alignItems: 'center', justifyContent: 'center' }}>
                 {status === "pending" ?
                     <View style={{ flexDirection: 'row' }}>
-                        <Text style={{ fontSize: 20, fontFamily: 'Inter_500Medium', padding: '1%', color: '#C86604' }}>Pending</Text>
+                        <Text style={{ fontSize: 20, fontFamily: 'Inter_Medium', padding: '1%', color: '#C86604' }}>Pending</Text>
                         <Ionicons name="time-outline" size={24} color="#C86604" style={{ padding: '1%' }} />
                     </View>
                     : null}
                 {status === "confirmed" ?
                     <View style={{ flexDirection: 'row' }}>
-                        <Text style={{ fontSize: 20, fontFamily: 'Inter_500Medium', padding: '1%', color: "#11AC38" }}>Confirmed</Text>
+                        <Text style={{ fontSize: 20, fontFamily: 'Inter_Medium', padding: '1%', color: "#11AC38" }}>Confirmed</Text>
                         <Ionicons name="checkmark-circle-outline" size={24} color="#11AC38" style={{ padding: '1%' }} />
                     </View>
                     : null}
@@ -85,7 +97,7 @@ const StatusDisplay = (props) => {
             </View>
             {/* <View style={styles.verticalLine}></View> */}
             <View style={{ width: '50%', alignItems: 'center', justifyContent: 'center', padding: '6%' }}>
-                {status === "pending" ? <StatusButton style={"pending"} onPress={cancelAll} text="cancel request" /> : null}
+                {status === "pending" ? <StatusButton style={"pending"} onPress={onPressCancel} text="cancel request" /> : null}
                 {status === "confirmed" ? <StatusButton style={"confirmed"} disabled={false} onPress={() => setIsVisibleQR(true)} text="Check In" /> : null}
             </View>
         </View>
@@ -104,16 +116,16 @@ const styles = StyleSheet.create({
         width: '33%'
     },
     headerText: {
-        fontFamily: 'Inter_400Regular',
+        fontFamily: 'Inter_Regular',
         color: 'white'
     },
     boldText: {
-        fontFamily: 'Inter_800ExtraBold',
+        fontFamily: 'Inter_ExtraBold',
         fontSize: 30,
         color: 'white'
     },
     nameText: {
-        fontFamily: 'Inter_600SemiBold',
+        fontFamily: 'Inter_SemiBold',
         color: 'white'
     },
     linearGradient: {

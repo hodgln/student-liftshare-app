@@ -8,7 +8,7 @@ const CompleteButton = (props) => {
         return (
             <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
                 <View style={styles.button}>
-                        <Text style={{ color: 'white', fontFamily: 'Inter_600SemiBold', fontSize: 17 }}>{props.text}</Text>
+                        <Text style={{ color: 'white', fontFamily: 'Inter_SemiBold', fontSize: 17 }}>{props.text}</Text>
                 </View>
             </TouchableOpacity>
 

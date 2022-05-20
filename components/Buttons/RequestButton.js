@@ -7,9 +7,9 @@ const RequestButton = (props) => {
         <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
             <View style={props.style === "filled" ? styles.filled : styles.outline}>
                 {props.style === "filled" ?
-                    (<Text style={{ color: 'white', fontFamily: 'Inter_500Medium', fontSize: 19 }}>{props.text}</Text>)
+                    (<Text style={{ color: 'white', fontFamily: 'Inter_Medium', fontSize: 19 }}>{props.text}</Text>)
                     :
-                    (<Text style={{ color: '#0466c8', fontFamily: 'Inter_500Medium', fontSize: 19 }}>{props.text}</Text>)
+                    (<Text style={{ color: '#0466c8', fontFamily: 'Inter_Medium', fontSize: 19 }}>{props.text}</Text>)
                 }
             </View>
         </TouchableOpacity>

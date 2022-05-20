@@ -218,7 +218,7 @@ const DriverCheckIn = ({ route }) => {
                                 />
                                 {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
                             </View>
-                            <Text style={{ padding: '1%', alignSelf: 'center', fontFamily: 'Inter_400Regular' }}>Scan to check in passengers</Text>
+                            <Text style={{ padding: '1%', alignSelf: 'center', fontFamily: 'Inter_Regular' }}>Scan to check in passengers</Text>
                             {/* <Button title="press" onPress={handleBarCodeScanned}/> */}
                         </View>
                         <View style={styles.listContainer}>
@@ -254,7 +254,7 @@ const DriverCheckIn = ({ route }) => {
                 :
                 (
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ fontFamily: 'Inter_500Medium' }}>You do not have any passengers for this lift ☹️</Text>
+                        <Text style={{ fontFamily: 'Inter_Medium' }}>You do not have any passengers for this lift ☹️</Text>
                     </View>
                 )
             }

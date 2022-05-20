@@ -14,8 +14,7 @@ const StripeSignUp = (props) => {
     const link = AuthSession.makeRedirectUri({ useProxy: true });
 
     const {
-        setStage,
-        stages
+        onNext
     } = props
 
 
@@ -111,7 +110,7 @@ const StripeSignUp = (props) => {
                     "Success!",
                     "You are now able to get paid with Spareseat",
                     [
-                        { text: "OK", onPress: () => setStage(stages.ROUTE_ONE) }
+                        { text: "OK", onPress: () => onNext('ROUTE_ONE')}
                     ]
                 )
             } else if(parseRes === "failure") {
@@ -125,14 +124,14 @@ const StripeSignUp = (props) => {
 
     return (
         <View style={styles.componentContainer}>
-            <Text style={{ padding: '3%', fontFamily: 'Inter_400Regular', fontSize: 22, color: '#535454'}}>Getting paid for lifts</Text>
+            <Text style={{ padding: '3%', fontFamily: 'Inter_Regular', fontSize: 22, color: '#535454'}}>Getting paid for lifts</Text>
             <View style={styles.line}></View>
             <View style={{ padding: '3%', marginTop: '5%'}}>
                 <Text style={styles.textContainer}>Spareseat uses Stripe to get you paid quickly and keep your personal and payment information secure.</Text>
                 <Text style={styles.textContainer}>Thousands of companies around the world trust Stripe to process payments for their users.</Text>
                 <Text style={styles.textContainer}>Set up a Stripe account to get paid with Spareseat.</Text>
             </View>
-            <View style={{ alignSelf: 'center' }}>
+            <View style={{ alignSelf: 'center', paddingBottom: '3%' }}>
                 <NextButton text="Register with Stripe" onPress={stripePressed} disabled={loading}/>
             </View>
         </View>
@@ -143,7 +142,8 @@ export default StripeSignUp;
 
 const styles = StyleSheet.create({
     componentContainer: {
-        height: Dimensions.get('window').height * 0.5,
+        //height: Dimensions.get('window').height * 0.5,
+        flexWrap: 'wrap',
         width: Dimensions.get('screen').width * 0.9,
         justifyContent: 'center',
         backgroundColor: 'white',
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         paddingVertical: '2.5%',
-        fontFamily: 'Inter_500Medium',
+        fontFamily: 'Inter_Medium',
         fontSize: 16
     },
 });

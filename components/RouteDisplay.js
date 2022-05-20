@@ -20,26 +20,26 @@ const RouteDisplay = (props) => {
                 <View style={{ flexDirection: 'row' }}>
                     <View style={styles.fromTo}>
                         <View>
-                            <Text style={{ fontSize: 12, fontFamily: 'Inter_200ExtraLight' }}>Leaving From:</Text>
+                            <Text style={{ fontSize: 12, fontFamily: 'Inter_ExtraLight' }}>Leaving From:</Text>
                             <View>
-                                <Text style={{ fontSize: 19, fontFamily: 'Inter_500Medium', color: '#505050' }}>{JSON.parse(from)}</Text>
+                                <Text style={{ fontSize: 18, fontFamily: 'Inter_Medium', color: '#505050' }}>{JSON.parse(from)}</Text>
                             </View>
                         </View>
                     </View>
                     <View style={styles.dateTime}>
                         <View style={{ padding: '2%' }}>
-                            <Text style={{ fontSize: 12, fontFamily: 'Inter_200ExtraLight', padding: '1%' }}>Leaving At:</Text>
-                            <Text style={{ fontSize: 14, fontFamily: 'Inter_400Regular', padding: '1%' }}>{time}</Text>
-                            <Text style={{ fontSize: 14, fontFamily: 'Inter_400Regular' }}>{date}</Text>
+                            <Text style={{ fontSize: 12, fontFamily: 'Inter_ExtraLight', padding: '1%' }}>Leaving At:</Text>
+                            <Text style={{ fontSize: 14, fontFamily: 'Inter_Regular', padding: '1%' }}>{time}</Text>
+                            <Text style={{ fontSize: 14, fontFamily: 'Inter_Regular' }}>{date}</Text>
                         </View>
                     </View>
                 </View>
                 <View style={styles.line}></View>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={styles.fromTo}>
-                        <Text style={{ fontSize: 12, fontFamily: 'Inter_200ExtraLight' }}>Going To:</Text>
+                        <Text style={{ fontSize: 12, fontFamily: 'Inter_ExtraLight' }}>Going To:</Text>
                         <View>
-                            <Text style={{ fontSize: 19, fontFamily: 'Inter_500Medium', color: '#0352A0' }}>{JSON.parse(to)}</Text>
+                            <Text style={{ fontSize: 18, fontFamily: 'Inter_Medium', color: '#0352A0' }}>{JSON.parse(to)}</Text>
                         </View>
                     </View>
                     {showInfo ?
@@ -54,7 +54,7 @@ const RouteDisplay = (props) => {
                             </View>
                         </View>) :
                         (<View style={[styles.dateTime, { justifyContent: 'flex-end' }]}>
-                            <Text style={{ fontSize: 22, fontWeight: '600', padding: '2%', color: '#0352A0' }}>£{(showPrice  / 100).toFixed(2)}</Text>
+                            <Text style={{ fontSize: 21, fontWeight: '600', padding: '2%', color: '#0352A0' }}>£{(showPrice  / 100).toFixed(2)}</Text>
                         </View>)
                     }
                 </View>

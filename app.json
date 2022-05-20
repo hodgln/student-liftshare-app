@@ -3,12 +3,9 @@
     "name": "Spareseat",
     "slug": "Spareseat",
     "scheme": "spareseat",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "facebookScheme": "fb3031407350517054",
-    "facebookAppId": "3031407350517054",
-    "facebookDisplayName": "Dan Hodgin",
     "platforms": [
       "ios",
       "android"
@@ -24,7 +21,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.danhodgin.Spareseat"
     },
     "android": {
       "adaptiveIcon": {

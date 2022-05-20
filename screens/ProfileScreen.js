@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 25,
-        fontFamily: 'Inter_600SemiBold',
+        fontFamily: 'Inter_SemiBold',
         padding: '3%',
         color: '#0352A0'
     },
@@ -297,7 +297,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         //marginTop: 22,
-        height: Dimensions.get('window').height * 0.4
     },
     statsContainer: {
         alignItems: 'center',
@@ -311,11 +310,11 @@ const styles = StyleSheet.create({
     },
     numberSize: {
         fontSize: 40,
-        fontFamily: 'Inter_700Bold',
+        fontFamily: 'Inter_Bold',
         color: '#0352A0'
     },
     regularText: {
-        fontFamily: 'Inter_200ExtraLight'
+        fontFamily: 'Inter_ExtraLight'
     },
     line: {
         borderBottomWidth: 0.5,

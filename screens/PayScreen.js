@@ -4,7 +4,6 @@ import { useStripe } from '@stripe/stripe-react-native'
 import { useSelector } from 'react-redux'
 import CheckInButton from '../components/Buttons/CheckInButton';
 import { Ionicons } from '@expo/vector-icons'
-import { CardStyleInterpolators } from '@react-navigation/stack';
 
 
 
@@ -128,7 +127,7 @@ const PayScreen = ({ route, navigation }) => {
   return (
 
     <View style={styles.container}>
-      <Text style={{ fontFamily: 'Inter_300Light', fontSize: 27 }}>Lift Summary:</Text>
+      <Text style={{ fontFamily: 'Inter_Light', fontSize: 27 }}>Lift Summary:</Text>
       <View style={styles.line}></View>
 
       <View style={{ flexDirection: 'row', height: '40%' }}>
@@ -176,7 +175,7 @@ const PayScreen = ({ route, navigation }) => {
       </View>
 
       <View style={styles.priceBox}>
-        <Text style={{ fontSize: 28, fontFamily: 'Inter_600SemiBold', padding: '2%', color: '#0352A0' }}>£{price}</Text>
+        <Text style={{ fontSize: 28, fontFamily: 'Inter_SemiBold', padding: '2%', color: '#0352A0' }}>£{price}</Text>
         <View style={styles.infoBox}>
           <View style={{ padding: '1.5%' }}>
             <Ionicons name="information-circle-sharp" size={30} color="#D6438C" />
@@ -231,7 +230,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   routeText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: 'Inter_Medium',
     fontSize: 22,
     color: '#0352A0'
   },
@@ -249,11 +248,11 @@ const styles = StyleSheet.create({
     width: '90%'
   },
   infoText: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_Regular',
     fontSize: 15,
   },
   smallText: {
-    fontFamily: 'Inter_300Light'
+    fontFamily: 'Inter_Light'
   }
 });
 

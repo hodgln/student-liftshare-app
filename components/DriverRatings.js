@@ -38,10 +38,10 @@ const DriverRatings = (props) => {
         <View style={styles.QRmodal}>
             <View style={{ flexDirection: 'row' }}>
                 <View>
-                    <Text style={{ fontSize: 16, fontFamily: 'Inter_400Regular', }}>Please rate your passengers to </Text>
+                    <Text style={{ fontSize: 16, fontFamily: 'Inter_Regular', }}>Please rate your passengers to </Text>
                 </View>
                 <View>
-                    <Text style={{ fontSize: 16, fontFamily: 'Inter_600SemiBold', color: '#0352A0' }}>{JSON.parse(passengers[0].destinationname)}</Text>
+                    <Text style={{ fontSize: 16, fontFamily: 'Inter_SemiBold', color: '#0352A0' }}>{JSON.parse(passengers[0].destinationname)}</Text>
                 </View>
             </View>
             

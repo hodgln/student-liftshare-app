@@ -57,7 +57,7 @@ const RouteInput = (props) => {
                         autoCorrect={false}
                         value={props.valueName}
                         onChangeText={text => getAutocompleteResults(text)}
-                        style={{ height: '100%', fontFamily: 'Inter_400Regular' }}
+                        style={{ height: '100%', fontFamily: 'Inter_Regular' }}
                         autoFocus={true}
                     />
                 </View>

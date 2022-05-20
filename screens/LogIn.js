@@ -235,7 +235,7 @@ const LogIn = ({ route, navigation }) => {
                 
                 <View style={{ marginTop: '10%' }}>
 
-                    <Text style={{ fontFamily: 'Inter_500Medium', fontSize: 26 }}>{logInHeader}</Text>
+                    <Text style={{ fontFamily: 'Inter_Medium', fontSize: 26 }}>{logInHeader}</Text>
                 </View>
                 <Input
                     inputID='email'
