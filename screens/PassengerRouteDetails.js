@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Dimensions, StyleSheet, Button, Alert, Modal, Linking, Image, ImageBackground } from 'react-native';
 import { useSelector } from 'react-redux';
 import PassengerQR from '../components/PassengerQR';
-import { useIsFocused } from '@react-navigation/core';
 import moment from 'moment';
 import RouteDisplay from '../components/RouteDisplay';
 import ContactDisplay from '../components/ContactDisplay';
@@ -38,9 +37,6 @@ const PassengerRouteDetails = ({ route, navigation }) => {
 
     const [map, setMap] = useState()
     const [isVisibleQR, setIsVisibleQR] = useState(false)
-
-
-    const isFocused = useIsFocused()
 
     const getMapImg = async (urlpath) => {
         try {

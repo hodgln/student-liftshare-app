@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, Dimensions, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'
 

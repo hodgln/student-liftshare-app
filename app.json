@@ -3,7 +3,7 @@
     "name": "Spareseat",
     "slug": "Spareseat",
     "scheme": "spareseat",
-    "version": "1.0.1",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "platforms": [
@@ -32,9 +32,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      "expo-image-picker"
-    ]
+    }
   }
 }

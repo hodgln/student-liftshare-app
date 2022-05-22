@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from '../navigation/RootNavigation'
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,7 +16,7 @@ import { LOGGED_OUT, LOGGED_IN, REFRESH_TOKEN } from '../store/actions/authentic
 import DriverCheckIn from '../screens/DriverCheckIn';
 import PayScreen from '../screens/PayScreen';
 import ConfirmationScreen from '../screens/ConfirmationScreen';
-import { FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import SignUpOne from '../screens/SignUpOne';
 import SignUpTwo from '../screens/SignUpTwo';
 import SignUpThree from '../screens/SignUpThree';
@@ -26,7 +26,6 @@ import DriverRouteDetails from '../screens/DriverRouteDetails';
 import LiftSearchDetails from '../screens/LiftSearchDetails';
 import DriverSignUp from '../screens/DriverSignUp';
 import DriverRoute from '../screens/DriverRoute';
-import AppLoading from 'expo-app-loading';
 
 
 
@@ -34,6 +33,7 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator()
 const RootStack = () => {
 
+  
   // manage below in state and pass state into ? : function for navigation permissions
 
   // const [signedIn, setSignedIn] = useState(false);
@@ -206,7 +206,7 @@ const RootStack = () => {
   const PassengerStackTwo = () => {
     return (
       <Stack.Navigator screenOptions={{ headerTitleStyle: { fontFamily: 'Inter_SemiBold' } }} >
-        <Stack.Screen name="My Lifts" component={PassengerMyLifts} />
+        <Stack.Screen name="My Lifts " component={PassengerMyLifts} />
         <Stack.Screen name="Route Details" component={PassengerRouteDetails} />
       </Stack.Navigator>
     )
@@ -215,7 +215,7 @@ const RootStack = () => {
   const DriverStackTwo = () => {
     return (
       <Stack.Navigator>
-        <Stack.Screen name="My Lifts" component={DriverMyLifts} />
+        <Stack.Screen name="My Lifts " component={DriverMyLifts} />
         <Stack.Screen name="Route Details" component={DriverRouteDetails} />
         <Stack.Screen name="Check In" component={DriverCheckIn} />
       </Stack.Navigator>
@@ -223,7 +223,7 @@ const RootStack = () => {
   }
 
 
-  const authScreensStack = () => {
+  const AuthScreensStack = () => {
     return (
       <Stack.Navigator>
         <Stack.Screen name="ChoiceScreen" component={ChoiceScreen} options={{ headerShown: false }} />
@@ -240,7 +240,7 @@ const RootStack = () => {
   // };
 
   const authScreens = {
-    Choice: authScreensStack,
+    Choice: AuthScreensStack,
     LogIn: LogIn,
     SignUpOne: SignUpOne,
     SignUpTwo: SignUpTwo,
@@ -283,7 +283,7 @@ const RootStack = () => {
 
   return (
     <NavigationContainer style={styles.container} ref={navigationRef}>
-      {loading ? <AppLoading /> :
+      {loading ? null :
         <Stack.Navigator
           screenOptions={{
             initialRouteName: "Choice",

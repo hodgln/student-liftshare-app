@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, FlatList, Modal } from 'react-native';
 import { useSelector } from 'react-redux';
-import { useIsFocused } from '@react-navigation/core';
 import DriverRatings from '../components/DriverRatings';
 import PreviewCard from '../components/Cards/PreviewCard';
 import driverPriceCalc from '../server/utilities/driverPriceCalc';
+import { useIsFocused } from '@react-navigation/core';
 
 const DriverMyLifts = ({ route, navigation }) => {
 
@@ -80,7 +80,7 @@ const DriverMyLifts = ({ route, navigation }) => {
 
         return () => { isMounted = false };
 
-    }, [isFocused, refresh]);
+    }, [isFocused === true, refresh]);
 
 
 

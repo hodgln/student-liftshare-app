@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, Button, Modal, StyleSheet, Dimensions, FlatList } from 'react-native'
 import { useSelector } from 'react-redux'
 import PassengerRatings from '../components/PassengerRatings';
-import { useIsFocused } from '@react-navigation/core';
 import PreviewCard from '../components/Cards/PreviewCard';
+import { useIsFocused } from '@react-navigation/core';
 
 
-const PassengerMyLifts = (props) => {
+const PassengerMyLifts = ({ navigation }) => {
 
     const token = useSelector(state => state.authorisation.userToken);
     const [displayInfo, setDisplayInfo] = useState();

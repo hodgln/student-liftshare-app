@@ -8,12 +8,12 @@ import moment from 'moment';
 import RouteDisplay from '../components/RouteDisplay';
 import RequestButton from '../components/Buttons/RequestButton';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useIsFocused } from '@react-navigation/core';
 import PriceDisplay from '../components/PriceDisplay';
 import StatusButton from '../components/Buttons/StatusButton';
 import driverPriceCalc from '../server/utilities/driverPriceCalc';
 import NextButton from '../components/Buttons/NextButton';
 import CheckInButton from '../components/Buttons/CheckInButton';
+import { useIsFocused } from '@react-navigation/core';
 
 
 
@@ -203,7 +203,7 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
     };
 
-   const getPassengers = async () => {
+    const getPassengers = async () => {
         try {
             const myHeaders = new Headers();
 
@@ -288,17 +288,23 @@ const DriverRouteDetails = ({ route, navigation }) => {
     }
 
 
-    useEffect(async () => {
+    useEffect(() => {
         // change to promise all + isMounted
+        let isMounted = true
 
+        Promise.all([
+            initialCountPassengers(),
+            mapHandler()
+        ]).then(data => {
+            if (isMounted) {
+                setPassengerNumber(data[0].passengers)
+                setSeatNumber(data[0].seats)
+            }
+        }
+        )
 
-        mapHandler()
+        return () => { isMounted = false };
 
-        const result = await initialCountPassengers()
-
-
-        setPassengerNumber(result?.passengers)
-        setSeatNumber(result?.seats)
 
     }, [isFocused, isVisibleRequests]);
 
@@ -379,18 +385,18 @@ const DriverRouteDetails = ({ route, navigation }) => {
 
                         <View style={styles.buttonBox}>
                             <TouchableOpacity onPress={getPassengers} disabled={isVisibleRequests}>
-                            <View style={styles.filled}>
-                            <View style={{ flexDirection: 'row' }}>
-                                {passengerNumber === undefined ? null : [...Array(JSON.parse(passengerNumber)).keys()].map((key) => <MaterialCommunityIcons name="seatbelt" size={40} color="#D6438C" key={key}/>)}
-                                {[...Array(seatNumber).keys()].map((key) => <MaterialCommunityIcons name="seatbelt" size={40} color="lightgrey" key={key} />)}
-                            </View>
-                            </View>
+                                <View style={styles.filled}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        {passengerNumber === undefined ? null : [...Array(JSON.parse(passengerNumber)).keys()].map((key) => <MaterialCommunityIcons name="seatbelt" size={40} color="#D6438C" key={key} />)}
+                                        {[...Array(seatNumber).keys()].map((key) => <MaterialCommunityIcons name="seatbelt" size={40} color="lightgrey" key={key} />)}
+                                    </View>
+                                </View>
                             </TouchableOpacity>
                         </View>
 
                     </View>
 
-                    
+
 
                     <View style={{ alignItems: 'center' }}>
                         <View style={{ flexDirection: 'row', paddingVertical: '5%', width: '90%' }}>
@@ -400,12 +406,12 @@ const DriverRouteDetails = ({ route, navigation }) => {
                             <View style={{ width: '100%' }}>
                                 {/* <StatusButton text="check in" onPress={checkInHandler} style="confirmed" /> */}
                                 <CheckInButton text="check in passengers" onPress={checkInHandler} disabled={!isActive} />
-                                <View style={{ paddingTop: '2%'}}>
-                                <Button title="cancel lift" onPress={deleteHandler} color={'#C80466'}/>
+                                <View style={{ paddingTop: '2%' }}>
+                                    <Button title="cancel lift" onPress={deleteHandler} color={'#C80466'} />
                                 </View>
                             </View>
 
-                    </View>
+                        </View>
 
                     </View>
 

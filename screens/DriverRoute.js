@@ -34,14 +34,14 @@ const DriverRoute = ({ navigation }) => {
 
     //const [flatListRef, setFlatListRef] = useState()
 
-    const isFocused = useIsFocused()
+    
 
     const myRef = React.createRef();
     // this.myRef.current.doSomething();
 
     const ITEM_WIDTH = Dimensions.get("screen").width * 1
 
-
+    const isFocused = useIsFocused()
     // const [email, setEmail] = useState()
 
     const [originLatitude, setOriginLatitude] = useState()
@@ -98,7 +98,6 @@ const DriverRoute = ({ navigation }) => {
             const routeOneIndex = data.findIndex((item) => item.key === "ROUTE_ONE")
 
             if (isMounted) {
-                console.log(result.stripe_id === null)
                 result.stripe_id === null ?
                     (setUser(result), setInitialIndex(stripeIndex))
                     :

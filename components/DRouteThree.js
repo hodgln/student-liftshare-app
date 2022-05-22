@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Button } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Button, TextInput } from 'react-native'
 import NextButton from '../components/Buttons/NextButton';
-import { TextInputMask } from 'react-native-masked-text'
+//import { TextInputMask } from 'react-native-masked-text'
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -28,7 +28,11 @@ const DriverRouteThree = (props) => {
     const priceThree = workingPrice > 3 ? `£${driverPriceCalc(workingPrice, 3)}` : '...'
 
     // the view is not rendering properly due to the price display section being flex: 1
+    const intlformat = Intl.NumberFormat( "en-GB", { currency: 'GBP', style: 'currency' })
 
+    // const priceFormat = () => {
+    //     return()
+    // }
     return (
         <View>
             <BlurView style={styles.componentContainer}>
@@ -52,7 +56,19 @@ const DriverRouteThree = (props) => {
                             /> */}
                             <View style={{ width: '20%' }}></View>
                             <View style={{ width: '60%', alignItems: 'center' }}>
-                                <TextInputMask
+                                <TextInput 
+                                 style={styles.boldText}
+                                 onChangeText={(text) => {
+                                    
+                                    setPrice(text)
+                                }}
+                                 maxLength={7}
+                                 value={`£${price.substring(1)}`}
+                                 selectionColor={"white"}
+                                 autoFocus={true}
+                                 keyboardType={"numbers-and-punctuation"}
+                                />
+                                {/* <TextInputMask
                                     type={'money'}
                                     options={{
                                         precision: 2,
@@ -64,7 +80,7 @@ const DriverRouteThree = (props) => {
                                     style={styles.boldText}
                                     maxLength={7}
                                     autoFocus={true}
-                                />
+                                /> */}
                             </View>
                             <View style={{ width: '20%', alignItems: 'center' }}>
                                 <TouchableOpacity onPress={() => infoOnPress()}>

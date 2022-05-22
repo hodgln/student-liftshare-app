@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import QRCode from 'react-native-qrcode-svg';
-import * as svg from 'react-native-svg';
 
 const PassengerQR = (props) => {
     
