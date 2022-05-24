@@ -767,12 +767,6 @@ router.get("/ratings/fromdriver", authorisation, async (req, res) => {
         ]
         );
 
-        console.log(liftIDs.rows)
-
-        for (const element of liftIDs.rows) {
-            console.log(element.liftshare_id)
-        }
-
         // make asynchronous 
 
         const getPassengerData = async () => {

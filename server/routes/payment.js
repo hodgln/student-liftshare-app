@@ -3,7 +3,6 @@ require("dotenv").config({ path: "../.env" })
 const pool = require("../db");
 const authorisation = require("../middleware/authorisation");
 const driverPriceCalc = require("../utilities/driverPriceCalc");
-const notificationSender = require("../utilities/notificationSender");
 const stripe = require("stripe")(process.env.stripesecret);
 
 //NEEDS A SYSTEM REVIEW
