@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, FlatList, Button, Image, TouchableOpacity, ImageBackground, Dimensions } from 'react-native'
-import { Ionicons, Foundation, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'
 import NextButton from '../components/Buttons/NextButton';
 
 

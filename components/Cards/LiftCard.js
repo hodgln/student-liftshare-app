@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Dimensions, StyleSheet, Button, Alert, Modal } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { View, Text, Dimensions, StyleSheet, Button, Alert, Modal, FlatList } from 'react-native';
 import { useSelector } from 'react-redux';
 import RequestCard from './RequestCard';
 import { useNavigation } from '@react-navigation/core';

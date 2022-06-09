@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Dimensions, StyleSheet, Button, Alert } from 'react-native';
-import { useStripe } from '@stripe/stripe-react-native'
+import { useStripe, initStripe } from '@stripe/stripe-react-native'
 import { useSelector } from 'react-redux'
 import CheckInButton from '../components/Buttons/CheckInButton';
 import { Ionicons } from '@expo/vector-icons'
+import * as Linking from 'expo-linking';
 
 
 
@@ -14,7 +15,7 @@ const PayScreen = ({ route, navigation }) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [loading, setLoading] = useState(false);
   const token = useSelector(state => state.authorisation.userToken);
-  const [intentID, setIntentID] = useState()
+  const [intentID, setIntentID] = useState();
 
 
   const fetchPaymentSheetParams = async () => {
@@ -119,7 +120,15 @@ const PayScreen = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    initializePaymentSheet();
+
+    initStripe({
+      publishableKey: "pk_test_51IxqKxDSswVkzYl6yUdE2l58HEiScXybtxZMFdE3lHxLporfFzSJacB3hGgj79FkQrQHLez6o4BCkAdBSfU448QF00k305f0vp",
+      urlScheme: Linking.createURL(''),
+      merchantIdentifier: "merchant.com.spareseat"
+    }).then(() => {
+      initializePaymentSheet();
+    })
+
   }, []);
 
 

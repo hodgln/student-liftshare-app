@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState, useEffect } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from '../navigation/RootNavigation'
 import { useSelector, useDispatch } from 'react-redux';
@@ -30,7 +30,7 @@ import DriverRoute from '../screens/DriverRoute';
 
 
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator()
+const Tab = createBottomTabNavigator();
 const RootStack = () => {
 
   
@@ -46,7 +46,7 @@ const RootStack = () => {
 
   const driverOrPassenger = useSelector(state => state.authorisation.userCategory);
   const token = useSelector(state => state.authorisation.userToken);
-  const isLogged = useSelector(state => state.authorisation.isLoggedIn)
+  const isLogged = useSelector(state => state.authorisation.isLoggedIn);
 
   // issue is that signed in is not being changed 
 
@@ -71,7 +71,6 @@ const RootStack = () => {
         dispatch({ type: LOGGED_OUT })
         // null
         // setSignedIn(true)
-        // console.log("hi")
       }
 
       //parseRes === true ? setSignedIn(true) : setSignedIn(false) && dispatch({ type: LOGGED_OUT })
@@ -283,7 +282,13 @@ const RootStack = () => {
 
   return (
     <NavigationContainer style={styles.container} ref={navigationRef}>
-      {loading ? null :
+      {loading ? (<View style={{
+        flex: 1,
+        alignItems: 'center', 
+        justifyContent: 'center' 
+      }} >
+        <ActivityIndicator size={"large"}/>
+        </View>) :
         <Stack.Navigator
           screenOptions={{
             initialRouteName: "Choice",

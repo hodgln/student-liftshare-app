@@ -5,8 +5,6 @@ import { LinearGradient } from 'expo-linear-gradient'
 
 const LogInButton = (props) => {
 
-    console.log(props.disabled)
-
     return (
      <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
          <View style={styles.buttonShadow}>

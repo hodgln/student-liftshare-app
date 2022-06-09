@@ -3,7 +3,7 @@
     "name": "Spareseat",
     "slug": "Spareseat",
     "scheme": "spareseat",
-    "version": "1.0.9",
+    "version": "1.0.39",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "platforms": [
@@ -21,8 +21,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.danhodgin.Spareseat"
+      "supportsTablet": false,
+      "bundleIdentifier": "com.danhodgin.Spareseat",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Spareseat uses the camera to scan passenger QR codes.",
+        "NSPhotoLibraryUsageDescription": "Give Spareseat permission to upload a profile picture from Photos.",
+        "NSPhotoLibraryAddUsageDescription": "Give Spareseat permission to upload a profile picture."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -32,6 +37,28 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "sentry-expo",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.spareseat",
+          "enableGooglePay": false
+        }
+      ]
+    ],
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "spareseat",
+            "project": "react-native",
+            "authToken": "dcc7a6bb07a2496fadd320f3d1d9b2b37ec7c5664bf943fabd7ca07953736ae4"
+          }
+        }
+      ]
     }
   }
 }

@@ -200,7 +200,7 @@ router.post("/verified", async (req, res) => {
         res.json({
             token: newToken,
             category: getRefresh.rows[0].user_account
-        })
+        });
 
     } catch (err) {
         console.log(err.message);
